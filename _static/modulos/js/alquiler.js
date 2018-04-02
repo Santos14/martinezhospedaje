@@ -282,7 +282,7 @@ function alquilar_reservacion(id){
 
 			$("#tableList").empty().html(data);
 			$("#idcliente").val(data_res[0].idcliente);
-			$("#al_dni").val(data_res[0].dni);
+			$("#al_dni").val(data_res[0].nrodocumento);
 			$("#idreserva").val(data_res[0].idreserva);
 			$("#cliente").val(data_res[0].apellidos+", "+data_res[0].nombres);
 

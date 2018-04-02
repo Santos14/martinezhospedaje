@@ -266,7 +266,7 @@ class Alquiler extends CI_Controller {
 	}
 
 	public function ver_reservacion($id){
-		$sql = "SELECT hb.idhabitacion,hb.nrohabitacion,r.idreserva,r.fecha,cli.idcliente,cli.dni,cli.nombres,cli.apellidos
+		$sql = "SELECT hb.idhabitacion,hb.nrohabitacion,r.idreserva,r.fecha,cli.idcliente,cli.nrodocumento,cli.nombres,cli.apellidos
 		FROM habitacion hb INNER JOIN reserva r ON (hb.idhabitacion = r.habitacion_idhabitacion)
 		INNER JOIN cliente cli ON (cli.idcliente = r.cliente_idcliente)
 		WHERE hb.disponibilidad='3' and r.estado='1' and hb.idhabitacion =".$id;
