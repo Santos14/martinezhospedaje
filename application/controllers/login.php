@@ -40,12 +40,12 @@ class Login extends CI_Controller {
 				);
 				$this->session->set_userdata($varSession);
 
-				redirect(base_url()."home");
+				redirect("home");
 			}else{
-				redirect(base_url());
+				redirect();
 			}	
 		}else{
-			redirect(base_url());
+			redirect();
 		}
 		
 	}
@@ -54,7 +54,7 @@ class Login extends CI_Controller {
 		$varSession = $this->session->all_userdata();
 		$this->session->unset_userdata($varSession);
 		$this->session->sess_destroy();
-		redirect(base_url());
+		redirect();
 	}
 
 }
