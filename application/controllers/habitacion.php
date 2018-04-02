@@ -45,8 +45,10 @@ class Habitacion extends CI_Controller {
 			"disponibilidad" => '1',
 			"estado" => '1',
 			"cambiosabana" => '1900-01-01',
-			"cambiosabana" => '0'
+			"estcambiosabana" => '0'
 		);
+
+		$this->db->trans_start();
 
 		if ($id == ""){
 
@@ -55,58 +57,75 @@ class Habitacion extends CI_Controller {
 			$serv_checks = $this->input->post("serv_cheks");
 			$elem_checks = $this->input->post("elem_cheks");
 			$elem_especificacion = $this->input->post("elem_especificacion");
-
-			if(count($serv_checks)!=0){
-				foreach ($serv_checks as $value) {
-					$detalle_servicio = array(
-						"servicio_idservicio" => $value,
-						"habitacion_idhabitacion" => $idhabitacion
-					);
-					$status = $this->allmodel->create("detalle_servicio",$detalle_servicio);
+			if($this->input->post("serv_cheks")!=null){
+				if(count($serv_checks)!=0){
+					foreach ($serv_checks as $value) {
+						$detalle_servicio = array(
+							"servicio_idservicio" => $value,
+							"habitacion_idhabitacion" => $idhabitacion
+						);
+						$ds = $this->allmodel->create("detalle_servicio",$detalle_servicio);
+					}
 				}
 			}
-
-			if(count($elem_checks)!=0){
-				for ($i = 0; $i < count($elem_checks) ; $i++) {
-					$detalle_elemento = array(
-						"habitacion_idhabitacion" => $idhabitacion,
-						"elemento_idelemento" => $elem_checks[$i],
-						"especificacion" => $elem_especificacion[$i]
-					);
-					$status = $this->allmodel->create("detalle_elementos",$detalle_elemento);	
+			if($this->input->post("elem_cheks")!=null){
+				if(count($elem_checks)!=0){
+					for ($i = 0; $i < count($elem_checks) ; $i++) {
+						$detalle_elemento = array(
+							"habitacion_idhabitacion" => $idhabitacion,
+							"elemento_idelemento" => $elem_checks[$i],
+							"especificacion" => $elem_especificacion[$i]
+						);
+						$de = $this->allmodel->create("detalle_elementos",$detalle_elemento);	
+					}
 				}
 			}
 		}else{
-			$status = $this->allmodel->update("habitacion", $habitacion, array('idhabitacion'=> $id));
+			$this->allmodel->update("habitacion", $habitacion, array('idhabitacion'=> $id));
 			$this->allmodel->delete("detalle_servicio",array('habitacion_idhabitacion'=> $id));
 			$this->allmodel->delete("detalle_elementos",array('habitacion_idhabitacion'=> $id));
 
-			$serv_checks = $this->input->post("serv_cheks");
-			$elem_checks = $this->input->post("elem_cheks");
-			$elem_especificacion = $this->input->post("elem_especificacion");
-
-			if(count($serv_checks)!=0){
-				foreach ($serv_checks as $value) {
-					$detalle_servicio = array(
-						"servicio_idservicio" => $value,
-						"habitacion_idhabitacion" => $id
-					);
-					$status = $this->allmodel->create("detalle_servicio",$detalle_servicio);
-
+			if($this->input->post("serv_cheks")!=null){
+				$serv_checks = $this->input->post("serv_cheks");
+				if(count($serv_checks)!=0){
+					foreach ($serv_checks as $value) {
+						$detalle_servicio = array(
+							"servicio_idservicio" => $value,
+							"habitacion_idhabitacion" => $id
+						);
+						$ds = $this->allmodel->create("detalle_servicio",$detalle_servicio);
+					}
 				}
 			}
 
-			if(count($elem_checks)!=0){
-				for ($i = 0; $i < count($elem_checks) ; $i++) {
-					$detalle_elemento = array(
-						"habitacion_idhabitacion" => $id,
-						"elemento_idelemento" => $elem_checks[$i],
-						"especificacion" => $elem_especificacion[$i]
-					);
-					$status = $this->allmodel->create("detalle_elementos",$detalle_elemento);	
-					
+			if($this->input->post("elem_cheks")!=null){
+				$elem_checks = $this->input->post("elem_cheks");
+				$elem_especificacion = $this->input->post("elem_especificacion");
+				if(count($elem_checks)!=0){
+					for ($i = 0; $i < count($elem_checks) ; $i++) {
+						$detalle_elemento = array(
+							"habitacion_idhabitacion" => $id,
+							"elemento_idelemento" => $elem_checks[$i],
+							"especificacion" => $elem_especificacion[$i]
+						);
+						$de = $this->allmodel->create("detalle_elementos",$detalle_elemento);	
+						
+					}
 				}
+
 			}
+			
+		}
+
+		$this->db->trans_complete();
+		$trans_status = $this->db->trans_status();
+
+		if($trans_status== FALSE){
+			$this->db->trans_rollback();
+			$status = 0;			
+		}else{
+			$status = 1;
+			$this->db->trans_commit();			
 		}
 
 		echo json_encode($status);

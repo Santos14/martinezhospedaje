@@ -159,7 +159,6 @@ function save(){
 		if(count_elem==0){
 			alerta("Sin Elementos","Elija elementos para la Habitacion",'error');
 		}else{
-
 			$.ajax({
 				url: url+controlador+'/ajax_save',
 				type: 'POST',
