@@ -1,0 +1,206 @@
+PROCESANDO FORMULARIOS
+
+public function formularios()
+ {
+ 
+ //eliminar espacios con trim, controlar el máximo y mínimo de carácteres
+ //que queremos permitir y sobretodo hacer uso de xss_clean para evitar 
+ //problemas con los datos que nos puedan insertar los usuarios
+ $this->form_validation->set_rules('usuario', 'nombre de usuario', 'required|trim|min_length[2]|max_length[150]|xss_clean');
+        $this->form_validation->set_rules('password', 'password', 'required|trim|min_length[6]|max_length[150]|xss_clean');
+ 
+        //personalizar mensajes para las reglas hemos puesto 
+        $this->form_validation->set_message('required', 'El %s es requerido');
+        $this->form_validation->set_message('min_length', 'El %s debe tener al menos %s carácteres');
+        $this->form_validation->set_message('max_length', 'El %s debe tener al menos %s carácteres');
+ 
+ //comprobar que se lleven a cabo las reglas escritas por nosotros
+ if($this->form_validation->run() == FALSE)
+ {
+ 
+ //si no se pasan las reglas no podemos dejar pasar
+ 
+ }else{
+ 
+ //en otro caso procesamos los datos 
+ 
+ }
+ }
+
+ DESTRUIR SESSIONES
+ ------------------
+
+ public function detruir_sesiones()
+ {
+ 
+ //debemos vacíar para a continuación destruír correctamente
+ //las sesiones en codeigniter
+ $array_sesiones = array('usuario' => '', 'email' => '');
+ $this->session->unset_userdata($array_sesiones);
+ $this->session->sess_destroy();
+ 
+ }
+
+ MOSTRAR MENSAJE A LOS USUARIOS
+ ------------------------------
+ public function mensajes_temporales()
+ {
+ 
+ //para mostrar mensajes que sólo duren hasta que se refresque 
+ //la página podemos hacer uso de las sesiones flashdata de 
+ //codeigniter de la siguiente forma
+ $this->session->set_flashdata('nombresesion', 'mensaje de la sesión');
+ //para envíarla a la vista usamos refresh en el redirect
+ redirect('home', 'refresh');
+ //finalmente para mostrarla en la vista hacemos lo siguiente
+ echo $this->session->flashdata('nombresesion');
+ }
+
+ INSERT BACH
+ -------------
+
+ //insert_batch codeigniter
+ public function multiple_inserts()
+ {
+ //recogemos todos los usuarios de la tabla users
+ $query = $this->db->get('users');
+ //los recorremos y los guardamos en un array 
+ foreach($query->result() as $fila)
+ {
+ $data[] = array( 
+ 'id_user' => $fila->id,
+ 'nombre' => $fila->nombre,
+ 'email' => $fila->email
+ );
+ }
+ //fuera del bucle hacemos la insercción de los datos con insert_batch	
+ $this->db->insert_batch('otra_tabla', $data); 
+ 
+ }
+
+ COMPROBAR PETICIONES AJAX
+ -------------------------
+
+ //comprobar las peticiones ajax para evitar accesos
+ public function peticion_ajax()
+ {
+ 
+ //si no es una petición ajax mostramos un error 404
+ if(!$this->input->is_ajax_request())
+ {
+ show_404();
+ }else{
+ 
+ //en otro caso procesamos la petición
+ 
+ }
+ 
+ }
+
+ COMPROBAR FORMULARIOS
+ --------------------
+
+ public function comprobar()
+ {
+ 
+ if($this->input->post('variable_formulario'))
+ {
+ 
+ //sólo si existe una variable que nosotros esperamos
+ //dejamos pasar, en otro caso mostramos 404
+ 
+ }else{
+ 
+ show_404();
+ 
+ }
+ 
+ }
+
+ COMPROBAR RESULTADOS AJAX
+ --------------------------
+ //comprobar resultados en ajax tras una petición
+ public function comprobar_ajax()
+ {
+ //comprobamos si es una petición ajax y si existe
+ //la variable que esperamos
+ if($this->input->is_ajax_request() && $this->input->post('usuario'))
+ {
+ 
+ $usuario = $this->input->post('usuario');
+ $fecha = $this->fecha;
+ 
+ $peticion = $this->mi_modelo->mi_funcion($usuario,$fecha);
+ 
+ //si el modelo responde correctamente envíamos correcto con json
+ if($peticion)
+ {
+ 
+ $result = array('respuesta' => 'correcto');
+ echo json_encode($result);
+ 
+ //en otro caso envíamos error
+ }else{
+ 
+ $result = array('respuesta' => 'error');
+ echo json_encode($result);
+ 
+ }
+ //si no es una petición ajax mostramos 404	
+ }else{
+ 
+ show_404();
+ 
+ }
+    }
+
+
+
+$(document).ready(function(){ 
+ $.post('http://localhost/clase/funcion', $("miformulario").serialize(), function(data) {
+ //parseamos el json envíado desde el controlador
+ var json = $.parseJSON(data);
+ if(json.respuesta == 'correcto')
+ {
+ alert('correcto');
+ }else{
+ alert('error');
+ }
+ })
+ });
+
+
+ TRANSACCIONES CODEIGNAITER
+------------------------------
+
+
+//cuando tenemos muchas operaciones donde unas dependen de otras,
+ //lo mejor es hacerlo dentro de una transacción, de esta forma
+ //si no se llevan todas a cabo no se realiza ninguna, muy útil
+ public function mi_transaccion()
+ {
+ 
+ //empezamos una transacción
+ $this->db->trans_begin();
+ 
+ $this->db->query('select * from usuarios');
+ $this->db->query('insert into usuario');
+ $this->db->query('update usuarios');
+ 
+ //comprobamos si se han llevado a cabo correctamente todas
+ //las consultas
+ if ($this->db->trans_status() === FALSE)
+ {
+ 
+ //si ha habido algún error lo debemos mostrar aquí
+                        $this->db->trans_rollback();
+ 
+ }else{
+ 
+ //en otro caso todo ha ido bien
+ $this->db->trans_commit();
+ }
+ 
+ }
+
+ 
