@@ -30,15 +30,23 @@
                     <div class="col-md-2 col-sm-6 col-xs-12">
                         <input onkeypress="return solonumeros(event)" onblur="searchdni(this)" id="al_dni" name="al_dni" class="form-control" value="" placeholder="Nro Documento">
                     </div>
-                    <div class="col-md-5 col-sm-6 col-xs-12">
+                    <div class="col-md-3 col-sm-6 col-xs-12">
                         <input id="cliente" name="cliente" readonly class="form-control" value="" placeholder="Cliente">
                     </div>
-                    <div class="col-md-2 col-sm-6 col-xs-12">
+                     <div class="col-md-2 col-sm-6 col-xs-12" id="estcli">
+                        
+                    </div>
+                    <div class="col-md-1 col-sm-6 col-xs-12">
                         <button onclick="form_cliente()" type="button" class='btn btn-info'>
                             <i class="fa fa-plus"></i>    
                         </button>
                     </div>
                 </div>
+
+                <div id="panelmorosidad">
+                    
+                </div>
+
                 <div class="form-group">
                     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="idtipoalquiler">
                         Tipo Alquiler

@@ -124,16 +124,52 @@ function cambiarprocedencia(s){
 		}
 	},"json");
 }
+est = 0;
+function vermoroso(e){
+	if(e=='1'){
+		if(est==0){
+			est=1;
+			$("#panelmorosidad").show();
+		}else{
+			est=0;
+			$("#panelmorosidad").hide();
+		}
+	}
+}
+
 
 function searchdni(c){
 	if(c.value!=""){
 		$.get(url+"cliente/ajax_searchdni/"+c.value, function(data) {
-			if(data.length>0){
+			$.get(url+"alquiler/ajax_morosidad/"+data[0].idcliente+"/1", function(morosidad1) {
+				$.get(url+"alquiler/ajax_morosidad/"+data[0].idcliente+"/2", function(morosidad2) {
+					if(data.length>0){
+						console.log(morosidad2.length);
+						if(morosidad2.length>0){
+							clas = "btn btn-danger";
+							icon = "fa fa-close";
+							text = "MOROSO";
+							func = "1";
+						}else{
+							clas = "btn btn-success";
+							icon = "fa fa-check";
+							text = "EXCELENTE";
+							func = "2";
+						}
+						$("#idcliente").val(data[0].idcliente);
+						$("#cliente").val(data[0].apellidos+", "+data[0].nombres);
+						$("#panelmorosidad").empty().html(morosidad1);
+						
 
-				$("#idcliente").val(data[0].idcliente);
-				$("#cliente").val(data[0].apellidos+", "+data[0].nombres);
-				
-			}
+						btn = "<button type='button' onclick=\"vermoroso('"+func+"','"+est+"')\" class='"+clas+"'>";
+	                    btn+= "<i class='"+icon+"'></i> "+text;
+	                    btn+= "</button>";
+
+	                    $("#estcli").html(btn);
+						$("#estcli").show();
+					}
+				},"json");
+			});
 		},"json");
 	}
 	
@@ -177,6 +213,8 @@ function save_cliente(){
 function alquilar(id){
 	$.get(url+controlador+"/form_alquiler/"+id, function(data) {
 		$("#tableList").empty().html(data);
+		$("#panelmorosidad").hide();
+		$("#estcli").hide();
 	});
 }
 

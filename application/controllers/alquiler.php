@@ -475,5 +475,18 @@ class Alquiler extends CI_Controller {
 		echo json_encode($status);
 	}
 
+	public function ajax_morosidad($idcliente,$e){
+		$sql = "SELECT mo.*, cp.descripcion concepto
+		FROM morosidad mo INNER JOIN concepto cp ON (mo.idconcepto = cp.idconcepto)
+		WHERE mo.estado='1' and mo.idcliente =".$idcliente;
+		$data["morosidad"] = $this->allmodel->querySql($sql)->result();
+		if($e == '1'){
+			$this->load->view("alquiler/morosidad",$data);	
+		}else if($e == '2'){
+			echo json_encode($data["morosidad"]);
+		}
+		
+	}
+
 
 }

@@ -95,7 +95,9 @@
                      <li style='padding-left: 14%;'>
                         <a style="width: 90%;" href="<?php echo base_url('movimiento');?>">Ingresos y Gastos</a>
                     </li> 
-               
+                    <li style='padding-left: 14%;'>
+                        <a style="width: 90%;" href="<?php echo base_url('morosidad');?>">Morosos</a>
+                    </li>
                 </ul>
             </li>
             

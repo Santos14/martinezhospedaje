@@ -11,7 +11,18 @@ class Movimiento extends CI_Controller {
 			FROM movimiento mv INNER JOIN concepto cp ON (mv.concepto_idconcepto = cp.idconcepto)
 			INNER JOIN tipomovimiento tmo ON (tmo.idtipomovimiento = cp.tipomovimiento_idtipomovimiento)
 			WHERE mv.estado = '1' ORDER BY mv.idmovimiento desc";
+		$sql_ingreso = "SELECT sum(mo.monto) monto
+		FROM movimiento mo INNER JOIN concepto cp ON (mo.concepto_idconcepto = cp.idconcepto)
+		INNER JOIN tipomovimiento tm ON (cp.tipomovimiento_idtipomovimiento = tm.idtipomovimiento)
+		WHERE mo.estado='1' and cp.estado = '1' and tm.estado = '1' and tm.idtipomovimiento=1";
+		$sql_egreso = "SELECT sum(mo.monto) monto
+		FROM movimiento mo INNER JOIN concepto cp ON (mo.concepto_idconcepto = cp.idconcepto)
+		INNER JOIN tipomovimiento tm ON (cp.tipomovimiento_idtipomovimiento = tm.idtipomovimiento)
+		WHERE mo.estado='1' and cp.estado = '1' and tm.estado = '1' and tm.idtipomovimiento=2";
+
 		$data["data"] = $this->allmodel->querySql($sql);
+		$data["ingreso"] = $this->allmodel->querySql($sql_ingreso)->result();
+		$data["egreso"] = $this->allmodel->querySql($sql_egreso)->result();
 		$this->load->view("movimiento/lista",$data);
 	}
 
