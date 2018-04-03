@@ -19,7 +19,7 @@
         <div class="white-box analytics-info">
             <h3 class="box-title">Ingresos:</h3>
             <ul class="list-inline two-part">
-                <li class="text-right"><i class="ti-arrow-up text-success"></i> <span class="counter text-success"><?= number_format($ingreso,'2') ?></span></li>
+                <li class="text-right"><i class="ti-arrow-up text-success"></i> <span class="counter text-success">S/. <?= number_format($ingreso,'2') ?></span></li>
             </ul>
         </div>
     </div>
@@ -27,7 +27,7 @@
         <div class="white-box analytics-info">
             <h3 class="box-title">Egresos:</h3>
             <ul class="list-inline two-part">
-                <li class="text-right"><i class="ti-arrow-up text-purple"></i> <span class="counter text-purple"><?= number_format($egreso,'2') ?></span></li>
+                <li class="text-right"><i class="ti-arrow-up text-purple"></i> <span class="counter text-purple">S/. <?= number_format($egreso,'2') ?></span></li>
             </ul>
         </div>
     </div>
@@ -36,7 +36,7 @@
             <h3 class="box-title">Saldo Actual:</h3>
             <ul class="list-inline two-part">
 
-                <li class="text-right"><i class="ti-arrow-up text-info"></i> <span class="counter text-info"><?= number_format($ingreso-$egreso,'2') ?></span></li>
+                <li class="text-right"><i class="ti-arrow-up text-info"></i> <span class="counter text-info">S/. <?= number_format($ingreso-$egreso,'2') ?></span></li>
             </ul>
         </div>
     </div>
