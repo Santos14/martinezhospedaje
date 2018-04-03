@@ -129,9 +129,10 @@ function searchdni(c){
 	if(c.value!=""){
 		$.get(url+"cliente/ajax_searchdni/"+c.value, function(data) {
 			if(data.length>0){
-					
+
 				$("#idcliente").val(data[0].idcliente);
 				$("#cliente").val(data[0].apellidos+", "+data[0].nombres);
+				
 			}
 		},"json");
 	}
@@ -296,6 +297,7 @@ function pagartodo(val){
 	$("#est").val(val);
 
 	$.ajax({
+
 		url: url+controlador+'/pagartodo',
 		type: 'POST',
 		dataType: 'JSON',
@@ -310,4 +312,5 @@ function pagartodo(val){
 			alerta("Error de Guardado",errorThrown,'error');
 		}
 	});	
+
 }

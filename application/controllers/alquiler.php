@@ -282,133 +282,132 @@ class Alquiler extends CI_Controller {
 
 		$alq = $this->allmodel->selectWhere("alquiler",array("idalquiler" => $idalquiler))->result();
 
-		if($this->input->post("pagado")=="on"){
-			if($this->input->post("alojamiento")!=0){
-				$movimiento = array(
-					"concepto_idconcepto" => 1,
-					"fecha" => date("Y-m-d H:i:s"),
-					"estado" => '1',
-					"monto" => $this->input->post("alojamiento")
-				);
-				$ma = $this->allmodel->create("movimiento", $movimiento);
+		if(!($this->input->post("alojamiento")==0 && $this->input->post("compras")==0 && $this->input->post("imprevistos")==0)){
 
-				$alojamiento = array(
-					"movimiento_idmovimiento" => $ma,
-					"alquiler_idalquiler" =>$idalquiler,
-					"fecha" => date("Y-m-d H:i:s"),
-					"monto" =>$this->input->post("alojamiento"),
-					"estado" => "1"
-				);
-				$a = $this->allmodel->create("amortizacion", $alojamiento);
-				//falta cambiar de estado a la habitacion
-			}
-			if($this->input->post("compras")!=0){
-
-				$sql_compras = "SELECT v.*,(
-				SELECT sum(dv.precio)
-				FROM venta ve INNER JOIN detalle_venta dv ON (ve.idventa = dv.venta_idventa)
-				WHERE ve.estado='1' and ve.idventa = v.idventa
-				GROUP BY ve.idventa
-				) total FROM alquiler a INNER JOIN venta_alquiler va on(a.idalquiler = va.alquiler_idalquiler) INNER JOIN venta v ON(va.venta_idventa = v.idventa) WHERE v.estado ='1' and a.idalquiler =".$idalquiler;
-
-				$c = $this->allmodel->querySql($sql_compras)->result();
-
-				for ($i = 0; $i < count($c); $i++) {
+			if($this->input->post("pagado")=="on"){
+				if($this->input->post("alojamiento")!=0){
 					$movimiento = array(
-						"concepto_idconcepto" => 3,
+						"concepto_idconcepto" => 1,
 						"fecha" => date("Y-m-d H:i:s"),
 						"estado" => '1',
-						"monto" => $c[$i]->total
+						"monto" => $this->input->post("alojamiento")
 					);
-					$mv = $this->allmodel->create("movimiento", $movimiento);
+					$ma = $this->allmodel->create("movimiento", $movimiento);
 
-					$ventamovimiento = array(
-						"venta_idventa" => $c[$i]->idventa,
-						"movimiento_idmovimiento" => $mv
-					);
-
-					$v_m = $this->allmodel->create("ventamovimiento", $ventamovimiento);
-
-					$sql_updateVenta = "UPDATE venta SET estado='2' WHERE idventa IN (
-					SELECT v.idventa
-					FROM alquiler a INNER JOIN venta_alquiler va on(a.idalquiler = va.alquiler_idalquiler)
-					INNER JOIN venta v ON(va.venta_idventa = v.idventa)
-					WHERE v.estado ='1' and a.idalquiler =".$idalquiler.")";
-
-					$upv = $this->allmodel->querySql($sql_updateVenta);
-				}
-			}
-			if($this->input->post("imprevistos")!=0){
-				$sql_imprevistos = "SELECT i.*
-				FROM imprevisto i INNER JOIN tipoimprevisto ti ON (i.tipoimprevisto_idtipoimprevisto = ti.idtipoimprevisto) WHERE ti.estado = '1' and alquiler_idalquiler=".$idalquiler;
-
-				$imp = $this->allmodel->querySql($sql_imprevistos)->result();
-
-				for ($i = 0; $i < count($imp); $i++) {
-					$movimiento = array(
-						"concepto_idconcepto" => 9,
+					$alojamiento = array(
+						"movimiento_idmovimiento" => $ma,
+						"alquiler_idalquiler" =>$idalquiler,
 						"fecha" => date("Y-m-d H:i:s"),
-						"estado" => '1',
-						"monto" => $imp[$i]->monto
+						"monto" =>$this->input->post("alojamiento"),
+						"estado" => "1"
 					);
-					$mi = $this->allmodel->create("movimiento", $movimiento);
-
-					$imprevisto_movimiento = array(
-						"imprevisto_idimprevisto" => $imp[$i]->idimprevisto,
-						"movimiento_idmovimiento" => $mi
-					);
-
-					$i_m = $this->allmodel->create("imprevisto_movimiento", $imprevisto_movimiento);
-
-					$sql_updateImp = "UPDATE imprevisto SET estado='2' WHERE idimprevisto IN (
-					SELECT i.idimprevisto
-					FROM imprevisto i INNER JOIN tipoimprevisto ti ON (i.tipoimprevisto_idtipoimprevisto = ti.idtipoimprevisto)
-					WHERE ti.estado = '1' and alquiler_idalquiler=".$idalquiler.")";
-
-					$upimp = $this->allmodel->querySql($sql_updateImp);
+					$a = $this->allmodel->create("amortizacion", $alojamiento);
+					//falta cambiar de estado a la habitacion
 				}
-			}
+				if($this->input->post("compras")!=0){
 
-			
+					$sql_compras = "SELECT v.*,(
+					SELECT sum(dv.precio)
+					FROM venta ve INNER JOIN detalle_venta dv ON (ve.idventa = dv.venta_idventa)
+					WHERE ve.estado='1' and ve.idventa = v.idventa
+					GROUP BY ve.idventa
+					) total FROM alquiler a INNER JOIN venta_alquiler va on(a.idalquiler = va.alquiler_idalquiler) INNER JOIN venta v ON(va.venta_idventa = v.idventa) WHERE v.estado ='1' and a.idalquiler =".$idalquiler;
 
+					$c = $this->allmodel->querySql($sql_compras)->result();
+
+					for ($i = 0; $i < count($c); $i++) {
+						$movimiento = array(
+							"concepto_idconcepto" => 3,
+							"fecha" => date("Y-m-d H:i:s"),
+							"estado" => '1',
+							"monto" => $c[$i]->total
+						);
+						$mv = $this->allmodel->create("movimiento", $movimiento);
+
+						$ventamovimiento = array(
+							"venta_idventa" => $c[$i]->idventa,
+							"movimiento_idmovimiento" => $mv
+						);
+
+						$v_m = $this->allmodel->create("ventamovimiento", $ventamovimiento);
+
+						$sql_updateVenta = "UPDATE venta SET estado='2' WHERE idventa IN (
+						SELECT v.idventa
+						FROM alquiler a INNER JOIN venta_alquiler va on(a.idalquiler = va.alquiler_idalquiler)
+						INNER JOIN venta v ON(va.venta_idventa = v.idventa)
+						WHERE v.estado ='1' and a.idalquiler =".$idalquiler.")";
+
+						$upv = $this->allmodel->querySql($sql_updateVenta);
+					}
+				}
+				if($this->input->post("imprevistos")!=0){
+					$sql_imprevistos = "SELECT i.*
+					FROM imprevisto i INNER JOIN tipoimprevisto ti ON (i.tipoimprevisto_idtipoimprevisto = ti.idtipoimprevisto) WHERE ti.estado = '1' and alquiler_idalquiler=".$idalquiler;
+
+					$imp = $this->allmodel->querySql($sql_imprevistos)->result();
+
+					for ($i = 0; $i < count($imp); $i++) {
+						$movimiento = array(
+							"concepto_idconcepto" => 9,
+							"fecha" => date("Y-m-d H:i:s"),
+							"estado" => '1',
+							"monto" => $imp[$i]->monto
+						);
+						$mi = $this->allmodel->create("movimiento", $movimiento);
+
+						$imprevisto_movimiento = array(
+							"imprevisto_idimprevisto" => $imp[$i]->idimprevisto,
+							"movimiento_idmovimiento" => $mi
+						);
+
+						$i_m = $this->allmodel->create("imprevisto_movimiento", $imprevisto_movimiento);
+
+						$sql_updateImp = "UPDATE imprevisto SET estado='2' WHERE idimprevisto IN (
+						SELECT i.idimprevisto
+						FROM imprevisto i INNER JOIN tipoimprevisto ti ON (i.tipoimprevisto_idtipoimprevisto = ti.idtipoimprevisto)
+						WHERE ti.estado = '1' and alquiler_idalquiler=".$idalquiler.")";
+
+						$upimp = $this->allmodel->querySql($sql_updateImp);
+					}
+				}
 				
-		}else{
-		
-			if($this->input->post("alojamiento")!=0){
-				$morosidad_alojamiento = array(
-					"fecha" => date("Y-m-d H:i:s"),
-					"idalquiler" => $idalquiler,
-					"idconcepto" => 1,
-					"idcliente" => $alq[0]->cliente_idcliente, 
-					"monto" =>$this->input->post("alojamiento"),
-					"estado" => "1"
-				);
-				$ma = $this->allmodel->create("morosidad", $morosidad_alojamiento);
-			}
-			if($this->input->post("compras")!=0){
-				$morosidad_compras = array(
-					"fecha" => date("Y-m-d H:i:s"),
-					"idalquiler" => $idalquiler,
-					"idconcepto" => 3,
-					"idcliente" => $alq[0]->cliente_idcliente, 
-					"monto" =>$this->input->post("compras"),
-					"estado" => "1"
-				);
-				$mc = $this->allmodel->create("morosidad", $morosidad_compras);
-			}
-			if($this->input->post("imprevistos")!=0){
-				$morosidad_imprevistos = array(
-					"fecha" => date("Y-m-d H:i:s"),
-					"idalquiler" => $idalquiler,
-					"idconcepto" => 9,
-					"idcliente" => $alq[0]->cliente_idcliente, 
-					"monto" =>$this->input->post("imprevistos"),
-					"estado" => "1"
-				);
-				$mi = $this->allmodel->create("morosidad", $morosidad_imprevistos);
-			}
-
+			}else{
 			
+				if($this->input->post("alojamiento")!=0){
+					$morosidad_alojamiento = array(
+						"fecha" => date("Y-m-d H:i:s"),
+						"idalquiler" => $idalquiler,
+						"idconcepto" => 1,
+						"idcliente" => $alq[0]->cliente_idcliente, 
+						"monto" =>$this->input->post("alojamiento"),
+						"estado" => "1"
+					);
+					$ma = $this->allmodel->create("morosidad", $morosidad_alojamiento);
+				}
+				if($this->input->post("compras")!=0){
+					$morosidad_compras = array(
+						"fecha" => date("Y-m-d H:i:s"),
+						"idalquiler" => $idalquiler,
+						"idconcepto" => 3,
+						"idcliente" => $alq[0]->cliente_idcliente, 
+						"monto" =>$this->input->post("compras"),
+						"estado" => "1"
+					);
+					$mc = $this->allmodel->create("morosidad", $morosidad_compras);
+				}
+				if($this->input->post("imprevistos")!=0){
+					$morosidad_imprevistos = array(
+						"fecha" => date("Y-m-d H:i:s"),
+						"idalquiler" => $idalquiler,
+						"idconcepto" => 9,
+						"idcliente" => $alq[0]->cliente_idcliente, 
+						"monto" =>$this->input->post("imprevistos"),
+						"estado" => "1"
+					);
+					$mi = $this->allmodel->create("morosidad", $morosidad_imprevistos);
+				}
+
+			}
 
 		}
 
