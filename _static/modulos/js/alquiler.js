@@ -58,7 +58,7 @@ function cambioestado(estadocuarto,id){
 }
 
 function save(){
-	labels = ['al_dni','cliente','precioxdia','idtipoalquiler','idmotivoviaje','idprocedencia','kit','pagoinicial'];
+	labels = ['al_dni','cliente','precioxdia','idtipoalquiler','idmotivoviaje','idprocedencia','kit','pagoinicial','localidad'];
 	fallas = false;
 	for (var i = 0; i < labels.length; i++) {
 		if($("[name='"+labels[i]+"']").val() == ""){
@@ -68,6 +68,7 @@ function save(){
 		}
 	}
 	if(!fallas){
+		
 		$.ajax({
 			url: url+controlador+'/ajax_save',
 			type: 'POST',

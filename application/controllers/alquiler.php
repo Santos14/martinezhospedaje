@@ -141,7 +141,8 @@ class Alquiler extends CI_Controller {
 			"fecha_ingreso" => $this->input->post('fecha')." ".$this->input->post('hora'),
 			"kit" => $this->input->post('kit'),
 			"precioxdia" => $this->input->post('precioxdia'),
-			"estado" => '1'
+			"estado" => '1',
+			"localidad" => $this->input->post('localidad')
 		);
 
 		$this->db->trans_start();

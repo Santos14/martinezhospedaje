@@ -87,6 +87,15 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="localidad">
+                        Localidad
+                    </label>
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                        <input type="text" placeholder="Ingrese Localidad de Procedencia" id="localidad" name="localidad" class="form-control" maxlength="200" >
+                    </div>
+                </div>
                 <div class="form-group">
                     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="kit">
                         KIT
