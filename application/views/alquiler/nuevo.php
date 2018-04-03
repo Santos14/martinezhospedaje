@@ -121,7 +121,7 @@
                         Fecha
                     </label>
                     <div class="col-md-3 col-sm-6 col-xs-12">
-                        <input type="date" name="fecha" id="fecha" class="form-control" value="<?= date("Y-m-d") ?>">
+                        <input type="date" max="<?= date("Y-m-d") ?>" name="fecha" id="fecha" class="form-control" value="<?= date("Y-m-d") ?>">
                     </div>
                     <label  class="control-label col-md-2 col-sm-3 col-xs-12" for="hora">
                         Hora

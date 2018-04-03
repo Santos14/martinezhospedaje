@@ -301,7 +301,7 @@ function pagartodo(val){
 		dataType: 'JSON',
 		data: $("#form_pagartodo").serialize(),
 		success: function(data){
-			alerta("Pago Realizado",'Se registro el Pago y se procedio a desocupar la habitacion','success');
+			alerta("Habitacion Desocupada",'Se desocupo la habitacion, proceda a limpiar','success');
 			$("#modalSalir").modal("hide");
 			init();
 		},

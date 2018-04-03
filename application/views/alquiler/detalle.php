@@ -33,6 +33,7 @@ $dias = abs($dias); $dias = floor($dias);
 
                       <p><strong>Cliente:</strong> <?= $cliente[0]->apellidos.", ".$cliente[0]->nombres ?></p>
                       <p><strong>Procedencia:</strong> <?= $procedencia[0]->lugar ?></p>
+                      <p><strong>Localidad:</strong> <?= $alquiler[0]->localidad ?></p>
                       <p><strong>Tipo Alquiler:</strong> <?= $tipoalquiler[0]->descripcion ?></p>
                       <p><strong>Precio x Dia:</strong> S/. <?= $alquiler[0]->precioxdia ?></p>
                       <p><strong>Fecha Ingreso:</strong> <?= $alquiler[0]->fecha_ingreso ?></p>

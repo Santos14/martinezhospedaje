@@ -283,6 +283,15 @@ $dias = abs($dias); $dias = floor($dias);
         <textarea class="form-control" name="observacion" id="observacion" placeholder="Ingrese Observacion de salida" rows="3"></textarea>
     </div>
 </div>
+<div class="form-group">
+    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="habitacion">
+       Cancelado
+    </label>
+    
+    <div class="col-md-8 col-sm-6 col-xs-12">
+       <input type="checkbox" name="pagado" id="pagado">
+    </div>
+</div>
 
 </div>
             <div class="modal-footer">
@@ -290,7 +299,7 @@ $dias = abs($dias); $dias = floor($dias);
                     Cerrar
                 </button>
                 <button type="button" class="btn btn-success" onclick="pagartodo('1')">
-                    Pagar y Salir
+                    Desocupar
                 </button>
             </div>
         </div>
