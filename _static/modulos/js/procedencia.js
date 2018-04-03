@@ -27,7 +27,7 @@ function form_edit(id){
 	$('#form')[0].reset();
 	$.get(url+controlador+'/ajax_edit/'+id, function(data, textStatus, xhr) {
 		if(textStatus=="success"){
-			$('[name="id"]').val(data[0].idtipopersonal);
+			$('[name="id"]').val(data[0].idprocedencia);
 			$('[name="lugar"]').val(data[0].lugar);
 			$('[name="tipoprocedencia"]').val(data[0].tipoprocedencia);
 			$("#modalFormulario").modal("show");

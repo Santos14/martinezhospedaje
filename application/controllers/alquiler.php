@@ -16,7 +16,7 @@ class Alquiler extends CI_Controller {
 		(SELECT idalquiler FROM alquiler a WHERE h.idhabitacion = a.habitacion_idhabitacion and a.estado='1') idalquiler  
 		FROM habitacion h INNER JOIN tipohabitacion th ON(h.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
 		WHERE h.estado<>'0' and th.estado<>'0'
-		ORDER BY nrohabitacion asc";
+		ORDER BY h.idhabitacion asc";
 		$sql_servicios = "SELECT ds.*,s.descripcion servicio 
 		FROM servicio s INNER JOIN detalle_servicio ds ON(s.idservicio = ds.servicio_idservicio) 
 		INNER JOIN habitacion h ON (h.idhabitacion = ds.habitacion_idhabitacion)

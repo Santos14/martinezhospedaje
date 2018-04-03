@@ -130,7 +130,7 @@ function form_edit(id){
 }
 
 function save(){
-	labels = ['nrohabitacion'];
+	labels = ['nrohabitacion','precio','idtipohabitacion'];
 	elem = $(".elem_opcion");
 	serv = $(".serv_opcion");
 	count_elem = 0;
