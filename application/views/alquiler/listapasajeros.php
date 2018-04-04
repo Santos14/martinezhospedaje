@@ -8,6 +8,7 @@
                      
                      <thead>
                          <tr>
+                            <th class="text-center">Item</th>
                              <th class="text-center">Habitacion</th>
                              <th class="text-center">Ingreso</th>
                              <th class="text-center">DNI</th>
@@ -15,8 +16,10 @@
                          </tr>
                      </thead>
                      <tbody>
+                        <?php $cont=1; ?> 
                         <?php foreach ($habitaciones as $hb): ?>
                          <tr>
+                            <td class="text-center"><?= $cont++ ?></td>
                              <td class="text-center"><?= $hb->nrohabitacion ?></td>
                              <?php 
                              $op = false;
