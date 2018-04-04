@@ -2,6 +2,11 @@
   $hora_termino = $politica[0]->numero;
   $minuto_termino = "00";
   $segundo_termino = "00";
+//TERNINO DE FIN DEL DIA 
+  $hora_fin = '02';
+  $minuto_fin = "59";
+  $segundo_fin = "59";
+
   
 ?>
 
@@ -38,7 +43,7 @@
                       $rango=false;
 
                       if($fi->format('H')>='00' && $fi->format('i') >= '00' && $fi->format('s') >= '00'){
-                          if($fi->format('H')<='02' && $fi->format('i') <= '59' && $fi->format('s') <= '59'){
+                          if($fi->format('H')<=$hora_fin  && $fi->format('i') <= $minuto_fin  && $fi->format('s') <= $segundo_fin ){
                             $rango = true;
                          }
                       }

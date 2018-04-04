@@ -4,6 +4,10 @@ $hora_termino = $politica[0]->numero;
 $minuto_termino = "00";
 $segundo_termino = "00";
 
+  $hora_fin = '02';
+  $minuto_fin = "59";
+  $segundo_fin = "59";
+
 
 $ahora = new DateTime("NOW");
 $fechaingreso = new DateTime($alquiler[0]->fecha_ingreso);
@@ -20,7 +24,7 @@ $dias = abs($dias); $dias = floor($dias);
   
                           if($fechaingreso->format('H')>='00' && $fechaingreso->format('i') >= '00' && $fechaingreso->format('s') >= '00'){
                         
-                             if($fechaingreso->format('H')<='02' && $fechaingreso->format('i') <= '59' && $fechaingreso->format('s') <= '59'){
+                             if($fechaingreso->format('H')<=$hora_fin && $fechaingreso->format('i') <= $minuto_fin && $fechaingreso->format('s') <= $segundo_fin){
                               $rango = true;
                              }
                            

@@ -7,9 +7,25 @@ var idglobal;
 var table;
 
 function init(){
+
 	$.get(url+controlador+"/tableList", function(data) {
 		$("#tableList").empty().html(data);
 		$('#datatable').dataTable();
+	});
+}
+
+function view_miniatura(){
+	$("#miniatura").removeClass().addClass('btn btn-primary');
+	$("#lista").removeClass().addClass('btn btn-default');
+
+	init();
+}
+
+function view_lista(){
+	$("#miniatura").removeClass().addClass('btn btn-default');
+	$("#lista").removeClass().addClass('btn btn-primary');
+	$.get(url+controlador+"/listapasajeros", function(data) {
+		$("#tableList").empty().html(data);
 	});
 }
 

@@ -29,9 +29,11 @@ class Alquiler extends CI_Controller {
 
 	public function cambioestadocuarto(){
 		$estadocuarto = $this->input->post("estado_cuarto");
-		//2:SUCIO ; 3: CAMBIO SABANA
+		//2:SUCIO ; 3: CAMBIO 
+		$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 1))->result();
+		$cambsa = "+".$politica[0]->numero." day";
 		$cambiosabana = array(
-			"cambiosabana" => date ('Y-m-d',strtotime ('+2 day',strtotime(date("Y-m-d")))),
+			"cambiosabana" => date ('Y-m-d',strtotime ($cambsa,strtotime(date("Y-m-d")))),
 			 "estcambiosabana" => '0'
 		);
 		$limpiar = array(
@@ -89,10 +91,21 @@ class Alquiler extends CI_Controller {
 
 		$data["politica"] = $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
 
-
-
-
 		$this->load->view("alquiler/detalle",$data);	
+	}
+
+	public function listapasajeros(){
+
+		$sql_alquiler = "SELECT hb.idhabitacion,hb.nrohabitacion,al.fecha_ingreso,cli.nrodocumento,cli.nombres,cli.apellidos
+			FROM habitacion hb INNER JOIN alquiler al ON (hb.idhabitacion = al.habitacion_idhabitacion)
+			INNER JOIN cliente cli ON (cli.idcliente = al.cliente_idcliente)
+			WHERE al.estado = '1'";
+		$sql_habitacion = "SELECT * FROM habitacion WHERE estado <>'0'";
+
+		$data["alquiler"] = $this->allmodel->querySql($sql_alquiler)->result();
+		$data["habitaciones"] = $this->allmodel->querySql($sql_habitacion)->result();
+
+		$this->load->view("alquiler/listapasajeros",$data);		
 	}
 
 	public function form_salir($id){
@@ -155,9 +168,11 @@ class Alquiler extends CI_Controller {
 		$this->db->trans_start();
 		if ($id == ""){
 			$al = $this->allmodel->create("alquiler", $data);
+			$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 1))->result();
+			$cambsa = "+".$politica[0]->numero." day";
 			$estado = array(
 				"disponibilidad" => '2',
-				"cambiosabana" => date ('Y-m-d',strtotime ('+2 day',strtotime(date("Y-m-d")))),
+				"cambiosabana" => date ('Y-m-d',strtotime ($cambsa,strtotime(date("Y-m-d")))),
 				"estcambiosabana" => '0'
 			);
 			$uph = $this->allmodel->update("habitacion", $estado, array('idhabitacion'=> $this->input->post("idhabitacion")));
