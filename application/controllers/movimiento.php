@@ -69,6 +69,8 @@ class Movimiento extends CI_Controller {
 				WHERE alq.estado='1'";
 				$data["alquiler"] = $this->allmodel->querySql($sql1)->result();
 
+				$data["politica"] = $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
+
 				$this->load->view("movimiento/habitacion",$data);
 				break;
 			case '9':

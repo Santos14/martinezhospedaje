@@ -1,3 +1,11 @@
+<?php 
+  $hora_termino = $politica[0]->numero;
+  $minuto_termino = "00";
+  $segundo_termino = "00";
+  
+?>
+
+
 <input type="hidden" name="h_idalquiler" id="h_idalquiler">
 <input type="hidden" name="h_monto" id="h_monto">
 <div class="row">
@@ -53,7 +61,7 @@
                            
                                                      
                           if($rango){
-                            if(date("H")>='13' && date("i")>='00' && date("s")>='00'){
+                            if(date("H")>=$hora_termino && date("i")>=$minuto_termino && date("s")>=$segundo_termino){
                                 $s = 1;
                               }
                           }
@@ -95,7 +103,7 @@
 
                         $cant = $dias; 
 
-                        if(date("H")>='13' && date("i")>='00' && date("s")>='00'){
+                        if(date("H")>=$hora_termino && date("i")>=$minuto_termino && date("s")>=$segundo_termino){
                             $cant++;
                         }
                         if($rango){

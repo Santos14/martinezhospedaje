@@ -87,6 +87,11 @@ class Alquiler extends CI_Controller {
 		GROUP BY al.idalquiler")->result();
 
 
+		$data["politica"] = $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
+
+
+
+
 		$this->load->view("alquiler/detalle",$data);	
 	}
 
@@ -116,6 +121,8 @@ class Alquiler extends CI_Controller {
 		FROM alquiler al INNER JOIN amortizacion am ON (al.idalquiler = am.alquiler_idalquiler)
 		WHERE am.estado = '1' and al.idalquiler = ".$alquiler[0]->idalquiler."
 		GROUP BY al.idalquiler")->result();
+
+		$data["politica"] = $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
 
 
 		$this->load->view("alquiler/detalle_salida",$data);	

@@ -1,5 +1,9 @@
 <?php 
 
+$hora_termino = $politica[0]->numero;
+$minuto_termino = "00";
+$segundo_termino = "00";
+
 $ahora = new DateTime("NOW");
 $fechaingreso = new DateTime($alquiler[0]->fecha_ingreso);
 $diff = $ahora->diff($fechaingreso);
@@ -107,7 +111,7 @@ $dias = abs($dias); $dias = floor($dias);
                                   
 
                                   if($rango){
-                                    if(date("H")>='13' && date("i")>='00' && date("s")>='00'){
+                                    if(date("H")>=$hora_termino && date("i")>=$minuto_termino && date("s")>=$segundo_termino){
                                        $s = 1;
                                       }
                                   }
@@ -215,7 +219,7 @@ $dias = abs($dias); $dias = floor($dias);
                             
                             $cant = $dias; 
 
-                            if(date("H")>='13' && date("i")>='00' && date("s")>='00'){
+                            if(date("H")>=$hora_termino && date("i")>=$minuto_termino && date("s")>=$segundo_termino){
                                 $cant++;
                             }
                             if($rango){
