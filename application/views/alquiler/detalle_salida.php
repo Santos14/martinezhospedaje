@@ -292,6 +292,8 @@ $dias = abs($dias); $dias = floor($dias);
         <textarea class="form-control" name="observacion" id="observacion" placeholder="Ingrese Observacion de salida" rows="3"></textarea>
     </div>
 </div>
+<?php $total = $pen+$comp+$contimp; ?>
+<?php if($total != 0): ?>
 <div class="form-group">
     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="habitacion">
        Cancelado
@@ -301,6 +303,7 @@ $dias = abs($dias); $dias = floor($dias);
        <input type="checkbox" name="pagado" id="pagado">
     </div>
 </div>
+<?php endif ?>
 
 </div>
             <div class="modal-footer">

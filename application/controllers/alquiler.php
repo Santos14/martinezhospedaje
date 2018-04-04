@@ -100,7 +100,7 @@ class Alquiler extends CI_Controller {
 			FROM habitacion hb INNER JOIN alquiler al ON (hb.idhabitacion = al.habitacion_idhabitacion)
 			INNER JOIN cliente cli ON (cli.idcliente = al.cliente_idcliente)
 			WHERE al.estado = '1'";
-		$sql_habitacion = "SELECT * FROM habitacion WHERE estado <>'0'";
+		$sql_habitacion = "SELECT * FROM habitacion WHERE estado <>'0' ORDER BY idhabitacion asc";
 
 		$data["alquiler"] = $this->allmodel->querySql($sql_alquiler)->result();
 		$data["habitaciones"] = $this->allmodel->querySql($sql_habitacion)->result();

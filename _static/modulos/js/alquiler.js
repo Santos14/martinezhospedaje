@@ -26,6 +26,7 @@ function view_lista(){
 	$("#lista").removeClass().addClass('btn btn-primary');
 	$.get(url+controlador+"/listapasajeros", function(data) {
 		$("#tableList").empty().html(data);
+		$("#listapasajeros").dataTable();
 	});
 }
 
@@ -185,7 +186,11 @@ function searchdni(c){
 	                    btn+= "</button>";
 
 	                    $("#estcli").html(btn);
-	                    alerta("Cliente Moroso","No se podra registrar Alquiler","error");
+	                    if(morosidad2.length>0){
+	                    	
+	                    	alerta("Cliente Moroso","No se podra registrar Alquiler","error");
+	                    }
+	                   
 						$("#estcli").show();
 					}
 				},"json");
