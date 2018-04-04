@@ -22,7 +22,7 @@
                         <input id="precioxdia" name="precioxdia" class="form-control" value="<?= $habitacion[0]->precio ?>">
                     </div>
                 </div>
-                  <div class="form-group">
+                <div class="form-group">
                     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="habitacion">
                         Cliente
                     </label>
@@ -144,7 +144,7 @@
                     <button type="button" class="btn btn-default" onclick="window.location='<?= base_url('alquiler') ?>'">
                         Cancelar
                     </button>
-                    <button type="button" class="btn btn-success" onclick="save()" id='btn_save'>
+                    <button type="button" class="btn btn-success" onclick="save()" id='btn_save_alquiler'>
                         Guardar
                     </button>
                 </div>

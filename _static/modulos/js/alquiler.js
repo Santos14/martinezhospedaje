@@ -146,11 +146,14 @@ function searchdni(c){
 					if(data.length>0){
 						console.log(morosidad2.length);
 						if(morosidad2.length>0){
+							$("#btn_save_alquiler").attr("disabled",true);
 							clas = "btn btn-danger";
 							icon = "fa fa-close";
 							text = "MOROSO";
 							func = "1";
+
 						}else{
+							$("#btn_save_alquiler").removeAttr('disabled');
 							clas = "btn btn-success";
 							icon = "fa fa-check";
 							text = "EXCELENTE";
@@ -166,6 +169,7 @@ function searchdni(c){
 	                    btn+= "</button>";
 
 	                    $("#estcli").html(btn);
+	                    alerta("Cliente Moroso","No se podra registrar Alquiler","error");
 						$("#estcli").show();
 					}
 				},"json");
