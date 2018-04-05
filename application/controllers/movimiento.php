@@ -66,7 +66,7 @@ class Movimiento extends CI_Controller {
 				) pagado
 				FROM alquiler alq INNER JOIN habitacion hb ON (alq.habitacion_idhabitacion = hb.idhabitacion)
 				INNER JOIN cliente cli ON (cli.idcliente = alq.cliente_idcliente)
-				WHERE alq.estado='1'";
+				WHERE alq.estado='1' ORDER BY hb.idhabitacion asc";
 				$data["alquiler"] = $this->allmodel->querySql($sql1)->result();
 
 				$data["politica"] = $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();

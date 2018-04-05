@@ -74,9 +74,9 @@
                     <li style='padding-left: 14%;'>
                         <a style="width: 90%;" href="<?php echo base_url('producto');?>">Productos</a>
                     </li>           
-                     <li style='padding-left: 14%;'>
+                     <!--li style='padding-left: 14%;'>
                         <a style="width: 90%;" href="<?php echo base_url('compra');?>">Compras</a>
-                    </li>
+                    </li-->
                     <li style='padding-left: 14%;'>
                         <a style="width: 90%;" href="<?php echo base_url('venta');?>">Venta</a>
                     </li>

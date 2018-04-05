@@ -145,21 +145,20 @@
                          }
                                    
                       endif;  ?>
-
+<?php if($pen!=0):?>
 <tr>
   <td><?= $h+1 ?> </td>
   <td><?= $alquiler[$h]->nrohabitacion ?></td>
   <td><?= $alquiler[$h]->nombres.", ".$alquiler[$h]->apellidos ?></td>
   <td class="text-center"><input type="text" id="m<?= $alquiler[$h]->idalquiler ?>" name="m<?= $alquiler[$h]->idalquiler ?>" value="<?= number_format($pen,'2') ?>" style="background: none;border: none;text-align: center;"></td>
   <td class="text-center">
-    <?php if($pen!=0):?>
+    
     <button type="button" onclick="habitacion('<?= $alquiler[$h]->idalquiler ?>','<?= $pen ?>','1')" class="btn btn-success btn-xs">Pagar Todo</button>
     <button type="button" onclick="habitacion('<?= $alquiler[$h]->idalquiler ?>','','2')" class="btn btn-warning btn-xs">Amortizar</button>
-  <?php else: ?>
-    <button type="button" class="btn btn-success btn-xs">Pagado</button>
-    <?php endif?>
+ 
   </td>
 </tr>
+ <?php endif?>
 
 
 

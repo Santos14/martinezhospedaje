@@ -70,6 +70,7 @@ function addproducto(){
 		$("#idproducto").val("");
 		$("#producto").val("");
 		$("#monto").val("");
+		filatableproducto++;
 		
 	}else{
 		alerta("Campos Vacios","Llene los campos correspondientes","error");

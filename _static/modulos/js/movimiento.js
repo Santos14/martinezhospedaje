@@ -197,7 +197,7 @@ function addproducto(){
 	if($("#producto").val()!="" && $("#monto").val()!=""){
 		fila = "<tr class='productos' id='f"+filatableproducto+"'>";
         fila +="<td><input type='hidden' name='idproducto[]' value='"+$("#idproducto").val()+"'>"+filatableproducto+"</td>";
-        fila +="<td>"+	$("#producto").val();+"</td>";
+        fila +="<td>"+$("#producto").val()+"</td>";
         fila +="<td><input type='text' style='border:none;background:none;' id='p"+filatableproducto+"' name='precio[]' value='"+parseFloat($("#monto").val()).toFixed(2)+"'></td>";
         fila +="<td><button onclick=\"removeproducto('"+filatableproducto+"')\" type='button' class='btn btn-danger'><i class='fa fa-trash-o'></i></button></td>";
         fila +="</tr>";
@@ -207,6 +207,7 @@ function addproducto(){
 		$("#idproducto").val("");
 		$("#producto").val("");
 		$("#monto").val("");
+		filatableproducto++;
 		
 	}else{
 		alerta("Campos Vacios","Llene los campos correspondientes","error");
