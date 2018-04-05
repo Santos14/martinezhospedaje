@@ -75,6 +75,24 @@ function save(){
 	}
 }
 
+function pagarmorosidad(id){
+	$.ajax({
+		url : url+controlador+"/pagarmorosidad/",
+		type: "POST",
+		data: {'id':id},
+		dataType: "JSON",
+		success: function(data){
+			console.log(data);
+			$('#modalEliminar').modal('hide');			
+			alerta("Eliminado Exitoso",'Se elimino correctamente','success');
+			init();
+		},
+		error: function (jqXHR, textStatus, errorThrown){
+			alerta("Error de Guardado",errorThrown,'error');
+		}
+	});	
+}
+
 function showEliminar(id){
 	idglobal = id;
 	$("#modalEliminar").modal("show");

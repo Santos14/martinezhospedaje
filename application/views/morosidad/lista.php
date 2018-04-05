@@ -34,15 +34,15 @@
                                     <td><?= $val->concepto ?></td>
                                     <td><?= number_format($val->monto,'2') ?></td>
                                     <td>
-                                        <?php if($val->estado == '1'): ?>
+                                        <?php if($val->estado == '1'){ ?>
                                             <button type="button" class='btn btn-warning btn-xs'>
                                                 Pendiente
                                             </button>
-                                        <?php else: ?>
+                                        <?php }else if($val->estado == '2'){ ?>
                                             <button type="button" class='btn btn-danger btn-xs'>
                                                 Cancelado
                                             </button>
-                                        <?php endif; ?>
+                                        <?php } ?>
                                     </td>
                                     
                                     <td class='text-center'>
