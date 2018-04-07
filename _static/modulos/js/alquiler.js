@@ -86,6 +86,7 @@ function save(){
 	}
 	if(!fallas){
 		
+		$("#btn_save_alquiler").attr("disabled",true);
 		$.ajax({
 			url: url+controlador+'/ajax_save',
 			type: 'POST',
@@ -93,6 +94,7 @@ function save(){
 			data: $("#form_al").serialize(),
 			success: function(data){
 				alerta("Guardado Exitoso",'Se guardo correctamente','success');
+				$("#btn_save_alquiler").removeAttr("disabled");
 				init();
 			},
 			error: function(jqXHR, textStatus, errorThrown){

@@ -145,7 +145,7 @@
                          }
                                    
                       endif;  ?>
-<?php if($pen!=0):?>
+
 <tr>
   <td><?= $h+1 ?> </td>
   <td><?= $alquiler[$h]->nrohabitacion ?></td>
@@ -158,7 +158,7 @@
  
   </td>
 </tr>
- <?php endif?>
+
 
 
 

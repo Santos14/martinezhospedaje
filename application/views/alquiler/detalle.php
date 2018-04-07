@@ -60,7 +60,12 @@ $dias = abs($dias); $dias = floor($dias);
 
 
                     </div>
+
                     <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+
+
+
+
                     <?php 
                           $rango=false;
   
@@ -288,6 +293,10 @@ $dias = abs($dias); $dias = floor($dias);
                       </div>
                       
                     </div>
+
+
+
+
                     <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab1">
                       <table class="table" id="compras">
                         <thead>

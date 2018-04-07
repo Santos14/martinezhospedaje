@@ -1,5 +1,3 @@
-
-
 <div class="row">
    <?php foreach ($habitaciones as $habitacion):?>
     <?php 

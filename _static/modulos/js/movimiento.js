@@ -59,13 +59,21 @@ function habitacion(id,total,acc){
 		}else{
 			if($("#montoamortizacion").val()!=""){
 				if(!isNaN($("#montoamortizacion").val())){
-					if(parseFloat($("#montoamortizacion").val())>0 && parseFloat($("#montoamortizacion").val())<=parseFloat($("#m"+$("#h_idalquiler").val()).val())){
-						op = true;
-						$("#h_monto").val($("#montoamortizacion").val());	
-						$("#modalAmortizacion").modal("hide");
+					if(parseFloat($("#m"+$("#h_idalquiler").val()).val()) != 0){
+						if(parseFloat($("#montoamortizacion").val())>0 && parseFloat($("#montoamortizacion").val())<=parseFloat($("#m"+$("#h_idalquiler").val()).val())){
+							op = true;
+							$("#h_monto").val($("#montoamortizacion").val());	
+							$("#modalAmortizacion").modal("hide");
+						}else{
+							console.log("fuera de Rango");
+							alerta("Fuera de Rango","El monto tiene que ser mayor a 0 y menor a "+$("#m"+$("#h_idalquiler").val()).val(),"error");
+						}
 					}else{
-						console.log("fuera de Rango");
-						alerta("Fuera de Rango","El monto tiene que ser mayor a 0 y menor a "+$("#m"+$("#h_idalquiler").val()).val(),"error");
+						if($("#montoamortizacion").val()>0){
+							op = true;
+							$("#h_monto").val($("#montoamortizacion").val());	
+							$("#modalAmortizacion").modal("hide");
+						}
 					}
 				}else{
 					console.log("No es Numero");
