@@ -131,10 +131,10 @@
                 </a>
                 <ul class="nav child_menu" >
                     <li style='padding-left: 14%;'>
-                        <a style="width: 90%;" href="<?php echo base_url('reporte1');?>">Reporte 1</a>
+                        <a style="width: 90%;" href="<?php echo base_url('reporte/alojamiento');?>">Alojamiento</a>
                     </li>           
                      <li style='padding-left: 14%;'>
-                        <a style="width: 90%;" href="<?php echo base_url('reporte2');?>">Reporte 2</a>
+                        <a style="width: 90%;" href="<?php echo base_url('reporte/estadodia');?>">Estado Dia</a>
                     </li> 
                     <li style='padding-left: 14%;'>
                         <a style="width: 90%;" href="<?php echo base_url('reporte2');?>">Reporte 3</a>
