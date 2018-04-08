@@ -158,3 +158,45 @@
         </form>
     </div>
 </div>
+
+
+<!--FORMULARIO ESTADO-->
+<div id="modalEstado" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xs">
+        <form id="form_cambio_estado" class="form-horizontal form-label-left form-material">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="title_form_serv">Cambiar Estado</h4>
+            </div>
+            <div class="modal-body">
+               
+            <input type="hidden" name="idhabitacion" id="idhabitacion">
+            <div class="form-group">
+                <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="c_estado">
+                    Estado
+                </label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                      <select class='form-control form-control-line' name="c_estado">
+                            <option value="">Seleccione...</option>
+                            <option value="1">Libre</option>
+                            <option value="2">Ocupado</option>
+                            <option value="3">Reservado</option>
+                            <option value="4">Inactivo</option>
+                        </select>
+                </div>
+            </div>
+            
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-success" onclick="cambiar_estado()" id='btn_cambiar_estado'>
+                    Aceptar
+                </button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>

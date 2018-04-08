@@ -29,7 +29,8 @@
                                             <?php if($v_interno[$j]->estadoalquiler=="1"): ?>
                                
                                     <td>Cuarto N° <?= $v_interno[$j]->nrohabitacion ?></td>
-                                    
+                                            <?php else: ?>
+                                                <td>Salio de Cuarto</td>
                                             <?php endif; ?>
                                         <?php endif; ?>
                                     <?php endfor; ?>

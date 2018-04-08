@@ -49,6 +49,14 @@
                                             $classd= "btn btn-warning btn-xs";
                                             $d ="RESERVADO";
                                             break;
+                                        case '4':
+                                            $classd= "btn btn-info btn-xs";
+                                            $d ="INACTIVO";
+                                            break;
+                                        case '5':
+                                            $classd= "btn btn-primary";
+                                            $d ="EVENTUAL";
+                                            break;
                                     }
 
                                     ?>
@@ -94,6 +102,9 @@
                                     
                             
                                     <td class='text-center'>
+                                        <button onclick="form_estado('<?= $val->idhabitacion ?>')" type="button" class='btn btn-info btn-sm'>
+                                            Estado
+                                        </button>
                                         <button onclick="form_edit('<?= $val->idhabitacion ?>')" type="button" class='btn btn-warning btn-sm'>
                                             <i class="fa fa-edit"></i>
                                         </button>

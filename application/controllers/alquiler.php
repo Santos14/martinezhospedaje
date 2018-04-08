@@ -31,10 +31,10 @@ class Alquiler extends CI_Controller {
 		$estadocuarto = $this->input->post("estado_cuarto");
 		//2:SUCIO ; 3: CAMBIO 
 		$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 1))->result();
-		$cambsa = "+".$politica[0]->numero." day";
+		$cambsa = "+".number_format($politica[0]->numero,'0')." day";
 	
 		$cambiosabana = array(
-			"cambiosabana" => date ('Y-m-d',strtotime('+2 day',strtotime(date("Y-m-d")))),
+			"cambiosabana" => date ('Y-m-d',strtotime($cambsa,strtotime(date("Y-m-d")))),
 			 "estcambiosabana" => '0'
 		);
 		$limpiar = array(
@@ -152,6 +152,12 @@ class Alquiler extends CI_Controller {
 		$id = $this->input->post("id");
 		$idreserva = $this->input->post("idreserva");
 
+		if($this->input->post('idtipoalquiler') == '2'){
+			$disp = '5';
+		}else{
+			$disp = '2';
+		}
+
 		$data = array(
 			"habitacion_idhabitacion" => $this->input->post("idhabitacion"),
 			"personal_idpersonal" => $this->session->userdata('idpersonal'),
@@ -170,10 +176,10 @@ class Alquiler extends CI_Controller {
 		if ($id == ""){
 			$al = $this->allmodel->create("alquiler", $data);
 			$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 1))->result();
-			$cambsa = "+".$politica[0]->numero." day";
+			$cambsa = "+".number_format($politica[0]->numero,'0')." day";
 			$estado = array(
 				"disponibilidad" => '2',
-				"cambiosabana" => date ('Y-m-d',strtotime ('+2 day',strtotime(date("Y-m-d")))),
+				"cambiosabana" => date ('Y-m-d',strtotime ($cambsa,strtotime(date("Y-m-d")))),
 				"estcambiosabana" => '0'
 			);
 			$uph = $this->allmodel->update("habitacion", $estado, array('idhabitacion'=> $this->input->post("idhabitacion")));

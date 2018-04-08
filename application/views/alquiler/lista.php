@@ -36,6 +36,14 @@
                 $classd= "btn btn-warning";
                 $d ="RESERVADO";
                 break;
+            case '4':
+                $classd= "btn btn-info";
+                $d ="INACTIVO";
+                break;
+             case '5':
+                $classd= "btn btn-primary";
+                $d ="EVENTUAL";
+                break;
         }
         //ARMAR ESTADO
 
@@ -73,7 +81,7 @@
         
         <div class="white-box" id='box'>
             <div class='text-left'>
-                <?php if($habitacion->disponibilidad=="2"){?>
+                <?php if($habitacion->disponibilidad=="2" || $habitacion->disponibilidad=="5"){?>
                 <a onclick="salir('<?= $habitacion->idalquiler ?>')" class="btn btn-default btn-xs" id="part_izquierda">
                     Salir
                 </a>
@@ -95,7 +103,11 @@
                     Alquilar
                 </a>
 
-                <?php }?>
+                <?php }else if($habitacion->disponibilidad=="4"){?>
+                <a onclick="" class="btn btn-info btn-xs" id="part_izquierda">
+                    Inactivo
+                </a>
+                <?php } ?>
 
             </div>
             

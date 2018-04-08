@@ -25,6 +25,38 @@ function init_elemento(){
 	});
 }
 
+function form_estado(id){
+	$("#idhabitacion").val(id);
+	$("#modalEstado").modal("show");
+}
+
+function cambiar_estado(){
+	labels = ['idhabitacion','c_estado'];
+	fallas = false;
+	for (var i = 0; i < labels.length; i++) {
+		if($("[name='"+labels[i]+"']").val() == ""){
+			fallas = true;
+			alerta("Campos en Blanco","Se necesita llenar todos los Campos",'error');
+			break;
+		}
+	}
+	if(!fallas){
+		$.ajax({
+			url: url+'habitacion/cambiar_estado',
+			type: 'POST',
+			dataType: 'JSON',
+			data: $("#form_cambio_estado").serialize(),
+			success: function(data){
+				$('#modalEstado').modal('hide');
+				alerta("Guardado Exitoso",'Se guardo correctamente','success');
+				init();
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				alerta("Error de Guardado",errorThrown,'error');
+			}
+		});
+	}
+}
 
 function form_add(){
 	save_method = 'add';

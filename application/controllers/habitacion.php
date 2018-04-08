@@ -30,6 +30,17 @@ class Habitacion extends CI_Controller {
 		$this->load->view("habitacion/elemento",$data);	
 	}
 
+	function cambiar_estado(){
+		$idhabitacion = $this->input->post("idhabitacion");
+		$estado = array(
+			"disponibilidad" =>  $this->input->post("c_estado")
+		);
+
+		$s = $this->allmodel->update("habitacion", $estado, array('idhabitacion'=> $idhabitacion));
+		echo json_encode($s);
+	}
+
+
 	public function ajax_save(){
 		$id = $this->input->post("id");
 		/*
