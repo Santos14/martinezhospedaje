@@ -19,7 +19,7 @@
                         Precio(S/.)
                     </label>
                     <div class="col-md-2 col-sm-6 col-xs-12">
-                        <input id="precioxdia" name="precioxdia" class="form-control" value="<?= $habitacion[0]->precio ?>">
+                        <input id="precioxdia" name="precioxdia" id="precioxdia" class="form-control" value="<?= $habitacion[0]->precio ?>">
                     </div>
                 </div>
                 <div class="form-group">
@@ -53,7 +53,7 @@
                     </label>
                     <div class="col-md-8 col-sm-6 col-xs-12">
                    
-                        <select class='form-control form-control-line' name="idtipoalquiler">
+                        <select class='form-control form-control-line' id="idtipoalquiler" name="idtipoalquiler" onchange="cambiartipoalquiler()">
                             <option value="">Seleccione...</option>
                         <?php foreach ($tipo_alquileres as $tipo):?>
                             <option value="<?= $tipo->idtipoalquiler ?>"><?= $tipo->descripcion ?></option>
@@ -126,16 +126,31 @@
     
                 <div class="form-group">
                     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="fecha">
-                        Fecha
+                        Fecha Ingreso
                     </label>
                     <div class="col-md-3 col-sm-6 col-xs-12">
-                        <input type="date" max="<?= date("Y-m-d") ?>" name="fecha" id="fecha" class="form-control" value="<?= date("Y-m-d") ?>">
+                        <input type="date" onblur="cambiofecha()" max="<?= date("Y-m-d") ?>" name="fecha" id="fecha" class="form-control" value="<?= date("Y-m-d") ?>">
                     </div>
                     <label  class="control-label col-md-2 col-sm-3 col-xs-12" for="hora">
-                        Hora
+                        Hora Ingreso
                     </label>
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <input type="time" id="hora" name="hora" class="form-control" value='<?= date("H:i:s") ?>'>
+                    </div>
+                </div>
+
+                 <div class="form-group" id='panelmensual'>
+                    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="fecha_fin">
+                        Fecha Termino
+                    </label>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <input readonly type="date" max="<?= date("Y-m-d") ?>" name="fecha_fin" id="fecha_fin" class="form-control" value="<?= date ('Y-m-d',strtotime('+30 days',strtotime(date("Y-m-d")))) ?>">
+                    </div>
+                    <label  class="control-label col-md-2 col-sm-3 col-xs-12" for="hora_fin">
+                        Hora Termino
+                    </label>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <input readonly type="time" id="hora_fin" name="hora_fin" class="form-control" value='<?= $horatermino.":00:00" ?>'>
                     </div>
                 </div>
          

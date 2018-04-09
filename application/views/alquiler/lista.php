@@ -44,6 +44,10 @@
                 $classd= "btn btn-primary";
                 $d ="EVENTUAL";
                 break;
+            case '6':
+                $classd= "btn btn-danger";
+                $d ="MENSUAL";
+                break;
         }
         //ARMAR ESTADO
 
@@ -81,30 +85,30 @@
         
         <div class="white-box" id='box'>
             <div class='text-left'>
-                <?php if($habitacion->disponibilidad=="2" || $habitacion->disponibilidad=="5"){?>
+                <?php if($habitacion->disponibilidad=="2" || $habitacion->disponibilidad=="5" || $habitacion->disponibilidad=="6"){?>
                 <a onclick="salir('<?= $habitacion->idalquiler ?>')" class="btn btn-default btn-xs" id="part_izquierda">
                     Salir
                 </a>
-                <a onclick="detalle('<?= $habitacion->idalquiler ?>')" class="btn btn-danger btn-xs" id="part_derecha">
+                <a onclick="detalle('<?= $habitacion->idalquiler ?>')" class="<?= $classd ?> btn-xs" id="part_derecha">
                     Detalle
                 </a>
                 <?php }else if($habitacion->disponibilidad=="1"){?>
                 <a onclick="reservar('<?= $habitacion->idhabitacion ?>')" class="btn btn-default btn-xs" id="part_izquierda">
                     Reservar
                 </a>
-                <a onclick="alquilar('<?= $habitacion->idhabitacion ?>')" class="btn btn-success btn-xs" id="part_derecha">
+                <a onclick="alquilar('<?= $habitacion->idhabitacion ?>')" class="<?= $classd ?> btn-xs" id="part_derecha">
                     Alquilar
                 </a>
                 <?php }else if($habitacion->disponibilidad=="3"){?>
                 <a onclick="cancelar('<?= $habitacion->idhabitacion ?>')" class="btn btn-default btn-xs" id="part_izquierda">
                     Cancelar
                 </a>
-                <a onclick="alquilar_reservacion('<?= $habitacion->idhabitacion ?>')" class="btn btn-warning btn-xs" id="part_derecha">
+                <a onclick="alquilar_reservacion('<?= $habitacion->idhabitacion ?>')" class="<?= $classd ?> btn-xs" id="part_derecha">
                     Alquilar
                 </a>
 
                 <?php }else if($habitacion->disponibilidad=="4"){?>
-                <a onclick="" class="btn btn-info btn-xs" id="part_izquierda">
+                <a onclick="" class="<?= $classd ?> btn-xs" id="part_izquierda">
                     Inactivo
                 </a>
                 <?php } ?>

@@ -11,6 +11,20 @@ class Alquiler extends CI_Controller {
 		layoutSystem("alquiler/index");
 	}
 
+	public function monto_mensual($montoxdia){
+		$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 4))->result();
+		$pDescuento = number_format($politica[0]->numero,'0')/100;
+		$subtotal = $montoxdia * 30;
+		$descuento = $subtotal*$pDescuento;
+		$total = $subtotal - $descuento;
+		echo json_encode($total); 
+	}
+
+	public function fecha_mensual($fecha){
+		$nuevo = date ('Y-m-d',strtotime('+30 days',strtotime(date($fecha))));
+		echo json_encode($nuevo);
+	}
+
 	public function tableList(){
 		$sql_habitacion = "SELECT h.*,th.descripcion tipohabitacion,
 		(SELECT idalquiler FROM alquiler a WHERE h.idhabitacion = a.habitacion_idhabitacion and a.estado='1') idalquiler  
@@ -52,6 +66,7 @@ class Alquiler extends CI_Controller {
 		echo json_encode($uph);
 	}
 	public function form_alquiler($id){
+		$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
 		$sql_tipoalquiler = "SELECT * FROM tipoalquiler WHERE estado <> '0' ORDER BY idtipoalquiler asc";
 		$sql_tipoprocencia = "SELECT * FROM procedencia WHERE estado <> '0' and tipoprocedencia='N' ORDER BY lugar asc";
 		$sql_motivoviaje = "SELECT * FROM motivoviaje WHERE estado = '1'";
@@ -59,6 +74,7 @@ class Alquiler extends CI_Controller {
 		$data["tipo_alquileres"] = $this->allmodel->querySql($sql_tipoalquiler)->result();
 		$data["tipo_procedencia"] = $this->allmodel->querySql($sql_tipoprocencia)->result();
 		$data["motivo_viaje"] = $this->allmodel->querySql($sql_motivoviaje)->result();
+		$data["horatermino"] = number_format($politica[0]->numero,'0');
 		$this->load->view("alquiler/nuevo",$data);	
 	}
 
@@ -152,10 +168,18 @@ class Alquiler extends CI_Controller {
 		$id = $this->input->post("id");
 		$idreserva = $this->input->post("idreserva");
 
-		if($this->input->post('idtipoalquiler') == '2'){
+		if($this->input->post('idtipoalquiler') == '2'){ //EVENTUAL
 			$disp = '5';
+			$fecha_salida = "1900-01-01";
+			$nrodias = 0;
+		}else if($this->input->post('idtipoalquiler') == '3'){ // MENSUAL
+			$disp = '6';
+			$fecha_salida = $this->input->post('fecha_fin')." ".$this->input->post('hora_fin');
+			$nrodias = 30;
 		}else{
 			$disp = '2';
+			$fecha_salida = "1900-01-01";
+			$nrodias = 0;
 		}
 
 		$data = array(
@@ -166,6 +190,8 @@ class Alquiler extends CI_Controller {
 			"cliente_idcliente" => $this->input->post('idcliente'),
 			"motivoviaje_idmotivoviaje" => $this->input->post('idmotivoviaje'),
 			"fecha_ingreso" => $this->input->post('fecha')." ".$this->input->post('hora'),
+			"fecha_salida" => $fecha_salida,
+			"nrodias" => $nrodias,
 			"kit" => $this->input->post('kit'),
 			"precioxdia" => $this->input->post('precioxdia'),
 			"estado" => '1',
@@ -178,7 +204,7 @@ class Alquiler extends CI_Controller {
 			$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 1))->result();
 			$cambsa = "+".number_format($politica[0]->numero,'0')." day";
 			$estado = array(
-				"disponibilidad" => '2',
+				"disponibilidad" => $disp,
 				"cambiosabana" => date ('Y-m-d',strtotime ($cambsa,strtotime(date("Y-m-d")))),
 				"estcambiosabana" => '0'
 			);

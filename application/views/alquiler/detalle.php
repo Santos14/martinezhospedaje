@@ -40,12 +40,14 @@ $dias = abs($dias); $dias = floor($dias);
                     <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
 
                       <p><strong>Cliente:</strong> <?= $cliente[0]->apellidos.", ".$cliente[0]->nombres ?></p>
+                      <p><strong>Telefono:</strong> <?= $cliente[0]->telefono ?></p>
                       <p><strong>Procedencia:</strong> <?= $procedencia[0]->lugar ?></p>
                       <p><strong>Localidad:</strong> <?= $alquiler[0]->localidad ?></p>
                       <p><strong>Tipo Alquiler:</strong> <?= $tipoalquiler[0]->descripcion ?></p>
                       <p><strong>Precio x Dia:</strong> S/. <?= $alquiler[0]->precioxdia ?></p>
                       <p><strong>Fecha Ingreso:</strong> <?= $alquiler[0]->fecha_ingreso ?></p>
                       <p><strong>Motivo Viaje:</strong> <?= $motivoviaje[0]->descripcion ?></p>
+                      <p><strong>Cambio Sabana:</strong> <?= $habitacion[0]->cambiosabana ?></p>
                       <p><strong>KIT:</strong> <?= ($alquiler[0]->kit=='1')? "SI":"NO" ?></p>
                       
                       
@@ -63,9 +65,10 @@ $dias = abs($dias); $dias = floor($dias);
 
                     <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
 
+                      <!-- INICIO ESTANCIA-->
 
-
-
+                    <?php $tipoalquiler = $alquiler[0]->tipoalquiler_idtipoalquiler; ?>
+                    <?php if($tipoalquiler != '3'){ ?>
                     <?php 
                           $rango=false;
   
@@ -291,11 +294,31 @@ $dias = abs($dias); $dias = floor($dias);
                       <div class="text-center">
                         DEUDA(S/.) <input style="color: #FFF;width: 100px;text-align:center;font-weight:bold;font-size: 16px;background: #41b3f9; border:1px solid silver;border-radius: 10px;padding: 5px;" name="deudaxhabitacion" id="deudaxhabitacion" readonly="" value="<?= number_format($pen,'2') ?>">  
                       </div>
+
+                      <?php }else if($tipoalquiler == '3'){ 
+
+                          $fechasalida = new DateTime($alquiler[0]->fecha_salida);
+                          $diff = $ahora->diff($fechasalida);
+
+                          $dias = (strtotime(date_format($fechasalida,"Y-m-d"))-strtotime(date("Y-m-d")))/86400;
+                          $dias = abs($dias); $dias = floor($dias); 
+
+                      ?>
+
+                        <input type="hidden" name="deudaxhabitacion" id="deudaxhabitacion" readonly="" value="0">  
+                        <div class="text-center">
+                         <h3> DIAS RESTANTES</h3>
+                        </div>
+                        <div class="text-center">
+                        <input style="color: #FFF;width: 100px;text-align:center;font-weight:bold;font-size: 16px;background: #41b3f9; border:1px solid silver;border-radius: 10px;padding: 5px;" name="diasrestantes" id="diasrestantes" readonly value="<?= $dias ?>">  
+                        </div>
+                      <?php } ?>
+
                       
                     </div>
 
 
-
+                    <!-- FIN ESTANCIA-->
 
                     <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab1">
                       <table class="table" id="compras">

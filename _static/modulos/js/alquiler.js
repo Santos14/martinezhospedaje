@@ -84,6 +84,8 @@ function save(){
 			break;
 		}
 	}
+
+	
 	if(!fallas){
 		
 		$("#btn_save_alquiler").attr("disabled",true);
@@ -241,8 +243,29 @@ function alquilar(id){
 	$.get(url+controlador+"/form_alquiler/"+id, function(data) {
 		$("#tableList").empty().html(data);
 		$("#panelmorosidad").hide();
+		$("#panelmensual").hide();
 		$("#estcli").hide();
 	});
+}
+
+function cambiartipoalquiler(){
+	idtipoalquiler = $("#idtipoalquiler").val();
+	console.log(idtipoalquiler);
+	if(idtipoalquiler == '3'){
+		$.get(url+controlador+"/monto_mensual/"+$("#precioxdia").val(), function(data) {
+			$("#pagoinicial").val(data);
+			$("#panelmensual").show();
+		},"json");
+		
+	}else{
+		$("#panelmensual").hide();
+	}
+}
+
+function cambiofecha(){
+	$.get(url+controlador+"/fecha_mensual/"+$("#fecha").val(), function(data) {
+		$("#fecha_fin").val(data);
+	},"json");
 }
 
 function reservar(id){
