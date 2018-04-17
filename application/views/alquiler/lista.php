@@ -52,7 +52,7 @@
         //ARMAR ESTADO
 
         $e = $habitacion->estado;
-        if( $habitacion->disponibilidad == '2'){
+        if( $habitacion->disponibilidad == '2' || $habitacion->disponibilidad == '6' || $habitacion->disponibilidad == '5'){
             if($habitacion->cambiosabana!='1900-01-01'){
                  if($habitacion->cambiosabana <= date("Y-m-d") && $habitacion->estcambiosabana=='0'){
                     $e = '3';

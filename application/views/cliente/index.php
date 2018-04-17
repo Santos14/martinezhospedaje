@@ -66,7 +66,7 @@
                 <button type="button" class="btn btn-danger" data-dismiss="modal">
                     Cancelar
                 </button>
-                <button type="button" class="btn btn-success" onclick="save()" id='btn_save'>
+                <button type="button" class="btn btn-success" onclick="save()" id='btn_save_cliente_cli'>
                     Aceptar
                 </button>
             </div>

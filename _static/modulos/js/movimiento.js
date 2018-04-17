@@ -35,7 +35,6 @@ function cambioTipo(){
 function cambioConcepto(){
 	$.get(url+controlador+"/listaconcepto/"+$("#idconcepto").val(), function(data) {
 		$("#listaconcepto").empty().html(data);
-		//$("#newpanel").show();
 	});	
 }
 
@@ -88,6 +87,9 @@ function habitacion(id,total,acc){
 	}
 
 	if(op){
+
+		$("#btn_todo_movimiento").attr("disabled",true);
+		$("#btn_amortiza_movimiento").attr("disabled",true);
 		$.ajax({
 			url: url+controlador+'/ajax_pagohabitacion',
 			type: 'POST',
@@ -95,6 +97,8 @@ function habitacion(id,total,acc){
 			data: $("#form_movimiento").serialize(),
 			success: function(data){
 				alerta("Guardado Exitoso",'Se guardo correctamente','success');
+				$("#btn_todo_movimiento").removeAttr("disabled");
+				$("#btn_amortiza_movimiento").removeAttr("disabled");
 				init();
 			},
 			error: function(jqXHR, textStatus, errorThrown){
@@ -108,6 +112,7 @@ function venta(id,total,accion){
 	$("#v_idventa").val(id);
 	$("#v_monto").val(total);
 	
+	$("#btn_venta_movimiento").attr("disabled",true);
 	$.ajax({
 		url: url+controlador+'/ajax_pagoventa',
 		type: 'POST',
@@ -115,6 +120,7 @@ function venta(id,total,accion){
 		data: $("#form_movimiento").serialize(),
 		success: function(data){
 			alerta("Guardado Exitoso",'Se guardo correctamente','success');
+			$("#btn_venta_movimiento").removeAttr("disabled");
 			init();
 		},
 		error: function(jqXHR, textStatus, errorThrown){
@@ -126,7 +132,7 @@ function venta(id,total,accion){
 function imprevisto(id,total){
 	$("#i_idimprevisto").val(id);
 	$("#i_monto").val(total);
-	
+	$("#btn_imprevisto_movimiento").attr("disabled",true);
 	$.ajax({
 		url: url+controlador+'/ajax_pagoimprevisto',
 		type: 'POST',
@@ -134,6 +140,7 @@ function imprevisto(id,total){
 		data: $("#form_movimiento").serialize(),
 		success: function(data){
 			alerta("Guardado Exitoso",'Se guardo correctamente','success');
+			$("#btn_imprevisto_movimiento").removeAttr("disabled");
 			init();
 		},
 		error: function(jqXHR, textStatus, errorThrown){
@@ -143,7 +150,7 @@ function imprevisto(id,total){
 }
 
 function compras(){
-	
+	$("#btn_compras_movimiento").attr("disabled", true);
 	$.ajax({
 		url: url+controlador+'/ajax_compras',
 		type: 'POST',
@@ -151,6 +158,7 @@ function compras(){
 		data: $("#form_movimiento").serialize(),
 		success: function(data){
 			alerta("Guardado Exitoso",'Se guardo correctamente','success');
+			$("#btn_compras_movimiento").removeAttr("disabled");
 			init();
 		},
 		error: function(jqXHR, textStatus, errorThrown){
@@ -171,6 +179,7 @@ function save(){
 		}
 	}
 	if(!fallas){
+		$("#btn_movimiento_general").attr("disabled",true);
 		$.ajax({
 			url: url+controlador+'/ajax_save',
 			type: 'POST',
@@ -178,6 +187,7 @@ function save(){
 			data: $("#form_movimiento").serialize(),
 			success: function(data){
 				alerta("Guardado Exitoso",'Se guardo correctamente','success');
+				$("#btn_movimiento_general").removeAttr("disabled");
 				init();
 			},
 			error: function(jqXHR, textStatus, errorThrown){

@@ -53,7 +53,7 @@
                         ?></td>
 
                         <td class='text-center'>
-                                <button onclick="venta('<?=  $ventas[$i]->idventa ?>','<?= $ventas[$i]->total ?>','1')" type="button" class='btn btn-success btn-xs'>
+                                <button id="btn_venta_movimiento" onclick="venta('<?=  $ventas[$i]->idventa ?>','<?= $ventas[$i]->total ?>','1')" type="button" class='btn btn-success btn-xs'>
                                     Pagar
                                 </button>
                             </td>

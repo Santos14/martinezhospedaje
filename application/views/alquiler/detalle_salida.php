@@ -310,7 +310,7 @@ $dias = abs($dias); $dias = floor($dias);
                 <button type="button" class="btn btn-default" data-dismiss="modal">
                     Cerrar
                 </button>
-                <button type="button" class="btn btn-success" onclick="pagartodo('1')">
+                <button type="button" class="btn btn-success" id="btn_desocuparhabitacion" onclick="pagartodo('1')">
                     Desocupar
                 </button>
             </div>

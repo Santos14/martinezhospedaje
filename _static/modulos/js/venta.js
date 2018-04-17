@@ -120,6 +120,8 @@ function save(){
 		}	
 	}
 	if(enviar){
+
+		$("#btn_save_venta").attr("disabled",true);
 		$.ajax({
 			url: url+controlador+'/ajax_save',
 			type: 'POST',
@@ -127,6 +129,7 @@ function save(){
 			data: $("#form").serialize(),
 			success: function(data){
 				alerta("Guardado Exitoso",'Se guardo correctamente','success');
+				$("#btn_save_venta").removeAttr("disabled");
 				init();		
 			},
 			error: function(jqXHR, textStatus, errorThrown){

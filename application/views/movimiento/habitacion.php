@@ -18,7 +18,7 @@
         <div class="white-box">
             <h3 class="box-title">Cuartos Pendientes de Pago</h3>
             <div class="table-responsive">
-                 <table class="table" id='datatable'>
+                 <table class="table" id='pendientesdepago'>
                     <thead>
                         <tr>
                             <th>#</th>
@@ -153,8 +153,8 @@
   <td class="text-center"><input type="text" id="m<?= $alquiler[$h]->idalquiler ?>" name="m<?= $alquiler[$h]->idalquiler ?>" value="<?= number_format($pen,'2') ?>" style="background: none;border: none;text-align: center;"></td>
   <td class="text-center">
     
-    <button type="button" onclick="habitacion('<?= $alquiler[$h]->idalquiler ?>','<?= $pen ?>','1')" class="btn btn-success btn-xs">Pagar Todo</button>
-    <button type="button" onclick="habitacion('<?= $alquiler[$h]->idalquiler ?>','','2')" class="btn btn-warning btn-xs">Amortizar</button>
+    <button type="button" id="btn_todo_movimiento" onclick="habitacion('<?= $alquiler[$h]->idalquiler ?>','<?= $pen ?>','1')" class="btn btn-success btn-xs">Pagar Todo</button>
+    <button type="button" id="btn_amortiza_movimiento" onclick="habitacion('<?= $alquiler[$h]->idalquiler ?>','','2')" class="btn btn-warning btn-xs">Amortizar</button>
  
   </td>
 </tr>

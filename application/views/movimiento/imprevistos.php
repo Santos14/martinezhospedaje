@@ -32,7 +32,7 @@
                             <td><?= ($val->estado == '1')? "<button class='btn btn-warning btn-xs'>Pendiente</button>":"" ?></td>
                             
                             <td class='text-center'>
-                                 <button onclick="imprevisto('<?= $val->idimprevisto ?>','<?= $val->monto ?>')" type="button" class='btn btn-success btn-xs'>
+                                 <button id="btn_imprevisto_movimiento" onclick="imprevisto('<?= $val->idimprevisto ?>','<?= $val->monto ?>')" type="button" class='btn btn-success btn-xs'>
                                      Pagar
                                  </button>
                             </td>

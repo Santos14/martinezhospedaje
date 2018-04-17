@@ -93,7 +93,7 @@
                 <button type="button" class="btn btn-danger" onclick="window.location='<?= base_url('venta')?>'">
                     Cancelar
                 </button>
-                <button type="button" class="btn btn-success" onclick="save()">
+                <button type="button" class="btn btn-success" id="btn_save_venta" onclick="save()">
                     Guardar
                 </button>
             </div>

@@ -304,10 +304,7 @@ function save_reserva(){
 			}
 		});
 	}
-
-
 }
-
 
 function detalle(id){
 	$.get(url+controlador+"/form_detalle/"+id, function(data) {
@@ -315,7 +312,7 @@ function detalle(id){
 		$('#estancia').dataTable();
 		$('#compras').dataTable();
 		$('#imprevistos').dataTable();
-		deudageneral = parseInt($("#deudaxhabitacion").val())+parseInt($("#deudacompras").val())+parseInt($("#deudaimprevisto").val());
+		deudageneral = parseFloat($("#deudaxhabitacion").val())+parseFloat($("#deudacompras").val())+parseFloat($("#deudaimprevisto").val());
 		$("#deutotal").val(deudageneral.toFixed(2));
 		$("#modalDetalle").modal("show");
 
@@ -326,10 +323,9 @@ function detalle(id){
 function salir(id){
 	$.get(url+controlador+"/form_salir/"+id, function(data) {
 		$("#salirHAB").empty().html(data);
-		deudageneral = parseInt($("#deudaxhabitacion").val())+parseInt($("#deudacompras").val())+parseInt($("#deudaimprevisto").val());
+		deudageneral = parseFloat($("#deudaxhabitacion").val())+parseFloat($("#deudacompras").val())+parseFloat($("#deudaimprevisto").val());
 		$("#deutotal").val(deudageneral.toFixed(2));
 		$("#modalSalir").modal("show");
-
 	});
 }
 
@@ -383,7 +379,7 @@ function alquilar_reservacion(id){
 function pagartodo(val){
 	
 	$("#est").val(val);
-
+	$("#btn_desocuparhabitacion").attr("disabled",true);
 	$.ajax({
 
 		url: url+controlador+'/pagartodo',
@@ -393,6 +389,7 @@ function pagartodo(val){
 		success: function(data){
 			alerta("Habitacion Desocupada",'Se desocupo la habitacion, proceda a limpiar','success');
 			$("#modalSalir").modal("hide");
+			$("#btn_desocuparhabitacion").removeAttr("disabled");
 			init();
 		},
 		error: function(jqXHR, textStatus, errorThrown){

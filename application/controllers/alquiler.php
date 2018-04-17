@@ -112,14 +112,10 @@ class Alquiler extends CI_Controller {
 	}
 
 	public function listapasajeros(){
-
-		$sql_alquiler = "SELECT hb.idhabitacion,hb.nrohabitacion,al.fecha_ingreso,cli.nrodocumento,cli.nombres,cli.apellidos
-			FROM habitacion hb INNER JOIN alquiler al ON (hb.idhabitacion = al.habitacion_idhabitacion)
-			INNER JOIN cliente cli ON (cli.idcliente = al.cliente_idcliente)
-			WHERE al.estado = '1'";
+	
 		$sql_habitacion = "SELECT * FROM habitacion WHERE estado <>'0' ORDER BY idhabitacion asc";
 
-		$data["alquiler"] = $this->allmodel->querySql($sql_alquiler)->result();
+		$data["data_alquiler"] = pasajerosactuales();
 		$data["habitaciones"] = $this->allmodel->querySql($sql_habitacion)->result();
 
 		$this->load->view("alquiler/listapasajeros",$data);		

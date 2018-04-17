@@ -8,11 +8,15 @@
                      
                      <thead>
                          <tr>
-                            <th class="text-center">Item</th>
+                            <th class="text-center">#</th>
                              <th class="text-center">Habitacion</th>
+                             <th class="text-center">Precio(S/.)</th>
                              <th class="text-center">Ingreso</th>
                              <th class="text-center">DNI</th>
                              <th class="text-center">Apellidos y Nombres</th>
+                             <th class="text-center">Deuda</th>
+                        
+                             
                          </tr>
                      </thead>
                      <tbody>
@@ -20,30 +24,36 @@
                         <?php foreach ($habitaciones as $hb): ?>
                          <tr>
                             <td class="text-center"><?= $cont++ ?></td>
-                             <td class="text-center"><?= $hb->nrohabitacion ?></td>
-                             <?php 
-                             $op = false;
-                             foreach ($alquiler as $al){
-                                if($hb->idhabitacion == $al->idhabitacion){ ?>
-                                    <td class="text-center"><?= date_format(new Datetime($al->fecha_ingreso),'Y-m-d') ?></td>
-                                    <td class="text-center"><?= $al->nrodocumento ?></td>
-                                    <td><?= $al->apellidos.", ".$al->nombres ?></td>
-                                    
-                             <?php  $op=true;
-                                    break; 
+                            <td class="text-center"><?= $hb->nrohabitacion ?></td>
+                            <?php 
+                            $est = false;
+                            for ($i=0; $i < count($data_alquiler["alquiler"]) ; $i++) { 
+                                if($hb->idhabitacion == $data_alquiler["alquiler"][$i]->habitacion_idhabitacion){ 
+                                        $est = true;
+                            ?>
+
+                                     <td class="text-center"><?= $data_alquiler["alquiler"][$i]->precioxdia ?></td>
+                                     <td class="text-center"><?= $data_alquiler["alquiler"][$i]->fecha_ingreso ?></td>
+                                     <td class="text-center"><?= $data_alquiler["alquiler"][$i]->nrodocumento ?></td>
+                                     <td><?= $data_alquiler["alquiler"][$i]->nombres." ".$data_alquiler["alquiler"][$i]->apellidos ?></td>
+                                     <td class="text-center"><?= number_format(($data_alquiler["deuda_habitacion"][$i]+$data_alquiler["deuda_ventas"][$i]+$data_alquiler["deuda_imprevistos"][$i]),'2') ?></td>
+
+                            <?php  
+                                    break;  
                                 }
+                            } 
+                            if(!$est){ ?>
 
-                             }
-                             if(!$op){ ?>
-                             <td></td>
-                            <td></td>
-                            <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
 
-                             <?php }
+                            <?php
 
-                             ?>
-                             
-                           
+                            }
+                            ?>
                          </tr>
 
                         <?php endforeach ?>

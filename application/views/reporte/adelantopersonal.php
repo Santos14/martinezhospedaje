@@ -12,7 +12,7 @@
                 </a>
                 <ol class="breadcrumb">
                     <li><a href="<?= base_url('home'); ?>">Home</a></li>
-                    <li class="active">Alojamiento</li>
+                    <li class="active">Adelantos Personal</li>
                 </ol>
             </div>
             <!-- /.col-lg-12 -->
@@ -22,19 +22,25 @@
             <div class="row">
             <div class="col-sm-12">
                 <div class="white-box">
-                    <h3 class="box-title">Reporte Alojamiento</h3>
-                    <p class="text-muted">Ingresos por Alojamiento</p>
+                    <h3 class="box-title">Reporte Adelanto Sueldo</h3>
+                    <p class="text-muted">Adenlantos al Personal del Hospedaje</p>
+                    <br>
                  
                         <div class="form-group">
-                            <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="nacionalidad">
-                                Dia
+                            <label  class="control-label col-md-2 col-sm-3 col-xs-12" for="nacionalidad">
+                                Fecha Inicio
                             </label>
-                            <div class="col-md-5 col-sm-6 col-xs-12">
-                                <input type="date" max="<?= date("Y-m-d") ?>" value="<?= date("Y-m-d") ?>" id="dia" name="dia" class="form-control" >
-                            </div>
                             <div class="col-md-3 col-sm-6 col-xs-12">
-                               <button class="btn btn-success" onclick="estadodia()">GENERAR</button>
-                              
+                                <input type="date" max="<?= date("Y-m-d") ?>" id="fecha_inicio" name="fecha_inicio" class="form-control" >
+                            </div>
+                             <label  class="control-label col-md-2 col-sm-3 col-xs-12" for="nacionalidad">
+                                Fecha fin
+                            </label>
+                            <div class="col-md-3 col-sm-6 col-xs-12">
+                                <input type="date" max="<?= date("Y-m-d") ?>" id="fecha_fin" name="fecha_fin" class="form-control" >
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-xs-12">
+                               <button class="btn btn-success" onclick="adelantosueldo()">GENERAR</button>
                             </div>
                         </div>
                

@@ -20,6 +20,9 @@
     <script src="<?= base_url(); ?>_static/plugins/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
 
     <script src="<?= base_url(); ?>_static/plugins/toast-master/js/jquery.toast.js"></script>
+    <!--JSPDF-->
+     <script src="<?= base_url(); ?>_static/plugins/jspdf/jspdf.min.js"></script>
+      <script src="<?= base_url(); ?>_static/plugins/jspdf-autotable/jspdf.plugin.autotable.min.js"></script>
 
     <script type="<?= base_url(); ?>_static/js/main.js""></script>
 

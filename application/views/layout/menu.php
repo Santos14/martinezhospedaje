@@ -137,7 +137,11 @@
                         <a style="width: 90%;" href="<?php echo base_url('reporte/estadodia');?>">Estado Dia</a>
                     </li> 
                     <li style='padding-left: 14%;'>
-                        <a style="width: 90%;" href="<?php echo base_url('reporte2');?>">Reporte 3</a>
+                        <a style="width: 90%;" href="<?php echo base_url('reporte/adelantopersonal');?>">Adelanto Personal</a>
+                    </li>
+
+                    <li style='padding-left: 14%;'>
+                        <a style="width: 90%;" href="<?php echo base_url('reporte/deudasactuales');?>">Deudas Dia</a>
                     </li>
                 
                 </ul>

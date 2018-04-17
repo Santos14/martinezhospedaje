@@ -9,6 +9,13 @@ class Reporte extends CI_Controller {
 	function estadodia(){
 		layoutSystem("reporte/estadodia");
 	}
+	function adelantopersonal(){
+		layoutSystem("reporte/adelantopersonal");
+	}
+	function deudasactuales(){
+		layoutSystem("reporte/deudasactuales");
+	}
+
 
 	function alojamiento_imprimir($fecha){
 		$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
@@ -178,7 +185,7 @@ class Reporte extends CI_Controller {
 			$html.= "			<td>".$cont++."</td>";
 			$html.= "			<td>".$eg->fecha."</td>";
 			$html.= "			<td>".$eg->descripcion."</td>";
-			$html.= "			<td>".$ig->desmovimiento."</td>";
+			$html.= "			<td>".$eg->desmovimiento."</td>";
 			$html.= "			<td>".$eg->monto."</td>";
 			$html.= "		</tr>";
 			$sum_egr+=$eg->monto;
@@ -188,8 +195,6 @@ class Reporte extends CI_Controller {
 		$html.= "</table>";
 		$html.= "<p>Total: ".$sum_egr."</p>";
 		$html.= "<p>Saldo del Dia: ".($sum_ing-$sum_egr)."</p>";
-
-
 
 
 
@@ -221,9 +226,142 @@ class Reporte extends CI_Controller {
 		ob_end_clean();
 		$pdf->Output($nombre_archivo, 'I');
 
+	}
+
+
+	function adelantosueldo_imprimir($fecha_inicio,$fecha_fin){
+		
+		$sql = "SELECT mo.*,co.descripcion concepto
+				FROM movimiento mo INNER JOIN concepto co ON (mo.concepto_idconcepto = co.idconcepto) WHERE co.idconcepto = 20 and mo.estado = '1' and co.estado='1' and 
+					(date(mo.fecha) BETWEEN '".$fecha_inicio."' AND '".$fecha_fin."') ";
+
+	
+		$data = $this->allmodel->querySql($sql)->result(); 
+
+		$html = "<h1 text-align='center'>Adelanto de Sueldo</h1>";
+		$html.= "<h4>".$fecha_inicio." - ".$fecha_fin."</h4>";
+		$html.= "<table border='1'>";
+		$html.= "	<thead>";
+		$html.= "		<tr>";
+		$html.= "			<th>Item</th>";
+		$html.= "			<th>Fecha</th>";
+		$html.= "			<th>Concepto</th>";
+		$html.= "			<th>Personal</th>";
+		$html.= "			<th>Monto</th>";
+		$html.= "		</tr>";
+		$html.= "	</thead>";
+		$html.= "	<tbody>";
+		$cont = 1;
+		$total = 0;
+		foreach ($data as $val) {
+			$total+=$val->monto;
+			$html.= "		<tr>";
+			$html.= "			<td>".$cont++."</td>";
+			$html.= "			<td>".$val->fecha."</td>";
+			$html.= "			<td>".$val->concepto."</td>";
+			$html.= "			<td>".$val->descripcion."</td>";
+			$html.= "			<td>".$val->monto."</td>";
+			$html.= "		</tr>";
+		}
+
+		$html.= "	</tbody>";
+		$html.= "</table>";
 
 
 
+		$this->load->library('Pdf');
+
+		$pdf = new Pdf('L', 'mm', 'A4', true, 'UTF-8', false);
+		$pdf->SetCreator(PDF_CREATOR);
+		$pdf->SetAuthor('Hospedaje Martinez');
+		$pdf->SetTitle('REPORTE HOSPEDAJE MARTINEZ');
+		$pdf->SetSubject('HOSPEDAJE');
+		$pdf->SetKeywords('REPORTE,HOSPEDAJE');
+
+		$subtitulobebe = "Ingresos por Habitacion";
+ 		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+       	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+        $pdf->setFontSubsetting(true);
+		$pdf->SetFont('helvetica', '', 7);
+		$pdf->AddPage("A");
+
+		$pdf->writeHTML($html, true, 0, true, 0);
+
+		$nombre_archivo = utf8_decode("adelantosueldo.pdf");
+		ob_end_clean();
+		$pdf->Output($nombre_archivo, 'I');
+
+	}
+
+	public function deudasdia_imprimir(){
+		$data_alquiler = pasajerosactuales();
+
+	    $html = "<h1 text-align='center'>Deudas Actuales</h1>";
+		$html.= "<table border='1'>";
+		$html.= "	<thead>";
+		$html.= "		<tr>";
+		$html.= "			<th>Nro Hab.</th>";
+		$html.= "			<th>Precio</th>";
+		$html.= "			<th>Ingreso</th>";
+		$html.= "			<th>Nombres y Apellidos</th>";
+		$html.= "			<th>Deuda Total</th>";
+		$html.= "		</tr>";
+
+		$html.= "	</thead>";
+		$html.= "	<tbody>";
+		$cont = 1;
+		$total = 0;
+
+		for ($i=0; $i < count($data_alquiler["alquiler"]) ; $i++) {	
+			$html.= "		<tr>";
+			$html.= "			<td>".$data_alquiler["alquiler"][$i]->nrohabitacion."</td>";
+			$html.= "			<td>".$data_alquiler["alquiler"][$i]->precioxdia."</td>";
+			$html.= "			<td>".$data_alquiler["alquiler"][$i]->fecha_ingreso."</td>";
+			$html.= "			<td>".$data_alquiler["alquiler"][$i]->nombres." ".$data_alquiler["alquiler"][$i]->apellidos."</td>";
+			$html.= "			<td>".number_format(($data_alquiler["deuda_habitacion"][$i]+$data_alquiler["deuda_ventas"][$i]+$data_alquiler["deuda_imprevistos"][$i]),'2')."</td>";
+			$html.= "		</tr>";
+			$html.= "		<hr>";
+
+		}	
+
+		$html.= "	</tbody>";
+		$html.= "</table>";
+
+		
+
+		$this->load->library('Pdf');
+
+		$pdf = new Pdf('L', 'mm', 'A4', true, 'UTF-8', false);
+		$pdf->SetCreator(PDF_CREATOR);
+		$pdf->SetAuthor('Hospedaje Martinez');
+		$pdf->SetTitle('REPORTE HOSPEDAJE MARTINEZ');
+		$pdf->SetSubject('HOSPEDAJE');
+		$pdf->SetKeywords('REPORTE,HOSPEDAJE');
+
+		$subtitulobebe = "Ingresos por Habitacion";
+ 		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+       	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+        $pdf->setFontSubsetting(true);
+		$pdf->SetFont('helvetica', '', 6);
+		$pdf->AddPage("A");
+
+		
+		$pdf->writeHTML($html, true, false, true, false, '');
+
+		$nombre_archivo = utf8_decode("deudasactuales.pdf");
+		ob_end_clean();
+		$pdf->Output($nombre_archivo, 'I');
+	  	//fin
 	}
 
 

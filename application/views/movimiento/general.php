@@ -16,7 +16,7 @@
 </div>
 <div class='text-center'>
 	
-    <button type="button" class="btn btn-success" onclick="save()">
+    <button type="button" class="btn btn-success" id="btn_movimiento_general" onclick="save()">
         Guardar
     </button>
             

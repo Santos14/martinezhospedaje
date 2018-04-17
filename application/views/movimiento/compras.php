@@ -43,7 +43,7 @@
 </div>
 <br><br>
 <div class="text-center">
- <button type="button" class="btn btn-success" onclick="compras()">
+ <button type="button" class="btn btn-success" id="btn_compras_movimiento" onclick="compras()">
                     Guardar
                 </button> 
 </div>

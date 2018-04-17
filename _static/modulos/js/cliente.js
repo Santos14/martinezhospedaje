@@ -59,6 +59,7 @@ function save(){
 		}
 	}
 	if(!fallas){
+		$("#btn_save_cliente_cli").attr("disabled",true);
 		$.ajax({
 			url: url+controlador+'/ajax_save',
 			type: 'POST',
@@ -67,6 +68,7 @@ function save(){
 			success: function(data){
 				console.log(data);
 				$('#modalFormulario').modal('hide');
+				$("#btn_save_cliente_cli").removeAttr("disabled");
 				alerta("Guardado Exitoso",'Se guardo correctamente','success');
 				init();
 			},

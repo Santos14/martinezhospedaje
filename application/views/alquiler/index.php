@@ -17,7 +17,7 @@
         <!-- /row -->
         <div class="text-center">
             <button type="button" class='btn btn-primary' id="miniatura" onclick="view_miniatura()" >Miniaturas</button>
-            <button type="button" class='btn btn-default' id="lista" onclick="view_lista()">Lista</button>
+            <button type="button" class='btn btn-default' id="lista" onclick="view_lista()">Pasajeros Actuales</button>
         </div>
         <br>
         <div id="tableList">
