@@ -18,6 +18,7 @@
         <div class="text-center">
             <button type="button" class='btn btn-primary' id="miniatura" onclick="view_miniatura()" >Miniaturas</button>
             <button type="button" class='btn btn-default' id="lista" onclick="view_lista()">Pasajeros Actuales</button>
+            <button type="button" class='btn btn-default' id="alquiler" onclick="view_alquileres()">Historial</button>
         </div>
         <br>
         <div id="tableList">
@@ -127,7 +128,13 @@
     </div>
 </div>
 
-
+<div id="modalver" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content" id="detallever">
+            
+        </div>
+    </div>
+</div>
 
 <form id="cancelar">
     <input type="hidden" name="cancelar_id" id="cancelar_id">

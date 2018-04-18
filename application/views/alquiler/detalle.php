@@ -152,19 +152,21 @@ $dias = abs($dias); $dias = floor($dias);
 
 
 
-                            <?php $resto = $alquiler[0]->precioxdia-$resto ?>
-                            <?php $pen+=$resto; ?>
+                            <?php $pendiente = $alquiler[0]->precioxdia-$resto ?>
+                            <?php $pen+=$pendiente; ?>
+                            <?php $resto = 0; ?>
 
-                         <td><button type="button" class="btn btn-warning btn-xs">Pendiente(S/. <?= $resto ?>)</button></td>
+                        
 
-
+                         <td><button type="button" class="btn btn-warning btn-xs">Pendiente(S/. <?= $pendiente ?>)</button></td>
+                    
                                       <?php else: ?>
 
 
 
 
-                                        <?php if($resto == $alquiler[0]->precioxdia): ?>
-                          <?php $resto = $alquiler[0]->precioxdia-$resto ?>
+                                        <?php if($resto >= $alquiler[0]->precioxdia): ?>
+                          <?php $resto = $resto - $alquiler[0]->precioxdia ?>
 
 
                           <td><button type="button" class="btn btn-success btn-xs">Cancelado</button></td>
@@ -194,7 +196,7 @@ $dias = abs($dias); $dias = floor($dias);
                                       <?php if($resto >= $alquiler[0]->precioxdia){ ?>
           <?php $resto = $resto -$alquiler[0]->precioxdia; ?>
 
-                                  <button type="button" class="btn btn-warning btn-xs">Cancelado</button>
+                                  <button type="button" class="btn btn-success btn-xs">Cancelado</button>
 
                                       <?php }else{ ?>
 
@@ -219,9 +221,6 @@ $dias = abs($dias); $dias = floor($dias);
                                 </tr>
 
                                 <?php endfor; ?>
-
-
-
 
 
 

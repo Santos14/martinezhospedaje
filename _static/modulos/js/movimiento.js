@@ -24,7 +24,7 @@ function form_add(){
 
 function cambioTipo(){
 	$.get(url+controlador+"/conceptos/"+$("#idtipomovimiento").val(), function(data) {
-		console.log(data);
+		
 		$("#idconcepto").html("<option value=''>Seleccione...</option>")
 		for (var i = 0; i < data.length; i++) {
 			$("#idconcepto").append("<option value='"+data[i].idconcepto+"'>"+data[i].descripcion+"</option>")	
@@ -35,37 +35,60 @@ function cambioTipo(){
 function cambioConcepto(){
 	$.get(url+controlador+"/listaconcepto/"+$("#idconcepto").val(), function(data) {
 		$("#listaconcepto").empty().html(data);
+		if ( $("#pPago").length > 0 ) {
+		  // hacer algo aquí si el elemento existe
+		  $('#pPago').dataTable();
+		}
 	});	
 }
 
-function habitacion(id,total,acc){
+function allCash(id){
+	$("#btn_todo_movimiento").attr("disabled",true);
+	var datae = {
+        "idalquiler" : id,
+        "alojamiento" : $("#h"+id).val(),
+        "compras" : $("#v"+id).val(),
+        "imprevistos" : $("#i"+id).val()
+    };
+    $.ajax({
+		url: url+'alquiler/allCash',
+		type: 'POST',
+		dataType: 'JSON',
+		data: datae,
+		success: function(data){
+			alerta("Guardado Exitoso",'Se guardo correctamente','success');
+			$("#btn_todo_movimiento").removeAttr("disabled");
+			init();
+		},
+		error: function(jqXHR, textStatus, errorThrown){
+			alerta("Error de Guardado",errorThrown,'error');
+		}
+	});
+
+}
+
+function amortizar(id,total,acc){
 
 	op = false;
-
 	if(id!=""){
-		$("#h_idalquiler").val(id);	
+		$("#h_idalquiler").val(id);
 	}
-	
-	if(acc == '1'){
-		if(total!=""){
-			$("#h_monto").val(total);	
-			op = true;
-		}
-	}else if(acc=='2'){
+
+	if(acc=='2'){
 		if(total==""){
 			$("#montoamortizacion").val("");
 			$("#modalAmortizacion").modal("show");
 		}else{
 			if($("#montoamortizacion").val()!=""){
 				if(!isNaN($("#montoamortizacion").val())){
-					if(parseFloat($("#m"+$("#h_idalquiler").val()).val()) != 0){
-						if(parseFloat($("#montoamortizacion").val())>0 && parseFloat($("#montoamortizacion").val())<=parseFloat($("#m"+$("#h_idalquiler").val()).val())){
+					if(parseFloat($("#h"+$("#h_idalquiler").val()).val()) != 0){
+						if(parseFloat($("#montoamortizacion").val())>0 && parseFloat($("#montoamortizacion").val())<=parseFloat($("#h"+$("#h_idalquiler").val()).val())){
 							op = true;
 							$("#h_monto").val($("#montoamortizacion").val());	
 							$("#modalAmortizacion").modal("hide");
 						}else{
 							console.log("fuera de Rango");
-							alerta("Fuera de Rango","El monto tiene que ser mayor a 0 y menor a "+$("#m"+$("#h_idalquiler").val()).val(),"error");
+							alerta("Fuera de Rango","El monto tiene que ser mayor a 0 y menor a "+$("#h"+$("#h_idalquiler").val()).val(),"error");
 						}
 					}else{
 						if($("#montoamortizacion").val()>0){
@@ -87,17 +110,22 @@ function habitacion(id,total,acc){
 	}
 
 	if(op){
-
-		$("#btn_todo_movimiento").attr("disabled",true);
+		var datae = {
+	        "idalquiler" : $("#h_idalquiler").val(),
+	        "monto" : $("#h_monto").val(),
+	        "alojamiento" : $("#h"+$("#h_idalquiler").val()).val(),
+	        "compras" : $("#v"+$("#h_idalquiler").val()).val(),
+	        "imprevistos" : $("#i"+$("#h_idalquiler").val()).val()
+	    };
+	   
 		$("#btn_amortiza_movimiento").attr("disabled",true);
 		$.ajax({
-			url: url+controlador+'/ajax_pagohabitacion',
+			url: url+'alquiler/amortizar_deuda',
 			type: 'POST',
 			dataType: 'JSON',
-			data: $("#form_movimiento").serialize(),
+			data: datae,
 			success: function(data){
 				alerta("Guardado Exitoso",'Se guardo correctamente','success');
-				$("#btn_todo_movimiento").removeAttr("disabled");
 				$("#btn_amortiza_movimiento").removeAttr("disabled");
 				init();
 			},
@@ -106,7 +134,6 @@ function habitacion(id,total,acc){
 			}
 		});
 	}
-
 }
 function venta(id,total,accion){
 	$("#v_idventa").val(id);
@@ -252,7 +279,7 @@ function form_delete(){
 		data: {'id':idglobal},
 		dataType: "JSON",
 		success: function(data){
-			console.log(data);
+			
 			$('#modalEliminar').modal('hide');			
 			alerta("Eliminado Exitoso",'Se elimino correctamente','success');
 			init();

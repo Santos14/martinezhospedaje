@@ -1,15 +1,3 @@
-<?php 
-  $hora_termino = $politica[0]->numero;
-  $minuto_termino = "00";
-  $segundo_termino = "00";
-//TERNINO DE FIN DEL DIA 
-  $hora_fin = '02';
-  $minuto_fin = "59";
-  $segundo_fin = "59";
-
-  
-?>
-
 
 <input type="hidden" name="h_idalquiler" id="h_idalquiler">
 <input type="hidden" name="h_monto" id="h_monto">
@@ -18,13 +6,17 @@
         <div class="white-box">
             <h3 class="box-title">Cuartos Pendientes de Pago</h3>
             <div class="table-responsive">
-                 <table class="table" id='pendientesdepago'>
+                 <table class="table" id='pPago'>
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>N° Cuarto</th>
+                            <th>N°</th>
                             <th>Cliente</th>
-                            <th class="text-center">Deuda</th>
+                            <th>Precio(S/.)</th>
+                            <th class="text-center">Hab.</th>
+                            <th class="text-center">Vent.</th>
+                            <th class="text-center">Impr.</th>
+                            <th class="text-center">Total</th>
                             <th class='text-center'>Accion</th>
                         </tr>
                     </thead>
@@ -32,135 +24,31 @@
                         
                   <?php
 
-                  for ($h = 0; $h < count($alquiler) ; $h++) {
-                      $ahora = new DateTime("NOW");
-                      $fi = new DateTime($alquiler[$h]->fecha_ingreso);
-                      $diff = $ahora->diff($fi);
-
-                      $dias = (strtotime(date_format($fi,"Y-m-d"))-strtotime(date("Y-m-d")))/86400;
-                      $dias = abs($dias); $dias = floor($dias); 
-
-                      $rango=false;
-
-                      if($fi->format('H')>='00' && $fi->format('i') >= '00' && $fi->format('s') >= '00'){
-                          if($fi->format('H')<=$hora_fin  && $fi->format('i') <= $minuto_fin  && $fi->format('s') <= $segundo_fin ){
-                            $rango = true;
-                         }
-                      }
-
-                      $cont = 1; 
-                      $pen = 0;
-                      $s = 0;
-
-                      $f = date_format($fi,"Y-m-d");
-
-                      $pagado = $alquiler[$h]->pagado; 
-                      if($dias == "0"): 
-
-                          if($rango){
-                              $n =  date ('Y-m-d',strtotime ('-1 day',strtotime($f)));
-                          }else{
-                              $n = $f;
-                          }
-                        
-                           
-                                                     
-                          if($rango){
-                            if(date("H")>=$hora_termino && date("i")>=$minuto_termino && date("s")>=$segundo_termino){
-                                $s = 1;
-                              }
-                          }
-
-                          if($pagado==""){
-                              $resto = 0;  
-                              $pen+=$alquiler[$h]->precioxdia;    
-
-                          }else{
-
-                            $resto = $pagado; 
-                            if($resto < $alquiler[$h]->precioxdia){
-                                $resto = $alquiler[$h]->precioxdia-$resto;  
-                                $pen+=$resto; 
-                            }else{
-                                if($resto == $alquiler[$h]->precioxdia){
-                                    $resto = $alquiler[$h]->precioxdia-$resto;         
-                                }
-                            }
-                          } 
-
-                          for ($i = 0; $i < $s ; $i++){ 
-                            $n =  date ('Y-m-d',strtotime ('+1 day',strtotime($n)));  
-
-                             if($resto != 0){  
-                                if($resto >= $alquiler[$h]->precioxdia){  
-                                   $resto = $resto -$alquiler[$h]->precioxdia;  
-                                }else{ 
-                                    $resto = $alquiler[$h]->precioxdia - $resto; 
-                                    $pen += $resto;
-                                } 
-                              }else{  
-                                    $pen+=$alquiler[$h]->precioxdia;     
-                               }  
-                          } 
-
-
-                      else:   
-
-                        $cant = $dias; 
-
-                        if(date("H")>=$hora_termino && date("i")>=$minuto_termino && date("s")>=$segundo_termino){
-                            $cant++;
-                        }
-                        if($rango){
-                          $cant++;
-                        }
-                        if($pagado!=""){
-                          $resto = $pagado;  
-                        }else{
-                          $resto = 0;
-                        }
-                        
-                        $n =  date ('Y-m-d',strtotime ('-1 day',strtotime($f)));
-                        for ($i = 0; $i < $cant ; $i++) { 
-                        
-
-                            if($rango){
-                              $n =  date ('Y-m-d',strtotime ('+1 day',strtotime($n)));
-                            }else{
-                              
-                              $fi->add(new DateInterval('P1D'));
-                            }
-
-                            if( $resto != 0){
-                              if( $resto >= $alquiler[$h]->precioxdia){
-                                $resto = $resto - $alquiler[$h]->precioxdia;  
-                              }else{
-                                $r = $alquiler[$h]->precioxdia - $resto; 
-                                $resto =0;
-                                $pen += $r;
-                              } 
-                            }else{
-                              $pen+=$alquiler[$h]->precioxdia;  
-                            }               
-                         }
-                                   
-                      endif;  ?>
+                   for ($i=0; $i < count($data_alquiler["alquiler"]) ; $i++) { ?>
+                     
 
 <tr>
-  <td><?= $h+1 ?> </td>
-  <td><?= $alquiler[$h]->nrohabitacion ?></td>
-  <td><?= $alquiler[$h]->nombres.", ".$alquiler[$h]->apellidos ?></td>
-  <td class="text-center"><input type="text" id="m<?= $alquiler[$h]->idalquiler ?>" name="m<?= $alquiler[$h]->idalquiler ?>" value="<?= number_format($pen,'2') ?>" style="background: none;border: none;text-align: center;"></td>
+  <td><?= $i+1 ?> </td>
+  <td><?= $data_alquiler["alquiler"][$i]->nrohabitacion ?></td>
+  <td><?= $data_alquiler["alquiler"][$i]->nombres.", ".$data_alquiler["alquiler"][$i]->apellidos ?></td>
+  <td><?= $data_alquiler["alquiler"][$i]->precioxdia ?></td>
+   <?php $total = $data_alquiler["deuda_habitacion"][$i]+$data_alquiler["deuda_ventas"][$i]+$data_alquiler["deuda_imprevistos"][$i];?>
+
+  <td class="text-center"><input type="text" id="h<?= $data_alquiler["alquiler"][$i]->idalquiler ?>" name="h<?= $data_alquiler["alquiler"][$i]->idalquiler ?>" value="<?= number_format($data_alquiler["deuda_habitacion"][$i],'2') ?>" style="width:60px;background: none;border: none;text-align: center;"></td>
+  <td class="text-center"><input type="text" id="v<?= $data_alquiler["alquiler"][$i]->idalquiler ?>" name="v<?= $data_alquiler["alquiler"][$i]->idalquiler ?>" value="<?= number_format($data_alquiler["deuda_ventas"][$i],'2') ?>" style="width:60px;background: none;border: none;text-align: center;"></td>
+  <td class="text-center"><input type="text" id="i<?= $data_alquiler["alquiler"][$i]->idalquiler ?>" name="i<?= $data_alquiler["alquiler"][$i]->idalquiler ?>" value="<?= number_format($data_alquiler["deuda_imprevistos"][$i],'2') ?>" style="width:60px;background: none;border: none;text-align: center;"></td>
+  <td class="text-center"><input type="text" id="t<?= $data_alquiler["alquiler"][$i]->idalquiler ?>" name="t<?= $data_alquiler["alquiler"][$i]->idalquiler ?>" value="<?= number_format($total,'2') ?>" style="width:60px;background: none;border: none;text-align: center;"></td>
   <td class="text-center">
     
-    <button type="button" id="btn_todo_movimiento" onclick="habitacion('<?= $alquiler[$h]->idalquiler ?>','<?= $pen ?>','1')" class="btn btn-success btn-xs">Pagar Todo</button>
-    <button type="button" id="btn_amortiza_movimiento" onclick="habitacion('<?= $alquiler[$h]->idalquiler ?>','','2')" class="btn btn-warning btn-xs">Amortizar</button>
- 
+   
+    <?php if($total == 0): ?>
+    <button type="button" id="btn_amortiza_movimiento" onclick="amortizar('<?= $data_alquiler["alquiler"][$i]->idalquiler ?>','','2')" class="btn btn-primary btn-xs">Adelantar</button>
+    <?php else: ?>
+        <button type="button" id="btn_todo_movimiento" onclick="allCash('<?= $data_alquiler["alquiler"][$i]->idalquiler ?>')" class="btn btn-success btn-xs">Todo</button> 
+      <button type="button" id="btn_amortiza_movimiento" onclick="amortizar('<?= $data_alquiler["alquiler"][$i]->idalquiler ?>','','2')" class="btn btn-danger btn-xs">Amort. Hab.</button>
+    <?php endif; ?>
   </td>
 </tr>
-
-
-
 
 
                 <?php  }  ?>
@@ -202,7 +90,7 @@
                 <button type="button" class="btn btn-danger" data-dismiss="modal">
                     Cancelar
                 </button>
-                <button type="button" class="btn btn-success" onclick="habitacion('','0','2')" id='btn_save'>
+                <button type="button" class="btn btn-success" onclick="amortizar('','0','2')" id='btn_save'>
                     Aceptar
                 </button>
             </div>

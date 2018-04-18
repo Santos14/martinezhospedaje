@@ -17,17 +17,76 @@ function init(){
 function view_miniatura(){
 	$("#miniatura").removeClass().addClass('btn btn-primary');
 	$("#lista").removeClass().addClass('btn btn-default');
-
+	$("#alquiler").removeClass().addClass('btn btn-default');
 	init();
 }
 
 function view_lista(){
 	$("#miniatura").removeClass().addClass('btn btn-default');
 	$("#lista").removeClass().addClass('btn btn-primary');
+	$("#alquiler").removeClass().addClass('btn btn-default');
 	$.get(url+controlador+"/listapasajeros", function(data) {
 		$("#tableList").empty().html(data);
 		$("#listapasajeros").dataTable();
 	});
+}
+
+function view_alquileres(){
+	$("#miniatura").removeClass().addClass('btn btn-default');
+	$("#lista").removeClass().addClass('btn btn-default');
+	$("#alquiler").removeClass().addClass('btn btn-primary');
+	$.get(url+controlador+"/listaalquiler", function(data) {
+		$("#tableList").empty().html(data);
+		$("#listaalquiler").dataTable();
+	});
+
+
+}
+
+function anular_alquiler(id){
+	if(confirm("¿Esta seguro de Anular este alquiler?")){
+		$.ajax({
+			url : url+controlador+"/anular_alquiler/",
+			type: "POST",
+			data: {'id':id},
+			dataType: "JSON",
+			success: function(data){
+				alerta("Alquiler Anulado",'Se Anulo exitosamente','success');
+				view_alquileres();
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+				alerta("Error de Guardado",errorThrown,'error');
+			}
+		});
+	}
+}
+function editar_alquiler(id){
+	
+}
+function ver_alquiler(id){
+	$.get(url+controlador+"/ver_alquiler/"+id, function(data) {
+		$("#detallever").empty().html(data);
+		$("#modalver").modal("show");
+	});
+	
+}
+
+function restaurar_alquiler(id){
+	if(confirm("¿Esta seguro de Restaurar este alquiler?")){
+		$.ajax({
+			url : url+controlador+"/restaurar_alquiler/",
+			type: "POST",
+			data: {'id':id},
+			dataType: "JSON",
+			success: function(data){
+				alerta("Alquiler Restaurado",'Se Restauro exitosamente','success');
+				view_alquileres();
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+				alerta("Error de Guardado",errorThrown,'error');
+			}
+		});
+	}
 }
 
 function form_add(){

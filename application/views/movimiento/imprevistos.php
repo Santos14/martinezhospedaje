@@ -5,7 +5,7 @@
         <div class="white-box">
             <h3 class="box-title">Imprevistos Pendientes de Pago</h3>
             <div class="table-responsive">
-                 <table class="table" id='datatable'>
+                 <table class="table" id='pPago'>
                     <thead>
                         <tr>
                             <th>#</th>

@@ -41,6 +41,7 @@ class Alquiler extends CI_Controller {
 		$this->load->view("alquiler/lista",$data);
 	}
 
+
 	public function cambioestadocuarto(){
 		$estadocuarto = $this->input->post("estado_cuarto");
 		//2:SUCIO ; 3: CAMBIO 
@@ -76,6 +77,18 @@ class Alquiler extends CI_Controller {
 		$data["motivo_viaje"] = $this->allmodel->querySql($sql_motivoviaje)->result();
 		$data["horatermino"] = number_format($politica[0]->numero,'0');
 		$this->load->view("alquiler/nuevo",$data);	
+	}
+
+	public function ver_alquiler($id){
+		$alquiler = $this->allmodel->selectWhere('alquiler',array("idalquiler"=>$id))->result();
+		$data["alquiler"] = $alquiler;
+		$data["habitacion"] = $this->allmodel->selectWhere('habitacion',array("idhabitacion"=>$alquiler[0]->habitacion_idhabitacion))->result();
+		$data["tipoalquiler"] = $this->allmodel->selectWhere('tipoalquiler',array("idtipoalquiler"=>$alquiler[0]->tipoalquiler_idtipoalquiler))->result();
+		$data["procedencia"] = $this->allmodel->selectWhere('procedencia',array("idprocedencia"=>$alquiler[0]->procedencia_idprocedencia))->result();
+		$data["cliente"] = $this->allmodel->selectWhere('cliente',array("idcliente"=>$alquiler[0]->cliente_idcliente))->result();
+		$data["motivoviaje"] = $this->allmodel->selectWhere('motivoviaje',array("idmotivoviaje"=>$alquiler[0]->motivoviaje_idmotivoviaje))->result();
+
+		$this->load->view("alquiler/ver",$data);
 	}
 
 	public function form_detalle($id){
@@ -119,6 +132,127 @@ class Alquiler extends CI_Controller {
 		$data["habitaciones"] = $this->allmodel->querySql($sql_habitacion)->result();
 
 		$this->load->view("alquiler/listapasajeros",$data);		
+	}
+
+
+	public function anular_alquiler(){
+		$idalquiler = $this->input->post("id");
+
+		$this->db->trans_start();
+
+		$alquiler = $this->allmodel->selectWhere("alquiler",array('idalquiler'=>$idalquiler))->result();
+
+		
+		// CUANDO ANULO UN ALQUILER SE DEVUELVE LA PLATA DE CAJA, Y CUANDO SE RESTAURA SE RESTAURA SIN PAGO
+
+		$sql_amorti = "SELECT * FROM amortizacion WHERE	estado='1' and alquiler_idalquiler = ".$idalquiler;
+		$amort = $this->allmodel->querySql($sql_amorti)->result();
+
+		$cambioEst = array(
+			"estado" => '0'
+		);
+		if(count($amort)>0){
+			for ($i=0; $i < count($amort) ; $i++) { 	
+				$upamor = $this->allmodel->update("amortizacion",$cambioEst,array("idamortizacion"=>$amort[$i]->idamortizacion));
+				$upmov = $this->allmodel->update("movimiento",$cambioEst,array("idmovimiento"=>$amort[$i]->movimiento_idmovimiento));
+			}
+		}
+		$upal = $this->allmodel->update("alquiler",array("estado"=>'0'),array("idalquiler"=>$idalquiler));
+
+
+		$update_hb = array(
+			"disponibilidad" => "1",
+			"cambiosabana" => "1900-01-01",
+			"estcambiosabana" => '0'
+		);
+
+		$uphb = $this->allmodel->update("habitacion",$update_hb,array("idhabitacion"=>$alquiler[0]->habitacion_idhabitacion));
+
+
+
+		$this->db->trans_complete();
+		$trans_status = $this->db->trans_status();
+		if($trans_status== FALSE){
+			$this->db->trans_rollback();
+			$status = 0;			
+		}else{
+			$status = 1;
+			$this->db->trans_commit();			
+		}
+		echo json_encode($status);
+	}
+	public function restaurar_alquiler(){
+		$idalquiler = $this->input->post("id");
+
+		$this->db->trans_start();
+
+		$alquiler = $this->allmodel->selectWhere("alquiler",array('idalquiler'=>$idalquiler))->result();
+
+
+		$sql_amorti = "SELECT * FROM amortizacion WHERE	estado='0' and alquiler_idalquiler = ".$idalquiler;
+		$amort = $this->allmodel->querySql($sql_amorti)->result();
+
+		$cambioEst = array(
+			"estado" => '1'
+		);
+
+		if(count($amort)>0){
+			for ($i=0; $i < count($amort) ; $i++) { 	
+				$upamor = $this->allmodel->update("amortizacion",$cambioEst,array("idamortizacion"=>$amort[$i]->idamortizacion));
+				$upmov = $this->allmodel->update("movimiento",$cambioEst,array("idmovimiento"=>$amort[$i]->movimiento_idmovimiento));
+			}
+		}
+
+		$upal = $this->allmodel->update("alquiler",array("estado"=>'1'),array("idalquiler"=>$idalquiler));
+
+		$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 1))->result();
+		$cambsa = "+".number_format($politica[0]->numero,'0')." day";
+
+		if($alquiler[0]->tipoalquiler_idtipoalquiler == '2'){ //EVENTUAL
+			$disp = '5';
+		}else if($alquiler[0]->tipoalquiler_idtipoalquiler == '3'){ // MENSUAL
+			$disp = '6';
+		}else{
+			$disp = '2';
+		}
+
+		$update_hb = array(
+			"disponibilidad" => $disp,
+			"cambiosabana" => date ('Y-m-d',strtotime($cambsa,strtotime(date("Y-m-d")))),
+			"estcambiosabana" => '0'
+		);
+
+		$uphb = $this->allmodel->update("habitacion",$update_hb,array("idhabitacion"=>$alquiler[0]->habitacion_idhabitacion));
+
+		$this->db->trans_complete();
+		$trans_status = $this->db->trans_status();
+		if($trans_status== FALSE){
+			$this->db->trans_rollback();
+			$status = 0;			
+		}else{
+			$status = 1;
+			$this->db->trans_commit();			
+		}
+		echo json_encode($status);
+
+	}
+
+	public function listaalquiler(){
+
+		$sql_alq = "SELECT al.*,cli.nrodocumento,cli.nombres,cli.apellidos,hb.nrohabitacion,
+		(
+		SELECT sum(amr.monto)
+		FROM alquiler alq INNER JOIN amortizacion amr ON (alq.idalquiler = amr.alquiler_idalquiler)
+		WHERE amr.estado = '1' and alq.idalquiler = al.idalquiler
+		GROUP BY alq.idalquiler
+		) montopagado
+		FROM alquiler al INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion)
+		INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
+		ORDER BY al.fecha_ingreso desc";
+
+		$data["alquileres"] = $this->allmodel->querySql($sql_alq)->result();
+
+		$this->load->view("alquiler/listaalquiler",$data);		
 	}
 
 	public function form_salir($id){
@@ -323,6 +457,160 @@ class Alquiler extends CI_Controller {
 		INNER JOIN cliente cli ON (cli.idcliente = r.cliente_idcliente)
 		WHERE hb.disponibilidad='3' and r.estado='1' and hb.idhabitacion =".$id;
 		echo json_encode($this->allmodel->querySql($sql)->result());
+	}
+
+	public function amortizar_deuda(){
+		$idalquiler = $this->input->post("idalquiler");
+		$monto = $this->input->post("monto");
+		$alojamiento = $this->input->post("alojamiento");
+		$compras = $this->input->post("compras");
+		$imprevistos = $this->input->post("imprevistos");
+
+		$this->db->trans_start();
+
+		if($alojamiento!=0){
+			$movimiento = array(
+				"concepto_idconcepto" => 1,
+				"fecha" => date("Y-m-d H:i:s"),
+				"estado" => '1',
+				"monto" => $monto
+			);
+			$ma = $this->allmodel->create("movimiento", $movimiento);
+
+			$alojamiento = array(
+				"movimiento_idmovimiento" => $ma,
+				"alquiler_idalquiler" =>$idalquiler,
+				"fecha" => date("Y-m-d H:i:s"),
+				"monto" => $monto,
+				"estado" => "1"
+			);
+			$a = $this->allmodel->create("amortizacion", $alojamiento);
+			//falta cambiar de estado a la habitacion
+		}
+
+
+		$this->db->trans_complete();
+		$trans_status = $this->db->trans_status();
+
+		if($trans_status== FALSE){
+			$this->db->trans_rollback();
+			$status = 0;			
+		}else{
+			$status = 1;
+			$this->db->trans_commit();			
+		}
+
+
+
+		echo json_encode($status);
+
+
+	}
+
+	public function allCash(){
+		$idalquiler = $this->input->post("idalquiler");
+
+		$this->db->trans_start();
+		if($this->input->post("alojamiento")!=0){
+			$movimiento = array(
+				"concepto_idconcepto" => 1,
+				"fecha" => date("Y-m-d H:i:s"),
+				"estado" => '1',
+				"monto" => $this->input->post("alojamiento")
+			);
+			$ma = $this->allmodel->create("movimiento", $movimiento);
+
+			$alojamiento = array(
+				"movimiento_idmovimiento" => $ma,
+				"alquiler_idalquiler" =>$idalquiler,
+				"fecha" => date("Y-m-d H:i:s"),
+				"monto" =>$this->input->post("alojamiento"),
+				"estado" => "1"
+			);
+			$a = $this->allmodel->create("amortizacion", $alojamiento);
+			//falta cambiar de estado a la habitacion
+		}
+		if($this->input->post("compras")!=0){
+
+			$sql_compras = "SELECT v.*,(
+			SELECT sum(dv.precio)
+			FROM venta ve INNER JOIN detalle_venta dv ON (ve.idventa = dv.venta_idventa)
+			WHERE ve.estado='1' and ve.idventa = v.idventa
+			GROUP BY ve.idventa
+			) total FROM alquiler a INNER JOIN venta_alquiler va on(a.idalquiler = va.alquiler_idalquiler) INNER JOIN venta v ON(va.venta_idventa = v.idventa) WHERE v.estado ='1' and a.idalquiler =".$idalquiler;
+
+			$c = $this->allmodel->querySql($sql_compras)->result();
+
+			for ($i = 0; $i < count($c); $i++) {
+				$movimiento = array(
+					"concepto_idconcepto" => 3,
+					"fecha" => date("Y-m-d H:i:s"),
+					"estado" => '1',
+					"monto" => $c[$i]->total
+				);
+				$mv = $this->allmodel->create("movimiento", $movimiento);
+
+				$ventamovimiento = array(
+					"venta_idventa" => $c[$i]->idventa,
+					"movimiento_idmovimiento" => $mv
+				);
+
+				$v_m = $this->allmodel->create("ventamovimiento", $ventamovimiento);
+
+				$sql_updateVenta = "UPDATE venta SET estado='2' WHERE idventa IN (
+				SELECT v.idventa
+				FROM alquiler a INNER JOIN venta_alquiler va on(a.idalquiler = va.alquiler_idalquiler)
+				INNER JOIN venta v ON(va.venta_idventa = v.idventa)
+				WHERE v.estado ='1' and a.idalquiler =".$idalquiler.")";
+
+				$upv = $this->allmodel->querySql($sql_updateVenta);
+			}
+		}
+		if($this->input->post("imprevistos")!=0){
+			$sql_imprevistos = "SELECT i.*
+			FROM imprevisto i INNER JOIN tipoimprevisto ti ON (i.tipoimprevisto_idtipoimprevisto = ti.idtipoimprevisto) WHERE ti.estado = '1' and alquiler_idalquiler=".$idalquiler;
+
+			$imp = $this->allmodel->querySql($sql_imprevistos)->result();
+
+			for ($i = 0; $i < count($imp); $i++) {
+				$movimiento = array(
+					"concepto_idconcepto" => 9,
+					"fecha" => date("Y-m-d H:i:s"),
+					"estado" => '1',
+					"monto" => $imp[$i]->monto
+				);
+				$mi = $this->allmodel->create("movimiento", $movimiento);
+
+				$imprevisto_movimiento = array(
+					"imprevisto_idimprevisto" => $imp[$i]->idimprevisto,
+					"movimiento_idmovimiento" => $mi
+				);
+
+				$i_m = $this->allmodel->create("imprevisto_movimiento", $imprevisto_movimiento);
+
+				$sql_updateImp = "UPDATE imprevisto SET estado='2' WHERE idimprevisto IN (
+				SELECT i.idimprevisto
+				FROM imprevisto i INNER JOIN tipoimprevisto ti ON (i.tipoimprevisto_idtipoimprevisto = ti.idtipoimprevisto)
+				WHERE ti.estado = '1' and alquiler_idalquiler=".$idalquiler.")";
+
+				$upimp = $this->allmodel->querySql($sql_updateImp);
+			}
+		}
+
+		$this->db->trans_complete();
+		$trans_status = $this->db->trans_status();
+
+		if($trans_status== FALSE){
+			$this->db->trans_rollback();
+			$status = 0;			
+		}else{
+			$status = 1;
+			$this->db->trans_commit();			
+		}
+
+
+
+		echo json_encode($status);
 	}
 
 	public function pagartodo(){

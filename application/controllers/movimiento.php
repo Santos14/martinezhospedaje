@@ -59,20 +59,15 @@ class Movimiento extends CI_Controller {
 
 			case '1':
 
-				$sql1 = "SELECT alq.*,hb.nrohabitacion, cli.nombres,cli.apellidos,(SELECT sum(am.monto) monto
-				FROM amortizacion am INNER JOIN alquiler al ON (al.idalquiler = am.alquiler_idalquiler)
-				WHERE am.estado = '1' and al.idalquiler = alq.idalquiler
-				GROUP BY al.idalquiler
-				) pagado
-				FROM alquiler alq INNER JOIN habitacion hb ON (alq.habitacion_idhabitacion = hb.idhabitacion)
-				INNER JOIN cliente cli ON (cli.idcliente = alq.cliente_idcliente)
-				WHERE alq.estado='1' ORDER BY hb.idhabitacion asc";
-				$data["alquiler"] = $this->allmodel->querySql($sql1)->result();
-
-				$data["politica"] = $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
+				$data["data_alquiler"] = pasajerosactuales();
 
 				$this->load->view("movimiento/habitacion",$data);
+
 				break;
+
+
+
+
 			case '9':
 				$sql = "SELECT ip.idimprevisto,ip.fecha,hb.nrohabitacion,cli.apellidos,cli.nombres,ti.descripcion tipoimprevisto,ip.monto,ip.estado
 				FROM imprevisto ip INNER JOIN alquiler al ON (al.idalquiler = ip.alquiler_idalquiler)

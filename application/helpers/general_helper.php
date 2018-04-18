@@ -99,9 +99,10 @@
 	                if($resto < $alquiler[$h]->precioxdia){
 	                    $resto = $alquiler[$h]->precioxdia-$resto;  
 	                    $pen+=$resto; 
+	                    $resto = 0;
 	                }else{
-	                    if($resto == $alquiler[$h]->precioxdia){
-	                        $resto = $alquiler[$h]->precioxdia-$resto;         
+	                    if($resto >= $alquiler[$h]->precioxdia){
+	                        $resto = $resto-$alquiler[$h]->precioxdia;         
 	                    }
 	                }
 	              } 
