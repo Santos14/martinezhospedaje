@@ -13,6 +13,22 @@ function init(){
 	});
 }
 
+
+function verhistorial(id){
+
+	$.get(url+controlador+"/verhistorial/"+id, function(data) {
+		$("#tableList").empty().html(data);
+		$('#datatable').dataTable();
+	});
+}
+function ver_alquiler(id){
+	$.get(url+"alquiler/ver_alquiler/"+id, function(data) {
+		$("#detallever").empty().html(data);
+		$("#modalver").modal("show");
+	});
+	
+}
+
 function init_servicio(){
 	$.get(url+controlador+"/space_servicio", function(servicio) {
 		$("#space_servicio").empty().html(servicio);

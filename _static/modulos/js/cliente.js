@@ -17,6 +17,22 @@ function init(){
 	});
 }
 
+function verhistorial(id){
+
+	$.get(url+controlador+"/verhistorial/"+id, function(data) {
+		$("#tableList").empty().html(data);
+		$('#datatable').dataTable();
+	});
+}
+
+function ver_alquiler(id){
+	$.get(url+"alquiler/ver_alquiler/"+id, function(data) {
+		$("#detallever").empty().html(data);
+		$("#modalver").modal("show");
+	});
+	
+}
+
 function form_add(){
 	save_method = 'add';
 	$("#title_form").text("Agregar "+text);

@@ -54,8 +54,12 @@
                                             $d ="INACTIVO";
                                             break;
                                         case '5':
-                                            $classd= "btn btn-primary";
+                                            $classd= "btn btn-primary btn-xs";
                                             $d ="EVENTUAL";
+                                            break;
+                                        case '6':
+                                            $classd= "btn btn-danger btn-xs";
+                                            $d ="MENSUAL";
                                             break;
                                     }
 
@@ -110,6 +114,9 @@
                                         </button>
                                          <button onclick="showEliminar('<?= $val->idhabitacion ?>')" type="button" class='btn btn-danger btn-sm'>
                                              <i class="fa fa-trash-o"></i>
+                                         </button>
+                                         <button onclick="verhistorial('<?= $val->idhabitacion ?>')" type="button" class='btn btn-info btn-sm'>
+                                             Historial
                                          </button>
                                     </td>
                                 </tr>

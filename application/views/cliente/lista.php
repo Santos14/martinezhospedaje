@@ -35,6 +35,9 @@
                                          <button onclick="showEliminar('<?= $val->idcliente ?>')" type="button" class='btn btn-danger btn-sm'>
                                              <i class="fa fa-trash-o"></i>
                                          </button>
+                                         <button onclick="verhistorial('<?= $val->idcliente ?>')" type="button" class='btn btn-info btn-sm'>
+                                             Historial
+                                         </button>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>

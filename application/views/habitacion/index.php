@@ -181,6 +181,8 @@
                             <option value="1">Libre</option>
                             <option value="2">Ocupado</option>
                             <option value="3">Reservado</option>
+                            <option value="5">Eventual</option>
+                            <option value="6">Mensual</option>
                             <option value="4">Inactivo</option>
                         </select>
                 </div>
@@ -198,5 +200,12 @@
             </div>
         </div>
         </form>
+    </div>
+</div>
+<div id="modalver" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content" id="detallever">
+            
+        </div>
     </div>
 </div>

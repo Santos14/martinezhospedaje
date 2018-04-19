@@ -15,6 +15,27 @@ class Habitacion extends CI_Controller {
 		$this->load->view("habitacion/lista",$data);
 	}
 
+	public function verhistorial($id){
+
+		$sql_alq = "SELECT al.*,cli.nrodocumento,cli.nombres,cli.apellidos,hb.nrohabitacion,
+		(
+		SELECT sum(amr.monto)
+		FROM alquiler alq INNER JOIN amortizacion amr ON (alq.idalquiler = amr.alquiler_idalquiler)
+		WHERE amr.estado = '1' and alq.idalquiler = al.idalquiler
+		GROUP BY alq.idalquiler
+		) montopagado
+		FROM alquiler al INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion)
+		INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
+		WHERE hb.idhabitacion=".$id." ORDER BY al.fecha_ingreso desc";
+
+		$data["alquileres"] = $this->allmodel->querySql($sql_alq)->result();
+
+		$data["habitacion"] = $this->allmodel->selectWhere("habitacion",array("idhabitacion"=>$id))->result();
+
+		$this->load->view("habitacion/historial",$data);
+
+	}
+
 	public function form_nuevo(){
 		$data["tipohabitacion"] = $this->allmodel->selectWhere('tipohabitacion',array("estado"=>'1'))->result();
 		$this->load->view("habitacion/nuevo",$data);	

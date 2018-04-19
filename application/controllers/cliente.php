@@ -26,6 +26,28 @@ class Cliente extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	public function verhistorial($id){
+
+		$sql_alq = "SELECT al.*,cli.nrodocumento,cli.nombres,cli.apellidos,hb.nrohabitacion,thb.descripcion tipohabitacion,
+		(
+		SELECT sum(amr.monto)
+		FROM alquiler alq INNER JOIN amortizacion amr ON (alq.idalquiler = amr.alquiler_idalquiler)
+		WHERE amr.estado = '1' and alq.idalquiler = al.idalquiler
+		GROUP BY alq.idalquiler
+		) montopagado
+		FROM alquiler al INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion)
+		INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
+		INNER JOIN tipohabitacion thb ON (thb.idtipohabitacion = hb.tipohabitacion_idtipohabitacion)
+		WHERE cli.idcliente=".$id." ORDER BY al.fecha_ingreso desc";
+
+		$data["alquileres"] = $this->allmodel->querySql($sql_alq)->result();
+
+		$data["cliente"] = $this->allmodel->selectWhere("cliente",array("idcliente"=>$id))->result();
+
+		$this->load->view("cliente/historial",$data);
+
+	}
+
 	public function ajax_searchdni($dni){
 		$sqldni = "SELECT * FROM cliente WHERE estado='1' and nrodocumento='".$dni."'";
 		$data = $this->allmodel->querySql($sqldni)->result();
