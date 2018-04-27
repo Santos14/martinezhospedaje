@@ -5,9 +5,8 @@
     <div class="container-fluid">
         <div class="row bg-title">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                <h4 class="page-title">Tabla Productos</h4> </div>
+                <h4 class="page-title">Reportes</h4> </div>
             <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
-                <a onclick="form_add()" class="btn btn-success pull-right m-l-20 hidden-xs hidden-sm waves-effect waves-light">Nuevo
 
                 </a>
                 <ol class="breadcrumb">
@@ -48,6 +47,9 @@
                 <br>
                 <br>
                     <iframe id="iframe-reporte" src="" style="width: 100%; height:450px;border:none;"> </iframe>
+                    
+                </div>
+                <div style="display: none" id="showtable">
                     
                 </div>
             </div>

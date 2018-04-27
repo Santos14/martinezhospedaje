@@ -51,8 +51,32 @@
 
 	  	 for ($h = 0; $h < count($alquiler) ; $h++) {
 
+	  	 	$m = false;
+
+	  	 	if($alquiler[$h]->tipoalquiler_idtipoalquiler == '3'){
+	  	 		$fi = new DateTime($alquiler[$h]->fecha_salida);
+	  	 		$diff = $ahora->diff($fi);
+
+	          	$dias = (strtotime(date("Y-m-d"))-strtotime(date_format($fi,"Y-m-d")))/86400;
+	         	$dias = abs($dias); $dias = floor($dias); 
+	         	if(
+	         		$diff->y == 0 && 
+	         		date("H")>=$hora_termino && 
+	         		date("i")>=$minuto_termino && 
+	         		date("s")>=$segundo_termino
+	         	){
+	         		$m = true;
+	         		$f = $alquiler[$h]->fecha_salida;
+	         	}
+	  	 	}else{
+	  	 		$m = true;
+	  	 		$f = $alquiler[$h]->fecha_ingreso;
+	  	 	}
+
+	  	 	if($m){
+
 	        $ahora = new DateTime("NOW");
-	        $fi = new DateTime($alquiler[$h]->fecha_ingreso);
+	        $fi = new DateTime($f);
 	        $diff = $ahora->diff($fi);
 
 	          $dias = (strtotime(date_format($fi,"Y-m-d"))-strtotime(date("Y-m-d")))/86400;
@@ -164,6 +188,9 @@
 	             }
 	                       
 	          endif;  
+	         }else{
+	         	$pen = 0;
+	         }
 
 	          
 

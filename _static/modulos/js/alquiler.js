@@ -280,6 +280,8 @@ function save_cliente(){
 		}
 	}
 	if(!fallas){
+
+		$("#btn_add_cliente").attr("disabled",true);
 		$.ajax({
 			url: url+'cliente/ajax_save',
 			type: 'POST',
@@ -288,6 +290,7 @@ function save_cliente(){
 			success: function(data){
 				console.log(data);
 				$('#modalFormulario').modal('hide');
+				$("#btn_add_cliente").removeAttr("disabled");
 				alerta("Guardado Exitoso",'Se guardo correctamente','success');
 			},
 			error: function(jqXHR, textStatus, errorThrown){

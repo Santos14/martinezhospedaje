@@ -117,6 +117,8 @@ function amortizar(id,total,acc){
 	        "compras" : $("#v"+$("#h_idalquiler").val()).val(),
 	        "imprevistos" : $("#i"+$("#h_idalquiler").val()).val()
 	    };
+
+	    console.log(datae);
 	   
 		$("#btn_amortiza_movimiento").attr("disabled",true);
 		$.ajax({

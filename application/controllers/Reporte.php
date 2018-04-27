@@ -109,21 +109,21 @@ class Reporte extends CI_Controller {
 		$ingresos = "SELECT mo.fecha,po.descripcion,mo.descripcion desmovimiento,mo.monto
 		FROM movimiento mo INNER JOIN concepto po ON (po.idconcepto = mo.concepto_idconcepto)
 		INNER JOIN tipomovimiento tm ON (tm.idtipomovimiento = po.tipomovimiento_idtipomovimiento)
-		WHERE date(mo.fecha) = '".$fecha."' and extract(HOUR from mo.fecha)>=".number_format($politica[0]->numero,'0')." and tm.idtipomovimiento = 1 UNION
+		WHERE date(mo.fecha) = '".$fecha."' and extract(HOUR from mo.fecha)>=".number_format($politica[0]->numero,'0')." and tm.idtipomovimiento = 1 and mo.estado='1' UNION
 		SELECT mo.fecha,po.descripcion,mo.descripcion desmovimiento,mo.monto
 		FROM movimiento mo INNER JOIN concepto po ON (po.idconcepto = mo.concepto_idconcepto)
 		INNER JOIN tipomovimiento tm ON (tm.idtipomovimiento = po.tipomovimiento_idtipomovimiento)
-		WHERE date(mo.fecha) = '".date ('Y-m-d',strtotime('+1 day',strtotime(date($fecha))))."' and extract(HOUR from mo.fecha)<".number_format($politica[0]->numero,'0')." and tm.idtipomovimiento = 1";
+		WHERE date(mo.fecha) = '".date ('Y-m-d',strtotime('+1 day',strtotime(date($fecha))))."' and extract(HOUR from mo.fecha)<".number_format($politica[0]->numero,'0')." and tm.idtipomovimiento = 1 and mo.estado='1'";
 
 		$egresos = "SELECT mo.fecha,po.descripcion,mo.descripcion desmovimiento,mo.monto
 		FROM movimiento mo INNER JOIN concepto po ON (po.idconcepto = mo.concepto_idconcepto)
 		INNER JOIN tipomovimiento tm ON (tm.idtipomovimiento = po.tipomovimiento_idtipomovimiento)
-		WHERE date(mo.fecha) = '".$fecha."' and extract(HOUR from mo.fecha)>=".number_format($politica[0]->numero,'0')." and tm.idtipomovimiento = 2
+		WHERE date(mo.fecha) = '".$fecha."' and extract(HOUR from mo.fecha)>=".number_format($politica[0]->numero,'0')." and tm.idtipomovimiento = 2 and mo.estado='1'
 		UNION
 		SELECT mo.fecha,po.descripcion,mo.descripcion desmovimiento,mo.monto
 		FROM movimiento mo INNER JOIN concepto po ON (po.idconcepto = mo.concepto_idconcepto)
 		INNER JOIN tipomovimiento tm ON (tm.idtipomovimiento = po.tipomovimiento_idtipomovimiento)
-		WHERE date(mo.fecha) = '".date ('Y-m-d',strtotime('+1 day',strtotime(date($fecha))))."' and extract(HOUR from mo.fecha)<".number_format($politica[0]->numero,'0')." and tm.idtipomovimiento = 2";
+		WHERE date(mo.fecha) = '".date ('Y-m-d',strtotime('+1 day',strtotime(date($fecha))))."' and extract(HOUR from mo.fecha)<".number_format($politica[0]->numero,'0')." and tm.idtipomovimiento = 2 and mo.estado='1'";
 
 		
 
@@ -197,8 +197,8 @@ class Reporte extends CI_Controller {
 		$html.= "<p>Saldo del Dia: ".($sum_ing-$sum_egr)."</p>";
 
 
-
-
+		
+		
 		$this->load->library('Pdf');
 
 		$pdf = new Pdf('L', 'mm', 'A4', true, 'UTF-8', false);
@@ -225,6 +225,7 @@ class Reporte extends CI_Controller {
 		$nombre_archivo = utf8_decode("ingresos.pdf");
 		ob_end_clean();
 		$pdf->Output($nombre_archivo, 'I');
+		
 
 	}
 
@@ -236,9 +237,11 @@ class Reporte extends CI_Controller {
 					(date(mo.fecha) BETWEEN '".$fecha_inicio."' AND '".$fecha_fin."') ";
 
 	
-		$data = $this->allmodel->querySql($sql)->result(); 
+		$data["data"] = $this->allmodel->querySql($sql)->result(); 
 
-		$html = "<h1 text-align='center'>Adelanto de Sueldo</h1>";
+		$this->load->view("reporte/adelantosueldo_table",$data);
+
+		/*$html = "<h1 text-align='center'>Adelanto de Sueldo</h1>";
 		$html.= "<h4>".$fecha_inicio." - ".$fecha_fin."</h4>";
 		$html.= "<table border='1'>";
 		$html.= "	<thead>";
@@ -263,7 +266,6 @@ class Reporte extends CI_Controller {
 			$html.= "			<td>".$val->monto."</td>";
 			$html.= "		</tr>";
 		}
-
 		$html.= "	</tbody>";
 		$html.= "</table>";
 
@@ -294,7 +296,7 @@ class Reporte extends CI_Controller {
 
 		$nombre_archivo = utf8_decode("adelantosueldo.pdf");
 		ob_end_clean();
-		$pdf->Output($nombre_archivo, 'I');
+		$pdf->Output($nombre_archivo, 'I');*/
 
 	}
 

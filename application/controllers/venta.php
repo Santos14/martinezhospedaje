@@ -26,7 +26,7 @@ class Venta extends CI_Controller {
 	}
 
 	public function form_nuevo(){
-		$sql_habocupadas = "SELECT * FROM habitacion WHERE disponibilidad='2' and estado <> '0'";
+		$sql_habocupadas = "SELECT * FROM habitacion WHERE (disponibilidad='2' or disponibilidad='3' or disponibilidad='5' or disponibilidad='6' ) and estado <> '0' ORDER BY idhabitacion asc";
 		$sql_producto = "SELECT * FROM producto WHERE estado='1'";
 		$data["hab_ocupadas"] = $this->allmodel->querySql($sql_habocupadas)->result();
 		$data["productos"] = $this->allmodel->querySql($sql_producto)->result();

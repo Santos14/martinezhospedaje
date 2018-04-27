@@ -124,6 +124,13 @@ class Alquiler extends CI_Controller {
 		$this->load->view("alquiler/detalle",$data);	
 	}
 
+	public function pg(){
+		$data = pasajerosactuales();
+		echo "<pre>";
+		print_r($data);
+
+	}
+
 	public function listapasajeros(){
 	
 		$sql_habitacion = "SELECT * FROM habitacion WHERE estado <>'0' ORDER BY idhabitacion asc";
@@ -468,25 +475,24 @@ class Alquiler extends CI_Controller {
 
 		$this->db->trans_start();
 
-		if($alojamiento!=0){
-			$movimiento = array(
-				"concepto_idconcepto" => 1,
-				"fecha" => date("Y-m-d H:i:s"),
-				"estado" => '1',
-				"monto" => $monto
-			);
-			$ma = $this->allmodel->create("movimiento", $movimiento);
+		$movimiento = array(
+			"concepto_idconcepto" => 1,
+			"fecha" => date("Y-m-d H:i:s"),
+			"estado" => '1',
+			"monto" => $monto
+		);
+		$ma = $this->allmodel->create("movimiento", $movimiento);
 
-			$alojamiento = array(
-				"movimiento_idmovimiento" => $ma,
-				"alquiler_idalquiler" =>$idalquiler,
-				"fecha" => date("Y-m-d H:i:s"),
-				"monto" => $monto,
-				"estado" => "1"
-			);
-			$a = $this->allmodel->create("amortizacion", $alojamiento);
-			//falta cambiar de estado a la habitacion
-		}
+		$alojamiento = array(
+			"movimiento_idmovimiento" => $ma,
+			"alquiler_idalquiler" =>$idalquiler,
+			"fecha" => date("Y-m-d H:i:s"),
+			"monto" => $monto,
+			"estado" => "1"
+		);
+		$a = $this->allmodel->create("amortizacion", $alojamiento);
+		//falta cambiar de estado a la habitacion
+		
 
 
 		$this->db->trans_complete();

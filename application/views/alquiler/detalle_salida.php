@@ -17,7 +17,8 @@ $dias = (strtotime(date_format($fechaingreso,"Y-m-d"))-strtotime(date("Y-m-d")))
 $dias = abs($dias); $dias = floor($dias); 
 
 ?>
-
+ <?php $tipoalquiler = $alquiler[0]->tipoalquiler_idtipoalquiler; ?>
+                    <?php if($tipoalquiler != '3'){ ?>
 
                     <?php 
                           $rango=false;
@@ -194,6 +195,15 @@ $dias = abs($dias); $dias = floor($dias);
                           <?php endif; ?>
 
                   
+
+
+                  <?php }else if($tipoalquiler == '3'){ 
+
+                          $pen = 0;
+                        } ?>
+
+
+
                           <?php $comp = 0; ?>
                           <?php foreach ($ventas as $venta): ?>
       
@@ -227,6 +237,7 @@ $dias = abs($dias); $dias = floor($dias);
                             ?>
                           
                         <?php endforeach; ?>
+                      ?>
 
 
 <form id="form_pagartodo" class="form-horizontal form-label-left form-material">
