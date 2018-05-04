@@ -12,12 +12,192 @@ class Reporte extends CI_Controller {
 	function adelantopersonal(){
 		layoutSystem("reporte/adelantopersonal");
 	}
-	function deudasactuales(){
-		layoutSystem("reporte/deudasactuales");
+	function estadisticamensual(){
+		$data["anios"] = $this->allmodel->querySql("SELECT DISTINCT(EXTRACT(YEAR from fecha_ingreso)) anios FROM alquiler")->result();
+		layoutSystem("reporte/estadisticamensual",$data);
 	}
 
+	function informeestadistica($mes,$anio){
+		$data["anio"] = $anio;
+		$data["mes"] = $mes;
+
+		
+		$sql_IsB = "SELECT hbt.idhabitacion,hbt.nrohabitacion
+		FROM habitacion hbt INNER JOIN tipohabitacion tht ON (hbt.tipohabitacion_idtipohabitacion = tht.idtipohabitacion)
+		WHERE tht.descripcion='Individual' and hbt.disponibilidad <> '4' and hbt.idhabitacion NOT IN (
+		SELECT hb.idhabitacion
+		FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		INNER JOIN detalle_servicio ds ON (hb.idhabitacion = ds.habitacion_idhabitacion)
+		INNER JOIN servicio s ON (ds.servicio_idservicio = s.idservicio)
+		WHERE th.descripcion='Individual' and s.descripcion='Baño' and hb.disponibilidad <> '4'
+		)";
+		$sql_IcB = "SELECT hb.idhabitacion,hb.nrohabitacion
+		FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		INNER JOIN detalle_servicio ds ON (hb.idhabitacion = ds.habitacion_idhabitacion)
+		INNER JOIN servicio s ON (ds.servicio_idservicio = s.idservicio)
+		WHERE th.descripcion='Individual' and s.descripcion='Baño' and hb.disponibilidad <> '4'";
+
+		$sql_McB = "SELECT hb.idhabitacion,hb.nrohabitacion
+		FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		INNER JOIN detalle_servicio ds ON (hb.idhabitacion = ds.habitacion_idhabitacion)
+		INNER JOIN servicio s ON (ds.servicio_idservicio = s.idservicio)
+		WHERE th.descripcion='Matrimonial' and s.descripcion='Baño' and hb.disponibilidad <> '4'";
+		$sql_MsB = "SELECT hbt.idhabitacion,hbt.nrohabitacion
+		FROM habitacion hbt INNER JOIN tipohabitacion tht ON (hbt.tipohabitacion_idtipohabitacion = tht.idtipohabitacion)
+		WHERE tht.descripcion='Matrimonial' and hbt.disponibilidad <> '4' and hbt.idhabitacion NOT IN (
+		SELECT hb.idhabitacion
+		FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		INNER JOIN detalle_servicio ds ON (hb.idhabitacion = ds.habitacion_idhabitacion)
+		INNER JOIN servicio s ON (ds.servicio_idservicio = s.idservicio)
+		WHERE th.descripcion='Matrimonial' and s.descripcion='Baño' and hb.disponibilidad <> '4'
+		)";
+
+		$sql_DcB = "SELECT hb.idhabitacion,hb.nrohabitacion
+		FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		INNER JOIN detalle_servicio ds ON (hb.idhabitacion = ds.habitacion_idhabitacion)
+		INNER JOIN servicio s ON (ds.servicio_idservicio = s.idservicio)
+		WHERE th.descripcion='Doble' and s.descripcion='Baño' and hb.disponibilidad <> '4'";
+		$sql_DsB = "SELECT hbt.idhabitacion,hbt.nrohabitacion
+		FROM habitacion hbt INNER JOIN tipohabitacion tht ON (hbt.tipohabitacion_idtipohabitacion = tht.idtipohabitacion)
+		WHERE tht.descripcion='Doble' and hbt.disponibilidad <> '4' and hbt.idhabitacion NOT IN (
+		SELECT hb.idhabitacion
+		FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		INNER JOIN detalle_servicio ds ON (hb.idhabitacion = ds.habitacion_idhabitacion)
+		INNER JOIN servicio s ON (ds.servicio_idservicio = s.idservicio)
+		WHERE th.descripcion='Doble' and s.descripcion='Baño' and hb.disponibilidad <> '4'
+		)";
+
+		$sql_nrocamas_ind = "SELECT hb.idhabitacion,hb.nrohabitacion,th.descripcion tipohabitacion, de.especificacion
+		FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		INNER JOIN detalle_elementos de ON (de.habitacion_idhabitacion = hb.idhabitacion)
+		INNER JOIN elemento e ON (e.idelemento = de.elemento_idelemento)
+		WHERE th.descripcion='Individual' and e.descripcion='Cama' and hb.disponibilidad <> '4'";
+
+		$sql_nrocamas_dob = "SELECT hb.idhabitacion,hb.nrohabitacion,th.descripcion tipohabitacion, de.especificacion
+		FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		INNER JOIN detalle_elementos de ON (de.habitacion_idhabitacion = hb.idhabitacion)
+		INNER JOIN elemento e ON (e.idelemento = de.elemento_idelemento)
+		WHERE th.descripcion='Doble' and e.descripcion='Cama' and hb.disponibilidad <> '4'";
+
+		$sql_nrocamas_mat = "SELECT hb.idhabitacion,hb.nrohabitacion,th.descripcion tipohabitacion, de.especificacion
+		FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		INNER JOIN detalle_elementos de ON (de.habitacion_idhabitacion = hb.idhabitacion)
+		INNER JOIN elemento e ON (e.idelemento = de.elemento_idelemento)
+		WHERE th.descripcion='Matrimonial' and e.descripcion='Cama' and hb.disponibilidad <> '4'";
+
+		$sql_arrib_ind = "SELECT count(al.idalquiler) arribos
+		FROM alquiler al 
+		INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion) 
+		INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
+		WHERE th.descripcion='Individual' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' 
+		and (EXTRACT(MONTH FROM al.fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM al.fecha_ingreso) = '".$anio."')";
+		$sql_arrib_mat = "SELECT count(al.idalquiler) arribos
+		FROM alquiler al 
+		INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion) 
+		INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
+		WHERE th.descripcion='Matrimonial' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' 
+		and (EXTRACT(MONTH FROM al.fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM al.fecha_ingreso) = '".$anio."')";
+		$sql_arrib_dob = "SELECT count(al.idalquiler) arribos
+		FROM alquiler al 
+		INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion) 
+		INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
+		WHERE th.descripcion='Doble' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' 
+		and (EXTRACT(MONTH FROM al.fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM al.fecha_ingreso) = '".$anio."')";
+
+		$sql_habnocheocupadas_ind = "SELECT hb.idhabitacion, hb.nrohabitacion, sum(al.nrodias) totaldias
+		FROM alquiler al INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion) 
+		INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		WHERE th.descripcion='Individual' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' and (EXTRACT(MONTH FROM al.fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM al.fecha_ingreso) = '".$anio."') 
+		GROUP BY hb.idhabitacion, hb.nrohabitacion";
+
+		$sql_habnocheocupadas_mat = "SELECT hb.idhabitacion, hb.nrohabitacion, sum(al.nrodias) totaldias
+		FROM alquiler al INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion) 
+		INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		WHERE th.descripcion='Matrimonial' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' and (EXTRACT(MONTH FROM al.fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM al.fecha_ingreso) = '".$anio."')  
+		GROUP BY hb.idhabitacion, hb.nrohabitacion";
+
+
+		$sql_habnocheocupadas_dob = "SELECT hb.idhabitacion, hb.nrohabitacion, sum(al.nrodias) totaldias
+		FROM alquiler al INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion) 
+		INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+		WHERE th.descripcion='Doble' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' and (EXTRACT(MONTH FROM al.fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM al.fecha_ingreso) = '".$anio."')  
+		GROUP BY hb.idhabitacion, hb.nrohabitacion";
+
+		$sql_arribos_dias = "SELECT date(fecha_ingreso) ingreso, count(idalquiler) veces
+		FROM alquiler
+		WHERE estado = '2' and tipoalquiler_idtipoalquiler <> '2'
+					and (EXTRACT(MONTH FROM fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM fecha_ingreso) = '".$anio."')
+		GROUP BY date(fecha_ingreso)
+		ORDER BY date(fecha_ingreso) asc";
+
+
+		$sql_arribos_proc = "SELECT pr.idprocedencia,pr.lugar,pr.tipoprocedencia, count(al.idalquiler) nroarribos FROM alquiler al INNER JOIN procedencia pr ON (al.procedencia_idprocedencia = pr.idprocedencia)  WHERE pr.estado = '1' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' and (EXTRACT(MONTH FROM fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM fecha_ingreso) = '".$anio."') GROUP BY pr.idprocedencia,pr.lugar,pr.tipoprocedencia";
+
+		$sql_pernotacion_proc = "SELECT pr.idprocedencia,pr.lugar,pr.tipoprocedencia, sum(al.nrodias) nropernotaciones
+		FROM alquiler al INNER JOIN procedencia pr ON (al.procedencia_idprocedencia = pr.idprocedencia) 
+		WHERE pr.estado = '1' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' 
+		and (EXTRACT(MONTH FROM fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM fecha_ingreso) = '".$anio."')
+		GROUP BY pr.idprocedencia,pr.lugar,pr.tipoprocedencia";
+
+		$sql_arrib_motivoviaje = "SELECT mv.idmotivoviaje,pr.tipoprocedencia,mv.descripcion,count(al.idalquiler) nroarribos
+		FROM alquiler al INNER JOIN procedencia pr ON (al.procedencia_idprocedencia = pr.idprocedencia) 
+		INNER JOIN motivoviaje mv ON (al.motivoviaje_idmotivoviaje = mv.idmotivoviaje)
+		WHERE pr.estado = '1' and mv.estado='1' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' and (EXTRACT(MONTH FROM fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM fecha_ingreso) = '".$anio."')
+		GROUP BY mv.idmotivoviaje,pr.tipoprocedencia,mv.descripcion";
+
+		$sql_proc_nac = "SELECT * FROM procedencia WHERE estado='1' and tipoprocedencia='N' ORDER BY lugar asc";
+		$sql_proc_ext = "SELECT * FROM procedencia WHERE estado='1' and tipoprocedencia='E' ORDER BY lugar asc";
+
+		$sql_motviaj = "SELECT * FROM motivoviaje WHERE estado='1'";
+
+
+
+
+
+		$data["ind_sinB"] = $this->allmodel->querySql($sql_IsB)->result();
+		$data["ind_conB"] = $this->allmodel->querySql($sql_IcB)->result();
+
+		$data["mat_sinB"] = $this->allmodel->querySql($sql_MsB)->result();
+		$data["mat_conB"] = $this->allmodel->querySql($sql_McB)->result();
+
+		$data["dob_sinB"] = $this->allmodel->querySql($sql_DsB)->result();
+		$data["dob_conB"] = $this->allmodel->querySql($sql_DcB)->result();
+
+		$data["nrocamas_ind"] = $this->allmodel->querySql($sql_nrocamas_ind)->result();
+		$data["nrocamas_mat"] = $this->allmodel->querySql($sql_nrocamas_mat)->result();
+		$data["nrocamas_dob"] = $this->allmodel->querySql($sql_nrocamas_dob)->result();
+
+		$data["arrib_ind"] = $this->allmodel->querySql($sql_arrib_ind)->result();
+		$data["arrib_mat"] = $this->allmodel->querySql($sql_arrib_mat)->result();
+		$data["arrib_dob"] = $this->allmodel->querySql($sql_arrib_dob)->result();
+
+		$data["hbnoche_ind"] = $this->allmodel->querySql($sql_habnocheocupadas_ind)->result();
+		$data["hbnoche_mat"] = $this->allmodel->querySql($sql_habnocheocupadas_mat)->result();
+		$data["hbnoche_dob"] = $this->allmodel->querySql($sql_habnocheocupadas_dob)->result();
+
+		$data["arrib_dias"] = $this->allmodel->querySql($sql_arribos_dias)->result();
+
+		$data["arrib_proc"] = $this->allmodel->querySql($sql_arribos_proc)->result();
+
+		$data["pernt_proc"] = $this->allmodel->querySql($sql_pernotacion_proc)->result();
+		$data["arrib_movi"] = $this->allmodel->querySql($sql_arrib_motivoviaje)->result();
+
+		$data["proc_nac"] = $this->allmodel->querySql($sql_proc_nac)->result();
+		$data["proc_ext"] = $this->allmodel->querySql($sql_proc_ext)->result();
+
+		$data["motvviaje"] = $this->allmodel->querySql($sql_motviaj)->result();
+
+
+
+
+		$this->load->view("reporte/informe",$data);
+	}
 
 	function alojamiento_imprimir($fecha){
+
 		$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
 
 		$sql = "SELECT mv.fecha,hb.nrohabitacion,cli.nombres,cli.apellidos,al.estado,am.monto
@@ -35,70 +215,9 @@ class Reporte extends CI_Controller {
 		WHERE date(mv.fecha) = '".date ('Y-m-d',strtotime('+1 day',strtotime(date($fecha))))."' and extract(HOUR from mv.fecha)<".number_format($politica[0]->numero,'0');
 
 		
+		$data["info"] =  $this->allmodel->querySql($sql)->result();
 
-		$data = $this->allmodel->querySql($sql)->result(); 
-		$html = "<h1 text-align='center'>Alquiler de Habitaciones</h1>";
-		$html.= "<h4>Dia ".$fecha."</h4>";
-		$html.= "<table border='1'>";
-		$html.= "	<thead>";
-		$html.= "		<tr>";
-		$html.= "			<th>Item</th>";
-		$html.= "			<th>Fecha</th>";
-		$html.= "			<th>Habitacion</th>";
-		$html.= "			<th>Apellidos y Nombres</th>";
-		$html.= "			<th>Estado</th>";
-		$html.= "			<th>Monto</th>";
-		$html.= "		</tr>";
-		$html.= "	</thead>";
-		$html.= "	<tbody>";
-		$cont = 1;
-		$total = 0;
-		foreach ($data as $val) {
-			$total+=$val->monto;
-			$html.= "		<tr>";
-			$html.= "			<td>".$cont++."</td>";
-			$html.= "			<td>".$val->fecha."</td>";
-			$html.= "			<td>".$val->nrohabitacion."</td>";
-			$html.= "			<td>".$val->apellidos.",".$val->nombres."</td>";
-			$html.= "			<td>".$val->estado."</td>";
-			$html.= "			<td>".$val->monto."</td>";
-			$html.= "		</tr>";
-		}
-		
-
-
-		$html.= "	</tbody>";
-		$html.= "</table>";
-		$html.= "<p>Total: ".$total."</p>";
-
-
-
-		$this->load->library('Pdf');
-
-		$pdf = new Pdf('L', 'mm', 'A4', true, 'UTF-8', false);
-		$pdf->SetCreator(PDF_CREATOR);
-		$pdf->SetAuthor('Hospedaje Martinez');
-		$pdf->SetTitle('REPORTE HOSPEDAJE MARTINEZ');
-		$pdf->SetSubject('HOSPEDAJE');
-		$pdf->SetKeywords('REPORTE,HOSPEDAJE');
-
-		$subtitulobebe = "Ingresos por Habitacion";
- 		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-       	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-        $pdf->setFontSubsetting(true);
-		$pdf->SetFont('helvetica', '', 7);
-		$pdf->AddPage("A");
-
-		$pdf->writeHTML($html, true, 0, true, 0);
-
-		$nombre_archivo = utf8_decode("ingresos.pdf");
-		ob_end_clean();
-		$pdf->Output($nombre_archivo, 'I');
+		$this->load->view("reporte/estanciadia_table",$data);
 
 	}
 
@@ -125,108 +244,13 @@ class Reporte extends CI_Controller {
 		INNER JOIN tipomovimiento tm ON (tm.idtipomovimiento = po.tipomovimiento_idtipomovimiento)
 		WHERE date(mo.fecha) = '".date ('Y-m-d',strtotime('+1 day',strtotime(date($fecha))))."' and extract(HOUR from mo.fecha)<".number_format($politica[0]->numero,'0')." and tm.idtipomovimiento = 2 and mo.estado='1'";
 
-		
-
 		$dingresos = $this->allmodel->querySql($ingresos)->result(); 
 		$degresos = $this->allmodel->querySql($egresos)->result(); 
 
+		$data["ingreso"] = $dingresos;
+		$data["egreso"] = $degresos;
 
-		$html = "<h1>Reporte del Dia ".$fecha."</h1>";
-		$html.= "<h3>Ingresos</h3>";
-		$html.= "<table border='1'>";
-	
-		$html.= "		<tr>";
-		$html.= "			<th>Item</th>";
-		$html.= "			<th>Fecha</th>";
-		$html.= "			<th>Concepto</th>";
-		$html.= "			<th>Descripcion</th>";
-		$html.= "			<th>Monto</th>";
-		$html.= "		</tr>";
-	
-		$cont = 1;
-		$sum_ing = 0;
-		foreach ($dingresos as $ig) {
-			
-			$html.= "		<tr>";
-			$html.= "			<td>".$cont++."</td>";
-			$html.= "			<td>".$ig->fecha."</td>";
-			$html.= "			<td>".$ig->descripcion."</td>";
-			$html.= "			<td>".$ig->desmovimiento."</td>";
-			$html.= "			<td>".$ig->monto."</td>";
-			$html.= "		</tr>";
-
-			$sum_ing+=$ig->monto;
-		}
-		
-	
-		$html.= "</table>";
-		$html.= "<p>Total: ".$sum_ing."</p>";
-
-		//EGRESOS
-
-		$html.= "<h3>Egresos</h3>";
-
-		$html.= "<table style='border:3px;'>";
-		$html.= "	<thead>";
-		$html.= "		<tr>";
-		$html.= "			<th>Item</th>";
-		$html.= "			<th>Fecha</th>";
-		$html.= "			<th>Concepto</th>";
-		$html.= "			<th>Descripcion</th>";
-		$html.= "			<th>Monto</th>";
-		$html.= "		</tr>";
-		$html.= "	</thead>";
-		$html.= "	<tbody>";
-		$cont = 1;
-		$sum_egr = 0;
-		foreach ($degresos as $eg) {
-			
-			$html.= "		<tr>";
-			$html.= "			<td>".$cont++."</td>";
-			$html.= "			<td>".$eg->fecha."</td>";
-			$html.= "			<td>".$eg->descripcion."</td>";
-			$html.= "			<td>".$eg->desmovimiento."</td>";
-			$html.= "			<td>".$eg->monto."</td>";
-			$html.= "		</tr>";
-			$sum_egr+=$eg->monto;
-		}
-		
-		$html.= "	</tbody>";
-		$html.= "</table>";
-		$html.= "<p>Total: ".$sum_egr."</p>";
-		$html.= "<p>Saldo del Dia: ".($sum_ing-$sum_egr)."</p>";
-
-
-		
-		
-		$this->load->library('Pdf');
-
-		$pdf = new Pdf('L', 'mm', 'A4', true, 'UTF-8', false);
-		$pdf->SetCreator(PDF_CREATOR);
-		$pdf->SetAuthor('Hospedaje Martinez');
-		$pdf->SetTitle('REPORTE HOSPEDAJE MARTINEZ');
-		$pdf->SetSubject('HOSPEDAJE');
-		$pdf->SetKeywords('REPORTE,HOSPEDAJE');
-
-		$subtitulobebe = "Ingresos por Habitacion";
- 		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-       	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-        $pdf->setFontSubsetting(true);
-		$pdf->SetFont('helvetica', '', 7);
-		$pdf->AddPage("A");
-
-		$pdf->writeHTML($html, true, 0, true, 0);
-
-		$nombre_archivo = utf8_decode("ingresos.pdf");
-		ob_end_clean();
-		$pdf->Output($nombre_archivo, 'I');
-		
-
+		$this->load->view("reporte/movimientosdia_table",$data);
 	}
 
 
@@ -241,133 +265,7 @@ class Reporte extends CI_Controller {
 
 		$this->load->view("reporte/adelantosueldo_table",$data);
 
-		/*$html = "<h1 text-align='center'>Adelanto de Sueldo</h1>";
-		$html.= "<h4>".$fecha_inicio." - ".$fecha_fin."</h4>";
-		$html.= "<table border='1'>";
-		$html.= "	<thead>";
-		$html.= "		<tr>";
-		$html.= "			<th>Item</th>";
-		$html.= "			<th>Fecha</th>";
-		$html.= "			<th>Concepto</th>";
-		$html.= "			<th>Personal</th>";
-		$html.= "			<th>Monto</th>";
-		$html.= "		</tr>";
-		$html.= "	</thead>";
-		$html.= "	<tbody>";
-		$cont = 1;
-		$total = 0;
-		foreach ($data as $val) {
-			$total+=$val->monto;
-			$html.= "		<tr>";
-			$html.= "			<td>".$cont++."</td>";
-			$html.= "			<td>".$val->fecha."</td>";
-			$html.= "			<td>".$val->concepto."</td>";
-			$html.= "			<td>".$val->descripcion."</td>";
-			$html.= "			<td>".$val->monto."</td>";
-			$html.= "		</tr>";
-		}
-		$html.= "	</tbody>";
-		$html.= "</table>";
-
-
-
-		$this->load->library('Pdf');
-
-		$pdf = new Pdf('L', 'mm', 'A4', true, 'UTF-8', false);
-		$pdf->SetCreator(PDF_CREATOR);
-		$pdf->SetAuthor('Hospedaje Martinez');
-		$pdf->SetTitle('REPORTE HOSPEDAJE MARTINEZ');
-		$pdf->SetSubject('HOSPEDAJE');
-		$pdf->SetKeywords('REPORTE,HOSPEDAJE');
-
-		$subtitulobebe = "Ingresos por Habitacion";
- 		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-       	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-        $pdf->setFontSubsetting(true);
-		$pdf->SetFont('helvetica', '', 7);
-		$pdf->AddPage("A");
-
-		$pdf->writeHTML($html, true, 0, true, 0);
-
-		$nombre_archivo = utf8_decode("adelantosueldo.pdf");
-		ob_end_clean();
-		$pdf->Output($nombre_archivo, 'I');*/
-
 	}
-
-	public function deudasdia_imprimir(){
-		$data_alquiler = pasajerosactuales();
-
-	    $html = "<h1 text-align='center'>Deudas Actuales</h1>";
-		$html.= "<table border='1'>";
-		$html.= "	<thead>";
-		$html.= "		<tr>";
-		$html.= "			<th>Nro Hab.</th>";
-		$html.= "			<th>Precio</th>";
-		$html.= "			<th>Ingreso</th>";
-		$html.= "			<th>Nombres y Apellidos</th>";
-		$html.= "			<th>Deuda Total</th>";
-		$html.= "		</tr>";
-
-		$html.= "	</thead>";
-		$html.= "	<tbody>";
-		$cont = 1;
-		$total = 0;
-
-		for ($i=0; $i < count($data_alquiler["alquiler"]) ; $i++) {	
-			$html.= "		<tr>";
-			$html.= "			<td>".$data_alquiler["alquiler"][$i]->nrohabitacion."</td>";
-			$html.= "			<td>".$data_alquiler["alquiler"][$i]->precioxdia."</td>";
-			$html.= "			<td>".$data_alquiler["alquiler"][$i]->fecha_ingreso."</td>";
-			$html.= "			<td>".$data_alquiler["alquiler"][$i]->nombres." ".$data_alquiler["alquiler"][$i]->apellidos."</td>";
-			$html.= "			<td>".number_format(($data_alquiler["deuda_habitacion"][$i]+$data_alquiler["deuda_ventas"][$i]+$data_alquiler["deuda_imprevistos"][$i]),'2')."</td>";
-			$html.= "		</tr>";
-			$html.= "		<hr>";
-
-		}	
-
-		$html.= "	</tbody>";
-		$html.= "</table>";
-
-		
-
-		$this->load->library('Pdf');
-
-		$pdf = new Pdf('L', 'mm', 'A4', true, 'UTF-8', false);
-		$pdf->SetCreator(PDF_CREATOR);
-		$pdf->SetAuthor('Hospedaje Martinez');
-		$pdf->SetTitle('REPORTE HOSPEDAJE MARTINEZ');
-		$pdf->SetSubject('HOSPEDAJE');
-		$pdf->SetKeywords('REPORTE,HOSPEDAJE');
-
-		$subtitulobebe = "Ingresos por Habitacion";
- 		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-       	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-        $pdf->setFontSubsetting(true);
-		$pdf->SetFont('helvetica', '', 6);
-		$pdf->AddPage("A");
-
-		
-		$pdf->writeHTML($html, true, false, true, false, '');
-
-		$nombre_archivo = utf8_decode("deudasactuales.pdf");
-		ob_end_clean();
-		$pdf->Output($nombre_archivo, 'I');
-	  	//fin
-	}
-
-
-
 
 
 

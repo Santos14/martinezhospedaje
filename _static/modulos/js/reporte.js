@@ -1,18 +1,127 @@
 $(document).ready(function () {
  	
 });
+function verinforme(){
+	if($("#mes").val()!='' && $("#anio").val()!=''){
+		$.get(url+"reporte/informeestadistica/"+$("#mes").val()+"/"+$("#anio").val(), function(data) {
+			$("#showtable").empty().html(data);
+		});
+	}
+}
+
 function alojamiento(){
 	if($("#dia").val()!=''){
-		var urlenvio = url+"reporte/alojamiento_imprimir/"+$("#dia").val();
-		$("#iframe-reporte").attr("src",urlenvio); 
+		$.get(url+"reporte/alojamiento_imprimir/"+$("#dia").val(), function(data) {
+
+			$("#showtable").empty().html(data);
+			var base64Img = null;
+			var doc = new jsPDF();
+
+	        doc.text("Hospedaje Martinez",14, 15);
+	        doc.setFontSize(9);
+	        doc.text("Calle Julio C. Pinedo N° 152 - Telef.: (065) 352935", 14, 20);
+	        doc.setFontSize(7);
+	        doc.text("Yurmaguas - Alto Amazonas - Loreto", 14, 24);
+
+		       
+
+		    var totalPagesExp = "{total_pages_count_string}";
+		    doc.setFontSize(14);
+		    doc.text("Reporte de Pagos por Habitacion", 14, 37);
+		    doc.setFontSize(8);
+		    doc.text("DIA: "+$("#dia").val(), 14, 42);
+		    var elem = document.getElementById("table_reporte");
+		    var res = doc.autoTableHtmlToJson(elem);
+
+		    doc.autoTable(res.columns, res.data, {
+		    	
+		    	startY: 45,
+		    	styles: {cellPadding: 0.5, fontSize: 9},
+		    	columnStyles: {text: {columnWidth: 'auto'}}
+		    });
+
+		   
+
+		    if (typeof doc.putTotalPages === 'function') {
+		        doc.putTotalPages(totalPagesExp);
+		    }
+
+		    doc.setProperties({
+	            title: 'Pago de Alquileres',
+	            subject: 'A jspdf-autotable example pdf'
+	        });
+
+		    $("#iframe-reporte").attr("src",doc.output('datauristring'));
+		});
 	}else{
 		alerta("Sin Fecha","Ingrese Fecha","error");
 	}
 }
 function estadodia(){
 	if($("#dia").val()!=''){
-		var urlenvio = url+"reporte/estadodia_imprimir/"+$("#dia").val();
-		$("#iframe-reporte").attr("src",urlenvio); 
+		$.get(url+"reporte/estadodia_imprimir/"+$("#dia").val(), function(data) {
+
+			$("#showtable").empty().html(data);
+			var base64Img = null;
+			var doc = new jsPDF();
+
+	        doc.text("Hospedaje Martinez",14, 15);
+	        doc.setFontSize(9);
+	        doc.text("Calle Julio C. Pinedo N° 152 - Telef.: (065) 352935", 14, 20);
+	        doc.setFontSize(7);
+	        doc.text("Yurmaguas - Alto Amazonas - Loreto", 14, 24);
+
+		       
+
+		    var totalPagesExp = "{total_pages_count_string}";
+		    doc.setFontSize(14);
+		    doc.text("Reporte del de Movimientos del Dia", 14, 37);
+		    doc.setFontSize(8);
+		    doc.text("DIA: "+$("#dia").val(), 14, 42);
+		    var t_ing = document.getElementById("table_i");
+		    var t_egr = document.getElementById("table_e");
+		    var t_sal = document.getElementById("table_s");
+		    var res_ing = doc.autoTableHtmlToJson(t_ing);
+		    var res_egr = doc.autoTableHtmlToJson(t_egr);
+		    var res_sal = doc.autoTableHtmlToJson(t_sal);
+
+
+		    doc.setFontSize(11);
+		    doc.text("Ingresos",14,52);
+		    doc.autoTable(res_ing.columns, res_ing.data, {
+		    	
+		    	startY: 55,
+		    	styles: {cellPadding: 0.5, fontSize: 9},
+		    	columnStyles: {text: {columnWidth: 'auto'}}
+		    });
+
+		    doc.text("Egresos",14,doc.autoTable.previous.finalY + 10);
+		    doc.autoTable(res_egr.columns, res_egr.data, {
+				
+		    	startY: doc.autoTable.previous.finalY + 15,
+		    	styles: {cellPadding: 0.5, fontSize: 9},
+		    	columnStyles: {text: {columnWidth: 'auto'}}
+		    });
+
+		    doc.autoTable(res_sal.columns, res_sal.data, {
+				
+		    	startY: doc.autoTable.previous.finalY + 15,
+		    	styles: {cellPadding: 0.5, fontSize: 11},
+		    	columnStyles: {text: {columnWidth: 'auto'}}
+		    });
+
+
+		    if (typeof doc.putTotalPages === 'function') {
+		        doc.putTotalPages(totalPagesExp);
+		    }
+
+		    doc.setProperties({
+	            title: 'Movimientos del Dia',
+	            subject: 'A jspdf-autotable example pdf'
+	        });
+
+		    $("#iframe-reporte").attr("src",doc.output('datauristring'));
+		});
 	}else{
 		alerta("Sin Fecha","Ingrese Fecha","error");
 	}
@@ -79,31 +188,4 @@ function adelantosueldo(){
 	}
 }
 
-function pAdelantoSueldo(){
-	
-}
 
-
-
-function deudasdia(){
-	var urlenvio = url+"reporte/deudasdia_imprimir/";
-	$("#iframe-reporte").attr("src",urlenvio); 
-}
-
-
-
-
-function probar(){
-	var columns = [ " ID " , " Nombre " , " País " ];
-	var rows = [
-	    [ 1 , " Shaw " , " Tanzania "],
-	    [ 2 , " Nelson " , " Kazajstán "],
-	    [ 3 , " Garcia " , " Madagascar "],
-	];
-
-	// Solo pt soportado (no mm o in) 
-	var doc = new jsPDF('p','pt');
-	doc.autoTable (columns, rows);
-	//doc.save ('table.pdf');
-	doc.output('dataurlnewwindow'); 
-}

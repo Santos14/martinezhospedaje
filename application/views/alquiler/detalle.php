@@ -100,8 +100,8 @@ $dias = abs($dias); $dias = floor($dias);
                           ?>
 
                           
-
-                          <?php if($dias == "0"):?>
+                        
+                          <?php if($dias == "0"): ?>
 
                                 <tr>
                                   <td><?= $cont++ ?></td>
@@ -121,8 +121,10 @@ $dias = abs($dias); $dias = floor($dias);
                                   <?php $p = count($pagado); ?>
                                   <?php 
                                   
+                                  
 
                                   if($rango){
+
                                     if(date("H")>=$hora_termino && date("i")>=$minuto_termino && date("s")>=$segundo_termino){
                                        $s = 1;
                                       }
@@ -293,6 +295,7 @@ $dias = abs($dias); $dias = floor($dias);
                       <div class="text-center">
                         DEUDA(S/.) <input style="color: #FFF;width: 100px;text-align:center;font-weight:bold;font-size: 16px;background: #41b3f9; border:1px solid silver;border-radius: 10px;padding: 5px;" name="deudaxhabitacion" id="deudaxhabitacion" readonly="" value="<?= number_format($pen,'2') ?>">  
                       </div>
+
 
                       <?php }else if($tipoalquiler == '3'){ 
 

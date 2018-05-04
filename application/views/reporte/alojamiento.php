@@ -5,14 +5,12 @@
     <div class="container-fluid">
         <div class="row bg-title">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                <h4 class="page-title">Tabla Productos</h4> </div>
+                <h4 class="page-title">REPORTES</h4> </div>
             <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
-                <a onclick="form_add()" class="btn btn-success pull-right m-l-20 hidden-xs hidden-sm waves-effect waves-light">Nuevo
-
-                </a>
+    
                 <ol class="breadcrumb">
                     <li><a href="<?= base_url('home'); ?>">Home</a></li>
-                    <li class="active">Alojamiento</li>
+                    <li class="active">Pagos por Alquiler</li>
                 </ol>
             </div>
             <!-- /.col-lg-12 -->
@@ -22,8 +20,8 @@
             <div class="row">
             <div class="col-sm-12">
                 <div class="white-box">
-                    <h3 class="box-title">Reporte Alojamiento</h3>
-                    <p class="text-muted">Ingresos por Alojamiento</p>
+                    <h3 class="box-title">Reporte de Pagos de los Alquileres</h3>
+                    <p class="text-muted">Personas que pagaron sus alquileres en un dia especifico</p>
                  
                         <div class="form-group">
                             <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="nacionalidad">
@@ -41,6 +39,9 @@
                 <br>
                 <br>
                     <iframe id="iframe-reporte" src="" style="width: 100%; height:450px;border:none;"> </iframe>
+                    <div style="display: none" id="showtable">
+                    
+                    </div>
                     
                 </div>
             </div>

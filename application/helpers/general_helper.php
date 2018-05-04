@@ -235,19 +235,18 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+	function getMonthDays($Month, $Year){
+	   //Si la extensión que mencioné está instalada, usamos esa.
+	   if( is_callable("cal_days_in_month"))
+	   {
+	      return cal_days_in_month(CAL_GREGORIAN, $Month, $Year);
+	   }
+	   else
+	   {
+	      //Lo hacemos a mi manera.
+	      return date("d",mktime(0,0,0,$Month+1,0,$Year));
+	   }
+	}
 
 	function strdivider($cadena,$delimiter){
 		$c = array();

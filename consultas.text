@@ -1,0 +1,167 @@
+DOBLES CON BAÑO
+------------------
+
+SELECT hb.idhabitacion,hb.nrohabitacion
+FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+INNER JOIN detalle_servicio ds ON (hb.idhabitacion = ds.habitacion_idhabitacion)
+INNER JOIN servicio s ON (ds.servicio_idservicio = s.idservicio)
+WHERE th.descripcion='Doble' and s.descripcion='Baño' and hb.disponibilidad <> '4'
+
+DOBLES SIN BAÑO
+----------------
+
+SELECT hbt.idhabitacion,hbt.nrohabitacion
+FROM habitacion hbt INNER JOIN tipohabitacion tht ON (hbt.tipohabitacion_idtipohabitacion = tht.idtipohabitacion)
+WHERE tht.descripcion='Doble' and hbt.disponibilidad <> '4' and hbt.idhabitacion NOT IN (
+SELECT hb.idhabitacion
+FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+INNER JOIN detalle_servicio ds ON (hb.idhabitacion = ds.habitacion_idhabitacion)
+INNER JOIN servicio s ON (ds.servicio_idservicio = s.idservicio)
+WHERE th.descripcion='Doble' and s.descripcion='Baño' and hb.disponibilidad <> '4'
+)
+
+MARTRIMONIALES CON BAÑO
+-----------------------
+
+SELECT hb.idhabitacion,hb.nrohabitacion
+FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+INNER JOIN detalle_servicio ds ON (hb.idhabitacion = ds.habitacion_idhabitacion)
+INNER JOIN servicio s ON (ds.servicio_idservicio = s.idservicio)
+WHERE th.descripcion='Matrimonial' and s.descripcion='Baño' and hb.disponibilidad <> '4'
+
+MATRIMONIALES SIN BAÑO
+----------------------
+SELECT hbt.idhabitacion,hbt.nrohabitacion
+FROM habitacion hbt INNER JOIN tipohabitacion tht ON (hbt.tipohabitacion_idtipohabitacion = tht.idtipohabitacion)
+WHERE tht.descripcion='Matrimonial' and hbt.disponibilidad <> '4' and hbt.idhabitacion NOT IN (
+SELECT hb.idhabitacion
+FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+INNER JOIN detalle_servicio ds ON (hb.idhabitacion = ds.habitacion_idhabitacion)
+INNER JOIN servicio s ON (ds.servicio_idservicio = s.idservicio)
+WHERE th.descripcion='Matrimonial' and s.descripcion='Baño' and hb.disponibilidad <> '4'
+)
+
+INDIVIDUAL CON BAÑO
+-------------------
+SELECT hb.idhabitacion,hb.nrohabitacion
+FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+INNER JOIN detalle_servicio ds ON (hb.idhabitacion = ds.habitacion_idhabitacion)
+INNER JOIN servicio s ON (ds.servicio_idservicio = s.idservicio)
+WHERE th.descripcion='Individual' and s.descripcion='Baño' and hb.disponibilidad <> '4'
+
+
+INDIVIDUAL SIN BAÑO
+-------------------
+SELECT hbt.idhabitacion,hbt.nrohabitacion
+FROM habitacion hbt INNER JOIN tipohabitacion tht ON (hbt.tipohabitacion_idtipohabitacion = tht.idtipohabitacion)
+WHERE tht.descripcion='Individual' and hbt.disponibilidad <> '4' and hbt.idhabitacion NOT IN (
+SELECT hb.idhabitacion
+FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+INNER JOIN detalle_servicio ds ON (hb.idhabitacion = ds.habitacion_idhabitacion)
+INNER JOIN servicio s ON (ds.servicio_idservicio = s.idservicio)
+WHERE th.descripcion='Individual' and s.descripcion='Baño' and hb.disponibilidad <> '4'
+)
+
+
+NRO CAMAS INDIVIDUALES
+-----------------------
+
+SELECT hb.idhabitacion,hb.nrohabitacion,th.descripcion tipohabitacion, de.especificacion
+FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+INNER JOIN detalle_elementos de ON (de.habitacion_idhabitacion = hb.idhabitacion)
+INNER JOIN elemento e ON (e.idelemento = de.elemento_idelemento)
+WHERE th.descripcion='Individual' and e.descripcion='Cama' and hb.disponibilidad <> '4'
+
+NRO CAMAS MATIMONIALES
+------------------------
+SELECT hb.idhabitacion,hb.nrohabitacion,th.descripcion tipohabitacion, de.especificacion
+FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+INNER JOIN detalle_elementos de ON (de.habitacion_idhabitacion = hb.idhabitacion)
+INNER JOIN elemento e ON (e.idelemento = de.elemento_idelemento)
+WHERE th.descripcion='Matrimonial' and e.descripcion='Cama' and hb.disponibilidad <> '4'
+
+NRO CAMAS DOBLES 
+----------------
+
+SELECT hb.idhabitacion,hb.nrohabitacion,th.descripcion tipohabitacion, de.especificacion
+FROM habitacion hb INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+INNER JOIN detalle_elementos de ON (de.habitacion_idhabitacion = hb.idhabitacion)
+INNER JOIN elemento e ON (e.idelemento = de.elemento_idelemento)
+WHERE th.descripcion='Doble' and e.descripcion='Cama' and hb.disponibilidad <> '4'
+
+ARRIBOS INDIVIDUALES
+--------------------
+
+	SELECT count(al.idalquiler) arribos
+	FROM alquiler al 
+	INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion) 
+	INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+	INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
+	WHERE th.descripcion='Individual' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' 
+	and (EXTRACT(MONTH FROM al.fecha_ingreso) = '4' and EXTRACT(YEAR FROM al.fecha_ingreso) = '2018')
+
+
+ARRIBOS DOBLES Y MATRIMONIALES
+------------------------------
+
+SELECT count(al.idalquiler) arribos
+FROM alquiler al 
+INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion) 
+INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
+WHERE (th.descripcion='Doble' or th.descripcion='Matrimonial') and al.estado <> '0' and al.tipoalquiler_idtipoalquiler<>'2' 
+and (EXTRACT(MONTH FROM al.fecha_ingreso) = '4' and EXTRACT(YEAR FROM al.fecha_ingreso) = '2018')
+
+HABITACIONES NOCHE OCUPADAS INDIVIDUALES
+----------------------------------------
+
+SELECT hb.idhabitacion, hb.nrohabitacion, sum(al.nrodias) totaldias
+FROM alquiler al INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion) 
+INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+WHERE th.descripcion='Individual' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' 
+GROUP BY hb.idhabitacion, hb.nrohabitacion
+
+
+HABITACIONES NOCHE OCUPADAS DOBLES Y MATRIMONIALES
+--------------------------------------------------
+
+SELECT hb.idhabitacion, hb.nrohabitacion, sum(al.nrodias) totaldias
+FROM alquiler al INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion) 
+INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+WHERE (th.descripcion='Doble' or th.descripcion='Matrimonial')  and al.estado <> '0' and al.tipoalquiler_idtipoalquiler<>'2' 
+GROUP BY hb.idhabitacion, hb.nrohabitacion
+
+
+ARRIBOS POR DIA
+------------------------------------
+
+SELECT date(fecha_ingreso) ingreso, count(idalquiler) veces
+FROM alquiler
+WHERE estado = '2' and tipoalquiler_idtipoalquiler <> '2'
+			and (EXTRACT(MONTH FROM fecha_ingreso) = '4' and EXTRACT(YEAR FROM fecha_ingreso) = '2018')
+GROUP BY date(fecha_ingreso)
+ORDER BY date(fecha_ingreso) asc
+
+ARRIBOS POR PROCEDENCIA
+-----------------------
+SELECT pr.idprocedencia,pr.lugar,pr.tipoprocedencia, count(al.idalquiler) nroarribos
+FROM alquiler al INNER JOIN procedencia pr ON (al.procedencia_idprocedencia = pr.idprocedencia) 
+WHERE pr.estado = '1' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' 
+GROUP BY pr.idprocedencia,pr.lugar,pr.tipoprocedencia
+
+PERNOTACIONES POR PROCEDENCIA
+-------------------------------
+SELECT pr.idprocedencia,pr.lugar,pr.tipoprocedencia, sum(al.nrodias) nropernotaciones
+FROM alquiler al INNER JOIN procedencia pr ON (al.procedencia_idprocedencia = pr.idprocedencia) 
+WHERE pr.estado = '1' and al.estado <> '0' and al.tipoalquiler_idtipoalquiler<>'2' 
+GROUP BY pr.idprocedencia,pr.lugar,pr.tipoprocedencia
+
+
+ARRIBOS POR MOTIVOS DE VIAJE
+-----------------------------
+SELECT mv.idmotivoviaje,pr.tipoprocedencia,mv.descripcion,count(al.idalquiler) nroarribos
+FROM alquiler al INNER JOIN procedencia pr ON (al.procedencia_idprocedencia = pr.idprocedencia) 
+INNER JOIN motivoviaje mv ON (al.motivoviaje_idmotivoviaje = mv.idmotivoviaje)
+WHERE pr.estado = '1' and mv.estado='1' and al.estado <> '0' and al.tipoalquiler_idtipoalquiler<>'2' 
+GROUP BY mv.idmotivoviaje,pr.tipoprocedencia,mv.descripcion
+
