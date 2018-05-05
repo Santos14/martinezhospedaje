@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Imprevisto extends CI_Controller {
 	public function index(){
-		$sql_habocupadas = "SELECT * FROM habitacion WHERE disponibilidad='2' and estado <> '0'";
+		$sql_habocupadas = "SELECT * FROM habitacion WHERE disponibilidad='2' and estado <> '0' ORDER BY nrohabitacion asc";
 		$tipoimprevisto = "SELECT * FROM tipoimprevisto WHERE estado = '1'";
 		$data["hab_ocupadas"] = $this->allmodel->querySql($sql_habocupadas)->result();
 		$data["tipoimprevisto"] = $this->allmodel->querySql($tipoimprevisto)->result();

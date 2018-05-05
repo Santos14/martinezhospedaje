@@ -18,6 +18,8 @@
             <!-- /.col-lg-12 -->
         </div>
         <!-- /row -->
+
+       <h1><u><?= nombreMes(date("m")) ?> DEL <?= date("Y") ?></u></h1>
         <div id="tableList">
             
         </div>

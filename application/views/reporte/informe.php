@@ -2,78 +2,29 @@
 
 <h3 align="center"><strong><u>ESTADISTICA DEL MES DE 
     <?php 
-        switch ($mes) {
-            case '1':
-                $nmes = "ENERO";
-                break;
-             case '2':
-                $nmes = "FEBRERO";
-                 break;
-            case '3':
-                $nmes = "MARZO";
-                break;
-            case '4':
-                $nmes = "ABRIL";
-                break;
-            case '5':
-                $nmes = "MAYO";
-                # code...
-                break;
-            case '6':
-                $nmes = "JUNIO";
-                # code...
-                break;
-            case '7':
-                $nmes = "JULIO";
-                # code...
-                break;
-            case '8':
-                $nmes = "AGOSTO";
-                # code...
-                break;
-            case '9':
-                $nmes = "SETIEMBRE";
-                # code...
-                break;
-            case '10':
-                $nmes = "OCTUBRE";
-                # code...
-                break;
-            case '11':
-                $nmes = "NOVIEMBRE";
-                # code...
-                break;
-            case '12':
-                $nmes = "DICIEMBRE";
-                # code...
-                break; 
-        }
-        echo $nmes." DEL ".$anio;
+    
+        echo nombreMes($mes)." DEL ".$anio;
 
     ?></u>
 </strong></h3>
 <br>
 <br>
+<legend>CAPITULO I: IDENTIFICACION Y UBICACION DEL ESTABLECIMIENTO</legend>
 <table class="table table-bordered">
-    <legend>CAPITULO I: IDENTIFICACION Y UBICACION DEL ESTABLECIMIENTO</legend>
-    <tr>
-        <td>Razon Social</td>
-        <td>MARIA LILA TUESTA DE MARTINEZ</td>
-        <td>RUC</td>
-        <td colspan="5">10009110696</td>
-   
-    </tr>
+    
+  
     <tr>
         <td>Nombre Comercial</td>
         <td>HOSPEDAJE MARTINEZ</td>
         <td>Clase</td>
         <td></td>
         <td>Categoria</td>
-        <td></td>s
+        <td></td>
         <td>Nro Certificado</td>
         <td>S/N</td>
         
     </tr>
+
     <tr>
         <td>Direccion</td>
         <td>Julio C. Pinedo # 152</td>
@@ -322,10 +273,14 @@
                         }
                         foreach ($pernt_proc as $arr) {
                             if($arr->idprocedencia == $pext->idprocedencia){
-                                $nropert = $arr->nropernotaciones;
-                                break;
+                                if($arr->descripcion == 'Individual'){
+                                    $nropert += $arr->totaldias;
+                                }else if($arr->descripcion == 'Matrimonial' || $arr->descripcion == 'Doble'){
+                                    $nropert += $arr->totaldias*2;
+                                }
                             }
                         }
+
                          $tarribosext += $arribos;
                          $tpernext+=$nropert;
                         ?>
@@ -370,8 +325,11 @@
                         }
                         foreach ($pernt_proc as $arr) {
                             if($arr->idprocedencia == $pnac->idprocedencia){
-                                $nropert = $arr->nropernotaciones;
-                                break;
+                                if($arr->descripcion == 'Individual'){
+                                    $nropert += $arr->totaldias;
+                                }else if($arr->descripcion == 'Matrimonial' || $arr->descripcion == 'Doble'){
+                                    $nropert += $arr->totaldias*2;
+                                }
                             }
                         }
                         $tarribosnac+=$arribos;

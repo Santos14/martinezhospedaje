@@ -36,7 +36,11 @@
                      <div class="col-md-2 col-sm-6 col-xs-12" id="estcli">
                         
                     </div>
-                    <div class="col-md-1 col-sm-6 col-xs-12">
+  
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        <button onclick="search_cliente()" type="button" class='btn btn-info'>
+                            <i class="fa fa-search"></i>    
+                        </button>
                         <button onclick="form_cliente()" type="button" class='btn btn-info'>
                             <i class="fa fa-plus"></i>    
                         </button>
@@ -186,6 +190,59 @@
                 <button type="button" class="btn btn-success" id="btn_add_cliente" onclick="save_cliente()">
                     Aceptar
                 </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalListaClientes" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="title_form">LISTA DE CLIENTES</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table" id="clientesList">
+                        <thead>
+                            <tr>
+                                <td>#</td>
+                                <td>Tipo Doc</td>
+                                <td>N° Doc</td>
+                                <td>Nombre</td>
+                                <td>Apellido</td>
+                                <td>Accion</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $cont=1; ?>
+                            <?php foreach ($clientes as $cli): ?>
+                            <tr>
+                                <td><?= $cont++ ?></td>
+                                <td>
+                                <?php 
+                                    if($cli->tipodocumento=='0'){
+                                        echo "DNI";
+                                    }else{
+                                        echo "Pasaporte";
+                                    }
+                                ?>      
+                                </td>
+                                <td><?= $cli->nrodocumento ?></td>
+                                <td><?= $cli->nombres ?></td>
+                                <td><?= $cli->apellidos ?></td>
+                                <td><button class="btn btn-success btn-xs" onclick="seleccionaCliente('<?= $cli->idcliente ?>','<?= $cli->nombres ?>','<?= $cli->apellidos ?>','<?= $cli->nrodocumento ?>')">Agregar</button></td>
+                            </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cerrar
+                </button>
+               
             </div>
         </div>
     </div>

@@ -7,14 +7,16 @@ var idglobal;
 var table;
 
 function init(){
-	$.get(url+controlador+"/tableList", function(data) {
+	$.get(url+controlador+"/tableList/"+$("#mes").val()+"/"+$("#anio").val(), function(data) {
 		$("#tableList").empty().html(data);
 		$('#datatable').dataTable();
 	});
 }
 
+
 function form_add(){
 	save_method = 'add';
+	$("#panelNuevo").hide();
 	$.get(url+controlador+"/form_nuevo", function(data) {
 		$("#tableList").empty().html(data);
 		//$("#newpanel").hide();

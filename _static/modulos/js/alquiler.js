@@ -14,6 +14,52 @@ function init(){
 	});
 }
 
+function search_cliente(){
+	$('#clientesList').dataTable();
+	$("#modalListaClientes").modal("show");
+}
+
+function seleccionaCliente(idcliente,nombre,apellido,nrodoc){
+	$.get(url+"alquiler/ajax_morosidad/"+idcliente+"/1", function(morosidad1) {
+		$.get(url+"alquiler/ajax_morosidad/"+idcliente+"/2", function(morosidad2) {
+		
+				if(morosidad2.length>0){
+					$("#btn_save_alquiler").attr("disabled",true);
+					clas = "btn btn-danger";
+					icon = "fa fa-close";
+					text = "MOROSO";
+					func = "1";
+				}else{
+					$("#btn_save_alquiler").removeAttr('disabled');
+					clas = "btn btn-success";
+					icon = "fa fa-check";
+					text = "EXCELENTE";
+					func = "2";
+				}
+				$("#idcliente").val(idcliente);
+				$("#al_dni").val(nrodoc);
+				$("#cliente").val(apellido+", "+nombre);
+				$("#panelmorosidad").empty().html(morosidad1);
+				
+
+				btn = "<button type='button' onclick=\"vermoroso('"+func+"','"+est+"')\" class='"+clas+"'>";
+                btn+= "<i class='"+icon+"'></i> "+text;
+                btn+= "</button>";
+
+                $("#estcli").html(btn);
+                if(morosidad2.length>0){
+                	
+                	alerta("Cliente Moroso","No se podra registrar Alquiler","error");
+                }
+  
+				$("#estcli").show();
+
+				$("#modalListaClientes").modal("hide");
+	
+		},"json");
+	});
+}
+
 function view_miniatura(){
 	$("#miniatura").removeClass().addClass('btn btn-primary');
 	$("#lista").removeClass().addClass('btn btn-default');
@@ -231,7 +277,6 @@ function searchdni(c){
 							icon = "fa fa-close";
 							text = "MOROSO";
 							func = "1";
-
 						}else{
 							$("#btn_save_alquiler").removeAttr('disabled');
 							clas = "btn btn-success";

@@ -10,7 +10,7 @@ class Habitacion extends CI_Controller {
 		$sql = "SELECT h.*,th.descripcion tipohabitacion 
 				FROM habitacion h INNER JOIN tipohabitacion th ON (h.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
 				WHERE h.estado<>'0' 
-				ORDER BY h.idhabitacion asc";
+				ORDER BY h.nrohabitacion asc";
 		$data["data"] = $this->allmodel->querySql($sql);
 		$this->load->view("habitacion/lista",$data);
 	}
@@ -53,9 +53,21 @@ class Habitacion extends CI_Controller {
 
 	function cambiar_estado(){
 		$idhabitacion = $this->input->post("idhabitacion");
-		$estado = array(
-			"disponibilidad" =>  $this->input->post("c_estado")
-		);
+		$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 1))->result();
+		$cambsa = "+".number_format($politica[0]->numero,'0')." day";
+
+		if($this->input->post("c_estado")=='2' || $this->input->post("c_estado")=='5' || $this->input->post("c_estado")=='6'){
+			$estado = array(
+				"disponibilidad" =>  $this->input->post("c_estado"),
+				"cambiosabana" =>  date ('Y-m-d',strtotime($cambsa,strtotime(date("Y-m-d")))),
+				"estcambiosabana" => "0"
+			);
+		}else{
+			$estado = array(
+				"disponibilidad" =>  $this->input->post("c_estado")
+			);
+		}
+		
 
 		$s = $this->allmodel->update("habitacion", $estado, array('idhabitacion'=> $idhabitacion));
 		echo json_encode($s);

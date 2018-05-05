@@ -12,9 +12,35 @@ class Reporte extends CI_Controller {
 	function adelantopersonal(){
 		layoutSystem("reporte/adelantopersonal");
 	}
+
+	function estadomes(){
+		$data["anios"] = $this->allmodel->querySql("SELECT DISTINCT(EXTRACT(YEAR from fecha_ingreso)) anios FROM alquiler")->result();
+		layoutSystem("reporte/estadomes",$data);
+	}
 	function estadisticamensual(){
 		$data["anios"] = $this->allmodel->querySql("SELECT DISTINCT(EXTRACT(YEAR from fecha_ingreso)) anios FROM alquiler")->result();
 		layoutSystem("reporte/estadisticamensual",$data);
+	}
+
+	function estadomes_imprimir($mes,$anio){
+		
+		$ingresos = "SELECT mo.fecha,po.descripcion,mo.descripcion desmovimiento,mo.monto
+		FROM movimiento mo INNER JOIN concepto po ON (po.idconcepto = mo.concepto_idconcepto)
+		INNER JOIN tipomovimiento tm ON (tm.idtipomovimiento = po.tipomovimiento_idtipomovimiento)
+		WHERE tm.idtipomovimiento = 1 and mo.estado='1' and (EXTRACT(MONTH FROM mo.fecha) = '".$mes."' and EXTRACT(YEAR FROM mo.fecha) = '".$anio."') ORDER BY mo.fecha asc";
+
+		$egresos = "SELECT mo.fecha,po.descripcion,mo.descripcion desmovimiento,mo.monto
+		FROM movimiento mo INNER JOIN concepto po ON (po.idconcepto = mo.concepto_idconcepto)
+		INNER JOIN tipomovimiento tm ON (tm.idtipomovimiento = po.tipomovimiento_idtipomovimiento)
+		WHERE tm.idtipomovimiento = 2 and mo.estado='1' and (EXTRACT(MONTH FROM mo.fecha) = '".$mes."' and EXTRACT(YEAR FROM mo.fecha) = '".$anio."') ORDER BY mo.fecha asc";
+
+		$dingresos = $this->allmodel->querySql($ingresos)->result(); 
+		$degresos = $this->allmodel->querySql($egresos)->result(); 
+
+		$data["ingreso"] = $dingresos;
+		$data["egreso"] = $degresos;
+
+		$this->load->view("reporte/movimientosmes_table",$data);
 	}
 
 	function informeestadistica($mes,$anio){
@@ -136,11 +162,13 @@ class Reporte extends CI_Controller {
 
 		$sql_arribos_proc = "SELECT pr.idprocedencia,pr.lugar,pr.tipoprocedencia, count(al.idalquiler) nroarribos FROM alquiler al INNER JOIN procedencia pr ON (al.procedencia_idprocedencia = pr.idprocedencia)  WHERE pr.estado = '1' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' and (EXTRACT(MONTH FROM fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM fecha_ingreso) = '".$anio."') GROUP BY pr.idprocedencia,pr.lugar,pr.tipoprocedencia";
 
-		$sql_pernotacion_proc = "SELECT pr.idprocedencia,pr.lugar,pr.tipoprocedencia, sum(al.nrodias) nropernotaciones
-		FROM alquiler al INNER JOIN procedencia pr ON (al.procedencia_idprocedencia = pr.idprocedencia) 
-		WHERE pr.estado = '1' and al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' 
-		and (EXTRACT(MONTH FROM fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM fecha_ingreso) = '".$anio."')
-		GROUP BY pr.idprocedencia,pr.lugar,pr.tipoprocedencia";
+		$sql_pernotacion_proc = "SELECT hb.idhabitacion,pr.idprocedencia, hb.nrohabitacion,th.descripcion, sum(al.nrodias) totaldias
+			FROM alquiler al INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion) 
+			INNER JOIN tipohabitacion th ON (hb.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+			INNER JOIN procedencia pr ON (pr.idprocedencia = al.procedencia_idprocedencia)
+			WHERE al.estado = '2' and al.tipoalquiler_idtipoalquiler<>'2' and 
+			(EXTRACT(MONTH FROM fecha_ingreso) = '".$mes."' and EXTRACT(YEAR FROM fecha_ingreso) = '".$anio."') 
+			GROUP BY hb.idhabitacion,pr.idprocedencia, hb.nrohabitacion,th.descripcion";
 
 		$sql_arrib_motivoviaje = "SELECT mv.idmotivoviaje,pr.tipoprocedencia,mv.descripcion,count(al.idalquiler) nroarribos
 		FROM alquiler al INNER JOIN procedencia pr ON (al.procedencia_idprocedencia = pr.idprocedencia) 

@@ -127,6 +127,78 @@ function estadodia(){
 	}
 }
 
+function verestadomes(){
+	if($("#mes").val()!='' && $("#anio").val()!=''){
+		$.get(url+"reporte/estadomes_imprimir/"+$("#mes").val()+"/"+$("#anio").val(), function(data) {
+
+			$("#showtable").empty().html(data);
+			var base64Img = null;
+			var doc = new jsPDF();
+
+	        doc.text("Hospedaje Martinez",14, 15);
+	        doc.setFontSize(9);
+	        doc.text("Calle Julio C. Pinedo N° 152 - Telef.: (065) 352935", 14, 20);
+	        doc.setFontSize(7);
+	        doc.text("Yurmaguas - Alto Amazonas - Loreto", 14, 24);
+
+		       
+
+		    var totalPagesExp = "{total_pages_count_string}";
+		    doc.setFontSize(14);
+		    doc.text("Reporte del de Movimientos Mensuales", 14, 37);
+		    doc.setFontSize(8);
+		    doc.text("MES: "+$("#mes").val()+" - "+$("#anio").val(), 14, 42);
+		    var t_ing = document.getElementById("table_i");
+		    var t_egr = document.getElementById("table_e");
+		    var t_sal = document.getElementById("table_s");
+		    var res_ing = doc.autoTableHtmlToJson(t_ing);
+		    var res_egr = doc.autoTableHtmlToJson(t_egr);
+		    var res_sal = doc.autoTableHtmlToJson(t_sal);
+
+
+		    doc.setFontSize(11);
+		    doc.text("Ingresos",14,52);
+		    doc.autoTable(res_ing.columns, res_ing.data, {
+		    	
+		    	startY: 55,
+		    	styles: {cellPadding: 0.5, fontSize: 9},
+		    	columnStyles: {text: {columnWidth: 'auto'}}
+		    });
+
+		    doc.text("Egresos",14,doc.autoTable.previous.finalY + 10);
+		    doc.autoTable(res_egr.columns, res_egr.data, {
+				
+		    	startY: doc.autoTable.previous.finalY + 15,
+		    	styles: {cellPadding: 0.5, fontSize: 9},
+		    	columnStyles: {text: {columnWidth: 'auto'}}
+		    });
+
+		    doc.autoTable(res_sal.columns, res_sal.data, {
+				
+		    	startY: doc.autoTable.previous.finalY + 15,
+		    	styles: {cellPadding: 0.5, fontSize: 11},
+		    	columnStyles: {text: {columnWidth: 'auto'}}
+		    });
+
+
+		    if (typeof doc.putTotalPages === 'function') {
+		        doc.putTotalPages(totalPagesExp);
+		    }
+
+		    doc.setProperties({
+	            title: 'Movimientos Mensuales',
+	            subject: 'A jspdf-autotable example pdf'
+	        });
+
+		    $("#iframe-reporte").attr("src",doc.output('datauristring'));
+		});
+	}else{
+		alerta("Sin Fecha","Ingrese Fecha","error");
+	}
+}
+
+
+
 function adelantosueldo(){
 	if($("#fecha_inicio").val()!='' && $("#fecha_fin").val()!=''){
 		$.get(url+"reporte/adelantosueldo_imprimir/"+$("#fecha_inicio").val()+"/"+$("#fecha_fin").val(), function(data) {

@@ -8,7 +8,7 @@ class Cliente extends CI_Controller {
 	}
 
 	public function tableList(){
-		$sql = "SELECT * FROM cliente WHERE estado='1' ORDER BY idcliente asc";
+		$sql = "SELECT * FROM cliente WHERE estado='1' ORDER BY idcliente desc";
 		$data["data"] = $this->allmodel->querySql($sql);
 		$this->load->view("cliente/lista",$data);
 	}

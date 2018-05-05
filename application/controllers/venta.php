@@ -7,7 +7,7 @@ class Venta extends CI_Controller {
 	}
 
 	public function tableList(){
-		$sql1 = "SELECT *, (SELECT sum(precio) from detalle_venta dv WHERE dv.venta_idventa = vt.idventa GROUP BY dv.venta_idventa) total,(SELECT val.alquiler_idalquiler FROM venta_alquiler val WHERE val.venta_idventa = vt.idventa) FROM venta vt";
+		$sql1 = "SELECT *, (SELECT sum(precio) from detalle_venta dv WHERE dv.venta_idventa = vt.idventa GROUP BY dv.venta_idventa) total,(SELECT val.alquiler_idalquiler FROM venta_alquiler val WHERE val.venta_idventa = vt.idventa) FROM venta vt ORDER BY vt.fecha desc";
 
 		$sql2 = "SELECT al.idalquiler,hb.nrohabitacion,cli.apellidos,cli.nombres,al.estado estadoalquiler FROM alquiler al INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente) INNER JOIN habitacion hb ON (hb.idhabitacion = al.habitacion_idhabitacion)";
 

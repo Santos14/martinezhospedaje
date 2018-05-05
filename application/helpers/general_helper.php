@@ -29,7 +29,7 @@
 				) pagado
 				FROM alquiler alq INNER JOIN habitacion hb ON (alq.habitacion_idhabitacion = hb.idhabitacion)
 				INNER JOIN cliente cli ON (cli.idcliente = alq.cliente_idcliente)
-				WHERE alq.estado='1' ORDER BY hb.idhabitacion asc";
+				WHERE alq.estado='1' ORDER BY hb.nrohabitacion asc";
 
 		$alquiler = $CI->allmodel->querySql($sql1)->result();
 
@@ -230,6 +230,56 @@
 	      }  
 
 	    return $data_alquiler;
+	}
+
+	function nombreMes($mes){
+		switch ($mes) {
+            case '1':
+                $nmes = "ENERO";
+                break;
+             case '2':
+                $nmes = "FEBRERO";
+                 break;
+            case '3':
+                $nmes = "MARZO";
+                break;
+            case '4':
+                $nmes = "ABRIL";
+                break;
+            case '5':
+                $nmes = "MAYO";
+                # code...
+                break;
+            case '6':
+                $nmes = "JUNIO";
+                # code...
+                break;
+            case '7':
+                $nmes = "JULIO";
+                # code...
+                break;
+            case '8':
+                $nmes = "AGOSTO";
+                # code...
+                break;
+            case '9':
+                $nmes = "SETIEMBRE";
+                # code...
+                break;
+            case '10':
+                $nmes = "OCTUBRE";
+                # code...
+                break;
+            case '11':
+                $nmes = "NOVIEMBRE";
+                # code...
+                break;
+            case '12':
+                $nmes = "DICIEMBRE";
+                # code...
+                break; 
+        }
+        return $nmes;
 	}
 
 
