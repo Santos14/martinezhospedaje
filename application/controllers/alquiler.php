@@ -265,35 +265,8 @@ class Alquiler extends CI_Controller {
 	}
 
 	public function form_salir($id){
-		$alquiler = $this->allmodel->selectWhere('alquiler',array("idalquiler"=>$id))->result();
-		$data["alquiler"] = $alquiler;
-		$data["habitacion"] = $this->allmodel->selectWhere('habitacion',array("idhabitacion"=>$alquiler[0]->habitacion_idhabitacion))->result();
-		$data["tipoalquiler"] = $this->allmodel->selectWhere('tipoalquiler',array("idtipoalquiler"=>$alquiler[0]->tipoalquiler_idtipoalquiler))->result();
-		$data["procedencia"] = $this->allmodel->selectWhere('procedencia',array("idprocedencia"=>$alquiler[0]->procedencia_idprocedencia))->result();
-		$data["cliente"] = $this->allmodel->selectWhere('cliente',array("idcliente"=>$alquiler[0]->cliente_idcliente))->result();
-		$data["motivoviaje"] = $this->allmodel->selectWhere('motivoviaje',array("idmotivoviaje"=>$alquiler[0]->motivoviaje_idmotivoviaje))->result();
-		$data["imprevistos"] = $this->allmodel->querySql("SELECT i.*,ti.descripcion tipoimprevisto
-		FROM imprevisto i INNER JOIN tipoimprevisto ti ON (i.tipoimprevisto_idtipoimprevisto = ti.idtipoimprevisto)
-		WHERE ti.estado <> '0' and alquiler_idalquiler=".$alquiler[0]->idalquiler)->result();
-
-		$data["ventas"] = $this->allmodel->querySql("SELECT v.*,(
-		SELECT sum(dv.precio)
-		FROM venta ve INNER JOIN detalle_venta dv ON (ve.idventa = dv.venta_idventa)
-		WHERE ve.estado<>'3' and ve.idventa = v.idventa
-		GROUP BY ve.idventa
-		) total
-		FROM alquiler a INNER JOIN venta_alquiler va on(a.idalquiler = va.alquiler_idalquiler)
-		INNER JOIN venta v ON(va.venta_idventa = v.idventa)
-		WHERE v.estado <> '3' and a.idalquiler =".$alquiler[0]->idalquiler)->result();
-
-		$data["pagado"] = $this->allmodel->querySql("SELECT sum(am.monto) monto
-		FROM alquiler al INNER JOIN amortizacion am ON (al.idalquiler = am.alquiler_idalquiler)
-		WHERE am.estado = '1' and al.idalquiler = ".$alquiler[0]->idalquiler."
-		GROUP BY al.idalquiler")->result();
-
-		$data["politica"] = $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
-
-
+		$data["data_alquiler"] = pasajerosactuales();
+		$data["idalquiler"] = $id;
 		$this->load->view("alquiler/detalle_salida",$data);	
 	}
 

@@ -181,26 +181,7 @@ function imprevisto(id,total){
 }
 
 function compras(){
-	$("#btn_compras_movimiento").attr("disabled", true);
-	$.ajax({
-		url: url+controlador+'/ajax_compras',
-		type: 'POST',
-		dataType: 'JSON',
-		data: $("#form_movimiento").serialize(),
-		success: function(data){
-			alerta("Guardado Exitoso",'Se guardo correctamente','success');
-			$("#btn_compras_movimiento").removeAttr("disabled");
-			init();
-		},
-		error: function(jqXHR, textStatus, errorThrown){
-			alerta("Error de Guardado",errorThrown,'error');
-		}
-	});
-}
-
-
-function save(){
-	labels = ['idtipomovimiento','idconcepto','monto'];
+	labels = ['idtipomovimiento','idconcepto','fecha','hora'];
 	fallas = false;
 	for (var i = 0; i < labels.length; i++) {
 		if($("[name='"+labels[i]+"']").val() == ""){
@@ -210,21 +191,64 @@ function save(){
 		}
 	}
 	if(!fallas){
-		$("#btn_movimiento_general").attr("disabled",true);
-		$.ajax({
-			url: url+controlador+'/ajax_save',
-			type: 'POST',
-			dataType: 'JSON',
-			data: $("#form_movimiento").serialize(),
-			success: function(data){
-				alerta("Guardado Exitoso",'Se guardo correctamente','success');
-				$("#btn_movimiento_general").removeAttr("disabled");
-				init();
-			},
-			error: function(jqXHR, textStatus, errorThrown){
-				alerta("Error de Guardado",errorThrown,'error');
-			}
-		});
+		if($(".productos").length==0){
+			op = false;
+			alerta("No hay Productos","No hay productos asignados a la Venta",'error');
+		}else{
+			$("#btn_compras_movimiento").attr("disabled", true);
+			$.ajax({
+				url: url+controlador+'/ajax_compras',
+				type: 'POST',
+				dataType: 'JSON',
+				data: $("#form_movimiento").serialize(),
+				success: function(data){
+					alerta("Guardado Exitoso",'Se guardo correctamente','success');
+					$("#btn_compras_movimiento").removeAttr("disabled");
+					init();
+				},
+				error: function(jqXHR, textStatus, errorThrown){
+					alerta("Error de Guardado",errorThrown,'error');
+				}
+			});
+		}
+	}
+
+
+	
+}
+
+
+function save(){
+	labels = ['idtipomovimiento','idconcepto','monto','fecha','hora'];
+	fallas = false;
+	for (var i = 0; i < labels.length; i++) {
+		if($("[name='"+labels[i]+"']").val() == ""){
+			fallas = true;
+			alerta("Campos en Blanco","Se necesita llenar todos los Campos",'error');
+			break;
+		}
+	}
+	
+	if(!fallas){
+		if(!isNaN($("[name='monto']").val())){
+			$("#btn_movimiento_general").attr("disabled",true);
+			$.ajax({
+				url: url+controlador+'/ajax_save',
+				type: 'POST',
+				dataType: 'JSON',
+				data: $("#form_movimiento").serialize(),
+				success: function(data){
+					alerta("Guardado Exitoso",'Se guardo correctamente','success');
+					$("#btn_movimiento_general").removeAttr("disabled");
+					init();
+				},
+				error: function(jqXHR, textStatus, errorThrown){
+					alerta("Error de Guardado",errorThrown,'error');
+				}
+			});
+		}else{
+			alerta("Monto Incorrecto","El numero ingresado no es valido",'error');
+		}
 	}
 }
 
@@ -244,19 +268,23 @@ function aproducto(id,nombre){
 filatableproducto = 1;
 function addproducto(){
 	if($("#producto").val()!="" && $("#monto").val()!=""){
-		fila = "<tr class='productos' id='f"+filatableproducto+"'>";
-        fila +="<td><input type='hidden' name='idproducto[]' value='"+$("#idproducto").val()+"'>"+filatableproducto+"</td>";
-        fila +="<td>"+$("#producto").val()+"</td>";
-        fila +="<td><input type='text' style='border:none;background:none;' id='p"+filatableproducto+"' name='precio[]' value='"+parseFloat($("#monto").val()).toFixed(2)+"'></td>";
-        fila +="<td><button onclick=\"removeproducto('"+filatableproducto+"')\" type='button' class='btn btn-danger'><i class='fa fa-trash-o'></i></button></td>";
-        fila +="</tr>";
-		$("#listaproducto").append(fila);
-		
-		$("#totalventa").val((parseFloat($("#totalventa").val())+parseFloat($("#monto").val())).toFixed(2));
-		$("#idproducto").val("");
-		$("#producto").val("");
-		$("#monto").val("");
-		filatableproducto++;
+		if(!isNaN($("#monto").val())){
+			fila = "<tr class='productos' id='f"+filatableproducto+"'>";
+	        fila +="<td><input type='hidden' name='idproducto[]' value='"+$("#idproducto").val()+"'>"+filatableproducto+"</td>";
+	        fila +="<td>"+$("#producto").val()+"</td>";
+	        fila +="<td><input type='text' style='border:none;background:none;' id='p"+filatableproducto+"' name='precio[]' value='"+parseFloat($("#monto").val()).toFixed(2)+"'></td>";
+	        fila +="<td><button onclick=\"removeproducto('"+filatableproducto+"')\" type='button' class='btn btn-danger'><i class='fa fa-trash-o'></i></button></td>";
+	        fila +="</tr>";
+			$("#listaproducto").append(fila);
+			
+			$("#totalventa").val((parseFloat($("#totalventa").val())+parseFloat($("#monto").val())).toFixed(2));
+			$("#idproducto").val("");
+			$("#producto").val("");
+			$("#monto").val("");
+			filatableproducto++;
+		}else{
+			alerta("Monto ingresado no Valido","El monto ingresado para el producto no es valido","error");
+		}
 		
 	}else{
 		alerta("Campos Vacios","Llene los campos correspondientes","error");

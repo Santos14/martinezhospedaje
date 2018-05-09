@@ -38,7 +38,7 @@ class Venta extends CI_Controller {
 		$id = $this->input->post("id");
 
 		$data = array(
-			"fecha" => date("Y-m-d H:i:s"),
+			"fecha" => $this->input->post("fecha")." ".$this->input->post("hora"),
 			"estado" => '1'
 		);
 
@@ -68,7 +68,7 @@ class Venta extends CI_Controller {
 			if($this->input->post("cancelado") == "on"){
 				$movimiento = array(
 					"concepto_idconcepto" => 3,
-					"fecha" => date("Y-m-d H:i:s"),
+					"fecha" => $this->input->post("fecha")." ".$this->input->post("hora"),
 					"estado" => '1',
 					"monto" => $total
 				);

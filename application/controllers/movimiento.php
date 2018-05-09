@@ -101,7 +101,7 @@ class Movimiento extends CI_Controller {
 		$this->db->trans_start();
 		$data = array(
 			"concepto_idconcepto" => $this->input->post("idconcepto"),
-			"fecha" => date("Y-m-d H:i:s"),
+			"fecha" => $this->input->post("fecha")." ".$this->input->post("hora"),
 			"estado" => '1',
 			"descripcion" => $this->input->post("descripcion"),
 			"monto" => $this->input->post("monto")
@@ -206,7 +206,7 @@ class Movimiento extends CI_Controller {
 
 		$movimiento = array(
 			"concepto_idconcepto" => $this->input->post("idconcepto"),
-			"fecha" => date("Y-m-d H:i:s"),
+			"fecha" => $this->input->post("fecha")." ".$this->input->post("hora"),
 			"estado" => '1'
 		);
 

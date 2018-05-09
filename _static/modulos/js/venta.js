@@ -58,19 +58,23 @@ function aproducto(id,nombre){
 filatableproducto = 1;
 function addproducto(){
 	if($("#producto").val()!="" && $("#monto").val()!=""){
-		fila = "<tr class='productos' id='f"+filatableproducto+"'>";
-        fila +="<td><input type='hidden' name='idproducto[]' value='"+$("#idproducto").val()+"'>"+filatableproducto+"</td>";
-        fila +="<td>"+	$("#producto").val();+"</td>";
-        fila +="<td><input type='text' style='border:none;background:none;' id='p"+filatableproducto+"' name='precio[]' value='"+parseFloat($("#monto").val()).toFixed(2)+"'></td>";
-        fila +="<td><button onclick=\"removeproducto('"+filatableproducto+"')\" type='button' class='btn btn-danger'><i class='fa fa-trash-o'></i></button></td>";
-        fila +="</tr>";
-		$("#listaproducto").append(fila);
-		
-		$("#totalventa").val((parseFloat($("#totalventa").val())+parseFloat($("#monto").val())).toFixed(2));
-		$("#idproducto").val("");
-		$("#producto").val("");
-		$("#monto").val("");
-		filatableproducto++;
+		if(!isNaN($("#monto").val())){
+			fila = "<tr class='productos' id='f"+filatableproducto+"'>";
+	        fila +="<td><input type='hidden' name='idproducto[]' value='"+$("#idproducto").val()+"'>"+filatableproducto+"</td>";
+	        fila +="<td>"+	$("#producto").val();+"</td>";
+	        fila +="<td><input type='text' style='border:none;background:none;' id='p"+filatableproducto+"' name='precio[]' value='"+parseFloat($("#monto").val()).toFixed(2)+"'></td>";
+	        fila +="<td><button onclick=\"removeproducto('"+filatableproducto+"')\" type='button' class='btn btn-danger'><i class='fa fa-trash-o'></i></button></td>";
+	        fila +="</tr>";
+			$("#listaproducto").append(fila);
+			
+			$("#totalventa").val((parseFloat($("#totalventa").val())+parseFloat($("#monto").val())).toFixed(2));
+			$("#idproducto").val("");
+			$("#producto").val("");
+			$("#monto").val("");
+			filatableproducto++;
+		}else{
+			alerta("Monto ingresado no Valido","El monto ingresado para el producto no es valido","error");
+		}
 		
 	}else{
 		alerta("Campos Vacios","Llene los campos correspondientes","error");
@@ -83,10 +87,9 @@ function removeproducto(id){
 }
 
 function save(){
-	console.log($(".productos").length);
 	enviar = false;
 	if($("#tipocliente").is(':checked')){
-		labels = ['idhabitacion','cliente'];
+		labels = ['idhabitacion','cliente','fecha','hora'];
 		fallas = true;
 		
 		for (var i = 0; i < labels.length; i++) {
@@ -109,15 +112,28 @@ function save(){
 		}
 		
 	}else{
-		op = true;
-		if($(".productos").length==0){
-			op = false;
-			alerta("No hay Productos","No hay productos asignados a la Venta",'error');
+		labels = ['fecha','hora'];
+		fallas = true;
+		
+		for (var i = 0; i < labels.length; i++) {
+			if($("[name='"+labels[i]+"']").val() == ""){
+				fallas = false;
+				alerta("Campos en Blanco","Se necesita llenar todos los Campos",'error');
+				break;
+			}
 		}
+		if(fallas){
+			op = true;
+			if($(".productos").length==0){
+				op = false;
+				alerta("No hay Productos","No hay productos asignados a la Venta",'error');
+			}
 
-		if(op){
-			enviar = true;
-		}	
+			if(op){
+				enviar = true;
+			}	
+		}
+		
 	}
 	if(enviar){
 
