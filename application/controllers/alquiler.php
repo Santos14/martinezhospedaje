@@ -11,6 +11,12 @@ class Alquiler extends CI_Controller {
 		layoutSystem("alquiler/index");
 	}
 
+	public function s(){
+		$data_alquiler = pasajerosactuales();
+		echo "<pre>";
+		print_r($data_alquiler);
+	}
+
 	public function monto_mensual($montoxdia){
 		$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 4))->result();
 		$pDescuento = number_format($politica[0]->numero,'0')/100;
@@ -81,6 +87,51 @@ class Alquiler extends CI_Controller {
 		$this->load->view("alquiler/nuevo",$data);	
 	}
 
+	public function edit_alquiler($idalquiler){
+
+		$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
+
+		$sql_alquiler = "SELECT 
+		alq.*,
+		hb.nrohabitacion,
+		hb.precio,
+		tpa.descripcion tipoalquiler,
+		pr.lugar procedencia,
+		pr.tipoprocedencia,
+		cli.tipodocumento,
+		cli.nrodocumento,
+		cli.nombres,
+		cli.apellidos,
+		mv.descripcion motivoviaje
+		FROM alquiler alq INNER JOIN habitacion hb ON (alq.habitacion_idhabitacion = hb.idhabitacion)
+		INNER JOIN tipoalquiler tpa ON (alq.tipoalquiler_idtipoalquiler = tpa.idtipoalquiler)
+		INNER JOIN procedencia pr ON (pr.idprocedencia = alq.procedencia_idprocedencia)
+		INNER JOIN cliente cli ON (cli.idcliente = alq.cliente_idcliente)
+		INNER JOIN motivoviaje mv ON (mv.idmotivoviaje = alq.motivoviaje_idmotivoviaje)
+		WHERE alq.idalquiler = ".$idalquiler;
+
+		$alq = $this->allmodel->querySql($sql_alquiler)->result();
+		$data["alquiler"] = $alq;
+
+		$sql_tipoalquiler = "SELECT * FROM tipoalquiler WHERE estado <> '0' and idtipoalquiler <> 3 ORDER BY idtipoalquiler asc";
+		$sql_cliente = "SELECT * FROM cliente WHERE estado <> '0'";
+
+		$pr_actual = $this->allmodel->selectWhere("procedencia",array('idprocedencia' =>$alq[0]->procedencia_idprocedencia ))->result();
+
+		$sql_tipoprocencia = "SELECT * FROM procedencia WHERE estado <> '0' and tipoprocedencia='".$pr_actual[0]->tipoprocedencia."' ORDER BY lugar asc";
+
+		$sql_motivoviaje = "SELECT * FROM motivoviaje WHERE estado = '1'";
+
+
+		$data["alquiler"] = $this->allmodel->querySql($sql_alquiler)->result();
+		$data["clientes"] = $this->allmodel->querySql($sql_cliente)->result();
+		$data["tipo_alquileres"] = $this->allmodel->querySql($sql_tipoalquiler)->result();
+		$data["tipo_procedencia"] = $this->allmodel->querySql($sql_tipoprocencia)->result();
+		$data["motivo_viaje"] = $this->allmodel->querySql($sql_motivoviaje)->result();
+		$data["horatermino"] = number_format($politica[0]->numero,'0');
+		$this->load->view("alquiler/editar",$data);	
+	}
+
 	public function ver_alquiler($id){
 		$alquiler = $this->allmodel->selectWhere('alquiler',array("idalquiler"=>$id))->result();
 		$data["alquiler"] = $alquiler;
@@ -126,11 +177,28 @@ class Alquiler extends CI_Controller {
 		$this->load->view("alquiler/detalle",$data);	
 	}
 
-	public function pg(){
-		$data = pasajerosactuales();
-		echo "<pre>";
-		print_r($data);
+	public function buscarAlquiler($idalquiler){
+		$sql = "SELECT 
+		alq.*,
+		hb.nrohabitacion,
+		hb.precio,
+		tpa.descripcion tipoalquiler,
+		pr.lugar procedencia,
+		pr.tipoprocedencia,
+		cli.nrodocumento,
+		cli.nombres,
+		cli.apellidos,
+		mv.descripcion motivoviaje
+		FROM alquiler alq INNER JOIN habitacion hb ON (alq.habitacion_idhabitacion = hb.idhabitacion)
+		INNER JOIN tipoalquiler tpa ON (alq.tipoalquiler_idtipoalquiler = tpa.idtipoalquiler)
+		INNER JOIN procedencia pr ON (pr.idprocedencia = alq.procedencia_idprocedencia)
+		INNER JOIN cliente cli ON (cli.idcliente = alq.cliente_idcliente)
+		INNER JOIN motivoviaje mv ON (mv.idmotivoviaje = alq.motivoviaje_idmotivoviaje)
+		WHERE alq.idalquiler = ".$idalquiler;
 
+		$data = $this->allmodel->querySql($sql)->result();
+
+		echo json_encode($data);
 	}
 
 	public function listapasajeros(){
@@ -143,6 +211,15 @@ class Alquiler extends CI_Controller {
 		$this->load->view("alquiler/listapasajeros",$data);		
 	}
 
+	public function ultimo_alquiler($idcliente){
+		$sql = "SELECT alq.*
+				FROM alquiler alq INNER JOIN cliente cli ON (alq.cliente_idcliente = cli.idcliente)
+				WHERE alq.estado='2' and cli.idcliente = ".$idcliente."
+				ORDER BY alq.fecha_ingreso desc
+				LIMIT 1";
+
+		echo json_encode($this->allmodel->querySql($sql)->result());
+	}
 
 	public function anular_alquiler(){
 		$idalquiler = $this->input->post("id");
@@ -246,6 +323,32 @@ class Alquiler extends CI_Controller {
 
 	}
 
+	public function listarOpcion($id){
+
+		$sql = "SELECT 
+		alq.*,
+		hb.nrohabitacion,
+		hb.precio,
+		tpa.descripcion tipoalquiler,
+		pr.lugar procedencia,
+		pr.tipoprocedencia,
+		cli.nrodocumento,
+		cli.nombres,
+		cli.apellidos,
+		mv.descripcion motivoviaje
+		FROM alquiler alq INNER JOIN habitacion hb ON (alq.habitacion_idhabitacion = hb.idhabitacion)
+		INNER JOIN tipoalquiler tpa ON (alq.tipoalquiler_idtipoalquiler = tpa.idtipoalquiler)
+		INNER JOIN procedencia pr ON (pr.idprocedencia = alq.procedencia_idprocedencia)
+		INNER JOIN cliente cli ON (cli.idcliente = alq.cliente_idcliente)
+		INNER JOIN motivoviaje mv ON (mv.idmotivoviaje = alq.motivoviaje_idmotivoviaje)
+		WHERE alq.idalquiler = ".$id;
+
+		$data["alq"] = $this->allmodel->querySql($sql)->result();
+
+		$this->load->view("alquiler/opciones",$data);	
+
+	}
+
 	public function listaalquiler(){
 
 		$sql_alq = "SELECT al.*,cli.nrodocumento,cli.nombres,cli.apellidos,hb.nrohabitacion,
@@ -257,6 +360,7 @@ class Alquiler extends CI_Controller {
 		) montopagado
 		FROM alquiler al INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion)
 		INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
+		
 		ORDER BY al.fecha_ingreso desc";
 
 		$data["alquileres"] = $this->allmodel->querySql($sql_alq)->result();
@@ -276,6 +380,65 @@ class Alquiler extends CI_Controller {
 		echo json_encode($this->allmodel->querySql($sql_tipoprocencia)->result());
 
 	}
+
+	public function save_edit(){
+		$id = $this->input->post("id");
+
+		$alq_v = $this->allmodel->selectWhere("alquiler",array("idalquiler"=>$id))->result();
+
+		if($alq_v[0]->estado != '2'){
+			if($this->input->post('idtipoalquiler') == '2'){ //EVENTUAL
+				$disp = '5';
+			}else if($this->input->post('idtipoalquiler') == '1'){ // DIARIO
+				$disp = '2';
+			}
+			else if($this->input->post('idtipoalquiler') == '3'){ // MENSUAL
+				$disp = '6';
+			}
+		}
+		
+		$data = array(
+			"tipoalquiler_idtipoalquiler" => $this->input->post('idtipoalquiler'),
+			"procedencia_idprocedencia" => $this->input->post('idprocedencia'),
+			"motivoviaje_idmotivoviaje" => $this->input->post('idmotivoviaje'),
+			"fecha_ingreso" => $this->input->post('fecha')." ".$this->input->post('hora'),
+			"fecha_salida" => $this->input->post('fecha_fin')." ".$this->input->post('hora_fin'),
+			"nrodias" => $this->input->post('nrodias'),
+			"kit" => $this->input->post('kit'),
+			"localidad" => $this->input->post('localidad'),
+			"evaluacion" => $this->input->post('evaluacion')
+		);
+
+		$this->db->trans_start();
+		if ($id != ""){
+
+			$al = $this->allmodel->update("alquiler", $data , array("idalquiler" => $id));
+			
+			if($alq_v[0]->estado != '2'){
+				$estado = array(
+					"disponibilidad" => $disp
+				);
+				$uph = $this->allmodel->update("habitacion", $estado, array('idhabitacion'=> $this->input->post("idhabitacion")));
+			}
+
+		}else{
+			//$status = $this->allmodel->update("alquiler", $data, array('idalquiler'=> $id));
+		}
+		$this->db->trans_complete();
+		$trans_status = $this->db->trans_status();
+
+		if($trans_status== FALSE){
+			$this->db->trans_rollback();
+			$status = 0;			
+		}else{
+			$status = 1;
+			$this->db->trans_commit();			
+		}
+
+
+		echo json_encode($status);
+	}
+
 	public function ajax_save(){
 		$id = $this->input->post("id");
 		$idreserva = $this->input->post("idreserva");
@@ -783,7 +946,7 @@ class Alquiler extends CI_Controller {
 	}
 
 	public function ajax_edit($id){
-		$data = $this->allmodel->selectWhere('tipoalquiler',array("idtipoalquiler"=>$id));
+		$data = $this->allmodel->selectWhere('alquiler',array("idalquiler"=>$id));
 		echo json_encode($data->result());
 	}
 

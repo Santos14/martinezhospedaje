@@ -17,7 +17,7 @@
         <!-- /row -->
         <div class="text-center">
             <button type="button" class='btn btn-primary' id="miniatura" onclick="view_miniatura()" >Miniaturas</button>
-            <button type="button" class='btn btn-default' id="lista" onclick="view_lista()">Pasajeros Actuales</button>
+            <button type="button" class='btn btn-default' id="lista" onclick="view_lista()">Deudas Actuales</button>
             <button type="button" class='btn btn-default' id="alquiler" onclick="view_alquileres()">Historial</button>
         </div>
         <br>
@@ -132,6 +132,28 @@
     <div class="modal-dialog modal-xs">
         <div class="modal-content" id="detallever">
             
+        </div>
+    </div>
+</div>
+
+<div id="modalopcion" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="text-center modal-header" id="encabezadoT" >
+                
+            </div>
+            <div class="modal-body" id="list_option_view">
+               
+
+            </div>
+            <div class="modal-footer">
+            <div class="text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+                
+            </div>
         </div>
     </div>
 </div>

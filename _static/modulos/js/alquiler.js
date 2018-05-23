@@ -22,7 +22,7 @@ function search_cliente(){
 function seleccionaCliente(idcliente,nombre,apellido,nrodoc){
 	$.get(url+"alquiler/ajax_morosidad/"+idcliente+"/1", function(morosidad1) {
 		$.get(url+"alquiler/ajax_morosidad/"+idcliente+"/2", function(morosidad2) {
-		
+			$.get(url+"alquiler/ultimo_alquiler/"+idcliente, function(ultimo_alquiler) {
 				if(morosidad2.length>0){
 					$("#btn_save_alquiler").attr("disabled",true);
 					clas = "btn btn-danger";
@@ -36,6 +36,21 @@ function seleccionaCliente(idcliente,nombre,apellido,nrodoc){
 					text = "EXCELENTE";
 					func = "2";
 				}
+
+				if(ultimo_alquiler.length != 0){
+					if(ultimo_alquiler[0].evaluacion == ""){
+						op = "No se registraron Observaciones en el Ultimo Alquiler";
+					}else{
+						op = ultimo_alquiler[0].evaluacion;
+					}
+
+					obser = "<div class='alert alert-info'>";
+	          		obser +="<strong>Ultima Observacion: </strong>"+op;
+	        		obser +="</div>";
+
+					$("#observaciones_alquiler").html(obser);
+				}
+				
 				$("#idcliente").val(idcliente);
 				$("#al_dni").val(nrodoc);
 				$("#cliente").val(apellido+", "+nombre);
@@ -55,7 +70,8 @@ function seleccionaCliente(idcliente,nombre,apellido,nrodoc){
 				$("#estcli").show();
 
 				$("#modalListaClientes").modal("hide");
-	
+
+				},"json");
 		},"json");
 	});
 }
@@ -89,12 +105,40 @@ function view_alquileres(){
 
 }
 
-function anular_alquiler(id){
+
+function editar_alquiler(id){
+	
+}
+function volver_t(r){
+	$(r).modal("hide");
+	$("#modalopcion").modal("show");
+
+}
+function config_pasajeros(id){
+	$.get(url+controlador+"/buscarAlquiler/"+id, function(data) {
+		$.get(url+controlador+"/listarOpcion/"+id, function(datar) {
+			$("#encabezadoT").html("<h4 style='width: 200px;' class='btn btn-primary'><strong>Cuarto N° "+data[0].nrohabitacion+"</strong></h4>");
+			$("#list_option_view").empty().html(datar);
+			$("#modalopcion").modal("show");
+		});
+	},"json");
+	
+}
+function ver_alquiler(){
+	$.get(url+controlador+"/ver_alquiler/"+$("#idalquiler_actual").val(), function(data) {
+		$("#modalopcion").modal("hide");
+		$("#detallever").empty().html(data);
+		$("#modalver").modal("show");
+	});
+	
+}
+function anular_alquiler(){
+	
 	if(confirm("¿Esta seguro de Anular este alquiler?")){
 		$.ajax({
 			url : url+controlador+"/anular_alquiler/",
 			type: "POST",
-			data: {'id':id},
+			data: {'id':$("#idalquiler_actual").val()},
 			dataType: "JSON",
 			success: function(data){
 				alerta("Alquiler Anulado",'Se Anulo exitosamente','success');
@@ -106,16 +150,17 @@ function anular_alquiler(id){
 		});
 	}
 }
-function editar_alquiler(id){
-	
-}
-function ver_alquiler(id){
-	$.get(url+controlador+"/ver_alquiler/"+id, function(data) {
-		$("#detallever").empty().html(data);
-		$("#modalver").modal("show");
+function edit_alquiler(){
+	//alert($("#idalquiler_actual").val());
+	$("#modalopcion").modal("hide");
+	$.get(url+controlador+"/edit_alquiler/"+$("#idalquiler_actual").val(), function(data) {
+		$("#tableList").empty().html(data);
+		$("#panelmorosidad").hide();
+		$("#panelmensual").hide();
+		$("#estcli").hide();
 	});
-	
 }
+
 
 function restaurar_alquiler(id){
 	if(confirm("¿Esta seguro de Restaurar este alquiler?")){
@@ -211,6 +256,37 @@ function save(){
 	}
 }
 
+function save_edit(){
+	labels = ['al_dni','cliente','precioxdia','idtipoalquiler','idmotivoviaje','idprocedencia','kit','localidad','fecha','hora'];
+	fallas = false;
+	for (var i = 0; i < labels.length; i++) {
+		if($("[name='"+labels[i]+"']").val() == ""){
+			fallas = true;
+			alerta("Campos en Blanco","Se necesita llenar todos los Campos",'error');
+			break;
+		}
+	}
+
+	
+	if(!fallas){
+		
+		$("#btn_save_alquiler_edit").attr("disabled",true);
+		$.ajax({
+			url: url+controlador+'/save_edit',
+			type: 'POST',
+			dataType: 'JSON',
+			data: $("#form_al").serialize(),
+			success: function(data){
+				alerta("Guardado Exitoso",'Se guardo correctamente','success');
+				$("#btn_save_alquiler_edit").removeAttr("disabled");
+				 view_miniatura();
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				alerta("Error de Guardado",errorThrown,'error');
+			}
+		});
+	}
+}
 
 function showEliminar(id){
 	idglobal = id;
@@ -269,38 +345,62 @@ function searchdni(c){
 		$.get(url+"cliente/ajax_searchdni/"+c.value, function(data) {
 			$.get(url+"alquiler/ajax_morosidad/"+data[0].idcliente+"/1", function(morosidad1) {
 				$.get(url+"alquiler/ajax_morosidad/"+data[0].idcliente+"/2", function(morosidad2) {
-					if(data.length>0){
-						console.log(morosidad2.length);
-						if(morosidad2.length>0){
-							$("#btn_save_alquiler").attr("disabled",true);
-							clas = "btn btn-danger";
-							icon = "fa fa-close";
-							text = "MOROSO";
-							func = "1";
-						}else{
-							$("#btn_save_alquiler").removeAttr('disabled');
-							clas = "btn btn-success";
-							icon = "fa fa-check";
-							text = "EXCELENTE";
-							func = "2";
+					$.get(url+"alquiler/ultimo_alquiler/"+data[0].idcliente, function(ultimo_alquiler) {
+						if(data.length>0){
+							console.log(morosidad2.length);
+							if(morosidad2.length>0){
+								$("#btn_save_alquiler").attr("disabled",true);
+								clas = "btn btn-danger";
+								icon = "fa fa-close";
+								text = "MOROSO";
+								func = "1";
+							}else{
+								$("#btn_save_alquiler").removeAttr('disabled');
+								clas = "btn btn-success";
+								icon = "fa fa-check";
+								text = "EXCELENTE";
+								func = "2";
+							}
+
+							
+
+							if(ultimo_alquiler.length != 0){
+								if(ultimo_alquiler[0].evaluacion == ""){
+									op = "No se registraron Observaciones en el Ultimo Alquiler";
+								}else{
+									op = ultimo_alquiler[0].evaluacion;
+								}
+
+								obser = "<div class='alert alert-info'>";
+				          		obser +="<strong>Ultima Observacion: </strong>"+op;
+				        		obser +="</div>";
+
+								$("#observaciones_alquiler").html(obser);
+							}
+
+							
+
+
+							$("#idcliente").val(data[0].idcliente);
+							$("#cliente").val(data[0].apellidos+", "+data[0].nombres);
+							$("#panelmorosidad").empty().html(morosidad1);
+							
+
+							btn = "<button type='button' onclick=\"vermoroso('"+func+"','"+est+"')\" class='"+clas+"'>";
+		                    btn+= "<i class='"+icon+"'></i> "+text;
+		                    btn+= "</button>";
+
+		                    $("#estcli").html(btn);
+		                    if(morosidad2.length>0){
+		                    	
+		                    	alerta("Cliente Moroso","No se podra registrar Alquiler","error");
+		                    }
+		                   
+							$("#estcli").show();
+
+
 						}
-						$("#idcliente").val(data[0].idcliente);
-						$("#cliente").val(data[0].apellidos+", "+data[0].nombres);
-						$("#panelmorosidad").empty().html(morosidad1);
-						
-
-						btn = "<button type='button' onclick=\"vermoroso('"+func+"','"+est+"')\" class='"+clas+"'>";
-	                    btn+= "<i class='"+icon+"'></i> "+text;
-	                    btn+= "</button>";
-
-	                    $("#estcli").html(btn);
-	                    if(morosidad2.length>0){
-	                    	
-	                    	alerta("Cliente Moroso","No se podra registrar Alquiler","error");
-	                    }
-	                   
-						$("#estcli").show();
-					}
+					},"json");
 				},"json");
 			});
 		},"json");
@@ -357,7 +457,7 @@ function alquilar(id){
 
 function cambiartipoalquiler(){
 	idtipoalquiler = $("#idtipoalquiler").val();
-	console.log(idtipoalquiler);
+
 	if(idtipoalquiler == '3'){
 		$.get(url+controlador+"/monto_mensual/"+$("#precioxdia").val(), function(data) {
 			$("#pagoinicial").val(data);
@@ -365,6 +465,7 @@ function cambiartipoalquiler(){
 		},"json");
 		
 	}else{
+		$("#pagoinicial").val("0");
 		$("#panelmensual").hide();
 	}
 }

@@ -57,7 +57,7 @@ if($alquiler[0]->evaluacion==""){
 
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" data-dismiss="modal">
-    Cerrar
+  <button onclick="volver_t('#modalver')" type="button" class="btn btn-danger">
+    Atras
   </button>
 </div>

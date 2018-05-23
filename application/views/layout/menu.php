@@ -137,6 +137,9 @@
                         <a style="width: 90%;" href="<?php echo base_url('reporte/estadomes');?>">Movimientos por Mes</a>
                     </li> 
                     <li style='padding-left: 14%;'>
+                        <a style="width: 90%;" href="<?php echo base_url('reporte/historialpasajeros');?>">Historial de Pasajeros</a>
+                    </li> 
+                    <li style='padding-left: 14%;'>
                         <a style="width: 90%;" href="<?php echo base_url('reporte/alojamiento');?>">Pagos por Alquiler</a>
                     </li>           
                      

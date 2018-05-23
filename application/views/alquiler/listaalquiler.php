@@ -62,14 +62,16 @@
                                 <td class='text-center'>
 
                                 <?php if($alq->estado == '1'){ ?>
-                                <button onclick="anular_alquiler('<?= $alq->idalquiler ?>')" class='btn btn-danger btn-xs'><i class='fa fa-close'></i></button>
+                                <!--button onclick="anular_alquiler('<?= $alq->idalquiler ?>')" class='btn btn-danger btn-xs'><i class='fa fa-close'></i></button-->
                                 <!--button onclick="editar_alquiler('<?= $alq->idalquiler ?>')" class='btn btn-warning btn-xs'><i class='fa fa-edit'></i></button-->
-                                <button onclick="ver_alquiler('<?= $alq->idalquiler ?>')" class='btn btn-info btn-xs'><i class='fa fa-eye'></i></button>
+                                <!--button onclick="ver_alquiler('<?= $alq->idalquiler ?>')" class='btn btn-info btn-xs'><i class='fa fa-eye'></i></button-->
+
+                                <button onclick="config_pasajeros('<?= $alq->idalquiler ?>')" class='btn btn-info btn-xs'><i class='fa fa-cog'></i></button>
                             <?php }else if($alq->estado == '0'){ ?>
                                 <button onclick="restaurar_alquiler('<?= $alq->idalquiler ?>')" class='btn btn-info btn-xs'><i class='fa fa-rotate-left'></i></button>
-                                <button onclick="ver_alquiler('<?= $alq->idalquiler ?>')" class='btn btn-info btn-xs'><i class='fa fa-eye'></i></button>
+                                <!--button onclick="ver_alquiler('<?= $alq->idalquiler ?>')" class='btn btn-info btn-xs'><i class='fa fa-eye'></i></button-->
                                 <?php }else{ ?>
-                                <button onclick="ver_alquiler('<?= $alq->idalquiler ?>')" class='btn btn-info btn-xs'><i class='fa fa-eye'></i></button>
+                                <button onclick="config_pasajeros('<?= $alq->idalquiler ?>')" class='btn btn-info btn-xs'><i class='fa fa-cog'></i></button>
                                 <?php } ?>
 
                                 </td>

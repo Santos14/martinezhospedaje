@@ -33,7 +33,7 @@
         Nro Documento
     </label>
     <div class="col-md-8 col-sm-6 col-xs-12">
-        <input onkeypress="return solonumeros(event)" type="text" id="nrodocumento" name="nrodocumento" class="form-control" placeholder="Ingrese Nro Documento">
+        <input type="text" id="nrodocumento" name="nrodocumento" class="form-control" placeholder="Ingrese Nro Documento">
     </div>
 </div>
 <div class="form-group">
