@@ -12,6 +12,9 @@ class Reporte extends CI_Controller {
 	function adelantopersonal(){
 		layoutSystem("reporte/adelantopersonal");
 	}
+	function historialpasajeros(){
+		layoutSystem("reporte/historialpasajeros");
+	}
 
 	function estadomes(){
 		$data["anios"] = $this->allmodel->querySql("SELECT DISTINCT(EXTRACT(YEAR from fecha_ingreso)) anios FROM alquiler")->result();
@@ -294,6 +297,36 @@ class Reporte extends CI_Controller {
 		$this->load->view("reporte/adelantosueldo_table",$data);
 
 	}
+
+	function historialpasajeros_imprimir($fecha_inicio,$fecha_fin){
+		
+		$sql = "SELECT 
+				hb.nrohabitacion,
+				date(alq.fecha_ingreso) fecha_ingreso, 
+				to_char(alq.fecha_ingreso, 'HH24:MI:SS') hora_ingreso,
+				cli.nombres,
+				cli.apellidos,
+				cli.tipodocumento,
+				cli.nrodocumento,
+				cli.nacionalidad,
+				pr.lugar,
+				cli.ocupacion,
+				cli.fechanac,
+				alq.kit,
+				alq.fecha_salida
+				FROM 
+				alquiler alq INNER JOIN habitacion hb ON (alq.habitacion_idhabitacion = hb.idhabitacion)
+				INNER JOIN cliente cli ON (cli.idcliente = alq.cliente_idcliente)
+				INNER JOIN procedencia pr ON (pr.idprocedencia = alq.procedencia_idprocedencia)
+				WHERE alq.estado='2' AND alq.tipoalquiler_idtipoalquiler <>'2' 
+							AND date(alq.fecha_ingreso) BETWEEN '".$fecha_inicio."' AND '".$fecha_fin."' ORDER BY fecha_ingreso asc";
+
+	
+		$data["data"] = $this->allmodel->querySql($sql)->result(); 
+
+		$this->load->view("reporte/historialpasajeros_table",$data);
+
+	}	
 
 
 

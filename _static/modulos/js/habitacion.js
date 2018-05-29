@@ -87,6 +87,10 @@ function form_add(){
 	});
 }
 
+function volver_t(r){
+	$(r).modal("hide");
+}
+
 function serv_add(){
 	$("#title_form_serv").text("Agregar Servicio");
 	$("#btn_save_serv").text("Crear");

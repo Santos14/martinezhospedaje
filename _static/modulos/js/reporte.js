@@ -25,7 +25,6 @@ function alojamiento(){
 
 		       
 
-		    var totalPagesExp = "{total_pages_count_string}";
 		    doc.setFontSize(14);
 		    doc.text("Reporte de Pagos por Habitacion", 14, 37);
 		    doc.setFontSize(8);
@@ -40,12 +39,7 @@ function alojamiento(){
 		    	columnStyles: {text: {columnWidth: 'auto'}}
 		    });
 
-		   
-
-		    if (typeof doc.putTotalPages === 'function') {
-		        doc.putTotalPages(totalPagesExp);
-		    }
-
+		  
 		    doc.setProperties({
 	            title: 'Pago de Alquileres',
 	            subject: 'A jspdf-autotable example pdf'
@@ -57,6 +51,55 @@ function alojamiento(){
 		alerta("Sin Fecha","Ingrese Fecha","error");
 	}
 }
+
+function historialpasajeros(){
+	if($("#fecha_inicio").val()!='' && $("#fecha_fin").val()!=''){
+		$.get(url+"reporte/historialpasajeros_imprimir/"+$("#fecha_inicio").val()+"/"+$("#fecha_fin").val(), function(data) {
+			$("#showtable").empty().html(data);
+			var base64Img = null;
+			var doc = new jsPDF('l');
+
+
+		   	doc.text("Hospedaje Martinez",14, 15);
+	        doc.setFontSize(9);
+	        doc.text("Calle Julio C. Pinedo N° 152 - Telef.: (065) 352935", 14, 20);
+	        doc.setFontSize(7);
+	        doc.text("Yurmaguas - Alto Amazonas - Loreto", 14, 24);
+
+
+		    
+		    doc.setFontSize(14);
+		    doc.text("Historial de Estancias (Alquileres)", 14, 37);
+		    doc.setFontSize(8);
+		    doc.text("Del "+$("#fecha_inicio").val()+" al "+$("#fecha_fin").val(), 14, 42);
+		    var elem = document.getElementById("table_reporte");
+		    var res = doc.autoTableHtmlToJson(elem);
+
+		    doc.autoTable(res.columns, res.data, {
+		    	startY: 48,
+		    	styles: {cellPadding: 0.5, fontSize: 7}
+		    });
+
+	
+		    doc.setProperties({
+	            title: 'Historial de Pasajeros',
+	            subject: 'A jspdf-autotable example pdf'
+	        });
+
+		    $("#iframe-reporte").attr("src",doc.output('datauristring'));
+		});
+	}else{
+		alerta("Sin Fecha","Ingrese Fecha","error");
+	}
+
+}
+
+
+
+
+
+
+
 function estadodia(){
 	if($("#dia").val()!=''){
 		$.get(url+"reporte/estadodia_imprimir/"+$("#dia").val(), function(data) {
