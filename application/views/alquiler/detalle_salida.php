@@ -1,4 +1,6 @@
 <?php 
+
+
   $index = 0;
   for ($i=0; $i < count($data_alquiler["alquiler"]) ; $i++) { 
        if($data_alquiler["alquiler"][$i]->idalquiler == $idalquiler){ 

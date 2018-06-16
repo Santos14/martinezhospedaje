@@ -137,20 +137,3 @@
 
 
 
-<div id="modalDetalle" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-xs">
-        <div class="modal-content" id="detalleHAB">
-            
-        </div>
-    </div>
-</div>
-
-
-
-<div id="modalSalir" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-xs">
-        <div class="modal-content" id="salirHAB">
-            
-        </div>
-    </div>
-</div>

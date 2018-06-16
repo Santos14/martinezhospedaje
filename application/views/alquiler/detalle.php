@@ -312,7 +312,7 @@ $dias = abs($dias); $dias = floor($dias);
                          <h3> DIAS RESTANTES</h3>
                         </div>
                         <div class="text-center">
-                        <input style="color: #FFF;width: 100px;text-align:center;font-weight:bold;font-size: 16px;background: #41b3f9; border:1px solid silver;border-radius: 10px;padding: 5px;" name="diasrestantes" id="diasrestantes" readonly value="<?= $diff->y  ?>">  
+                        <input style="color: #FFF;width: 100px;text-align:center;font-weight:bold;font-size: 16px;background: #41b3f9; border:1px solid silver;border-radius: 10px;padding: 5px;" name="diasrestantes" id="diasrestantes" readonly value="<?= $diff->d  ?>">  
                         </div>
                       <?php } ?>
 

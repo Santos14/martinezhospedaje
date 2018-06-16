@@ -49,7 +49,7 @@ class Cliente extends CI_Controller {
 	}
 
 	public function ajax_searchdni($dni){
-		$sqldni = "SELECT * FROM cliente WHERE estado='1' and nrodocumento='".$dni."'";
+		$sqldni = "SELECT * FROM cliente WHERE nrodocumento LIKE '%".$dni."%' LIMIT 1";
 		$data = $this->allmodel->querySql($sqldni)->result();
 		echo json_encode($data);
 	}

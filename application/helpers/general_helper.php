@@ -51,8 +51,9 @@
 
 	  	 for ($h = 0; $h < count($alquiler) ; $h++) {
 
-	  	 	$m = false;
-
+	  		$m = false;
+	  		$ahora = new DateTime("NOW");
+	  		
 	  	 	if($alquiler[$h]->tipoalquiler_idtipoalquiler == '3'){
 	  	 		$fi = new DateTime($alquiler[$h]->fecha_salida);
 	  	 		$diff = $ahora->diff($fi);
@@ -73,9 +74,10 @@
 	  	 		$f = $alquiler[$h]->fecha_ingreso;
 	  	 	}
 
-	  	 	if($m){
+	  	 	 if($m){
 
-	        $ahora = new DateTime("NOW");
+	  	 	//$f = $alquiler[$h]->fecha_ingreso;
+	       
 	        $fi = new DateTime($f);
 	        $diff = $ahora->diff($fi);
 

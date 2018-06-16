@@ -374,6 +374,12 @@ class Alquiler extends CI_Controller {
 		$this->load->view("alquiler/detalle_salida",$data);	
 	}
 
+	public function forms($id){
+		$s = pasajerosactuales();
+		echo "<pre>";
+		print_r($s);
+	}
+	
 	public function cambiarprocedencia($lugar){
 		$sql_tipoprocencia = "SELECT * FROM procedencia WHERE estado <> '0' and tipoprocedencia='".$lugar."' ORDER BY lugar asc";
 

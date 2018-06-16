@@ -7,7 +7,6 @@ var idglobal;
 var table;
 
 function init(){
-
 	$.get(url+controlador+"/tableList", function(data) {
 		$("#tableList").empty().html(data);
 		$('#datatable').dataTable();
@@ -420,6 +419,7 @@ function save_cliente(){
 	for (var i = 0; i < labels.length; i++) {
 		if($("[name='"+labels[i]+"']").val() == ""){
 			fallas = true;
+			alert(labels[i]);
 			alerta("Campos en Blanco","Se necesita llenar todos los Campos",'error');
 			break;
 		}
@@ -589,7 +589,6 @@ function pagartodo(val){
 	$("#est").val(val);
 	$("#btn_desocuparhabitacion").attr("disabled",true);
 	$.ajax({
-
 		url: url+controlador+'/pagartodo',
 		type: 'POST',
 		dataType: 'JSON',
