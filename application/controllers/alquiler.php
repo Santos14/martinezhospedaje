@@ -75,11 +75,10 @@ class Alquiler extends CI_Controller {
 	public function form_alquiler($id){
 		$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
 		$sql_tipoalquiler = "SELECT * FROM tipoalquiler WHERE estado <> '0' ORDER BY idtipoalquiler asc";
-		$sql_cliente = "SELECT * FROM cliente WHERE estado <> '0'";
 		$sql_tipoprocencia = "SELECT * FROM procedencia WHERE estado <> '0' and tipoprocedencia='N' ORDER BY lugar asc";
 		$sql_motivoviaje = "SELECT * FROM motivoviaje WHERE estado = '1'";
 		$data["habitacion"] = $this->allmodel->selectWhere('habitacion',array("idhabitacion"=>$id))->result();
-		$data["clientes"] = $this->allmodel->querySql($sql_cliente)->result();
+		
 		$data["tipo_alquileres"] = $this->allmodel->querySql($sql_tipoalquiler)->result();
 		$data["tipo_procedencia"] = $this->allmodel->querySql($sql_tipoprocencia)->result();
 		$data["motivo_viaje"] = $this->allmodel->querySql($sql_motivoviaje)->result();

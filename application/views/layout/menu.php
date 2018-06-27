@@ -17,6 +17,9 @@
                 </a>
                 <ul class="nav child_menu" >
                     <li style='padding-left: 14%;'>
+                        <a style="width: 90%;" href="<?php echo base_url('almacen');?>">Almacen</a>
+                    </li> 
+                    <li style='padding-left: 14%;'>
                         <a style="width: 90%;" href="<?php echo base_url('tipoimprevisto');?>">Tipo Imprevisto</a>
                     </li>   
                      <li style='padding-left: 14%;'>
@@ -62,9 +65,14 @@
                     <li style='padding-left: 14%;'>
                         <a style="width: 90%;" href="<?php echo base_url('imprevisto');?>">Imprevistos</a>
                     </li> 
+                    <li style='padding-left: 14%;'>
+                        <a style="width: 90%;" href="<?php echo base_url('encargo');?>">Encargos</a>
+                    </li> 
+                   
                 </ul>
             </li>
 
+          
 
             <li>
                 <a href="#" class="waves-effect">
@@ -98,6 +106,20 @@
                     <li style='padding-left: 14%;'>
                         <a style="width: 90%;" href="<?php echo base_url('morosidad');?>">Morosos</a>
                     </li>
+                </ul>
+            </li>
+
+              <li>
+                <a href="#" class="waves-effect">
+                    <i class="fa fa-list-ul" aria-hidden="true"></i>
+                    PROMOCIONES
+                </a>
+                <ul class="nav child_menu" >
+                               
+                     <li style='padding-left: 14%;'>
+                        <a style="width: 90%;" href="<?php echo base_url('mototaxis');?>">Mototaxis</a>
+                    </li> 
+                   
                 </ul>
             </li>
             

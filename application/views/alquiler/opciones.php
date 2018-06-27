@@ -9,7 +9,6 @@
 <p><button onclick="edit_alquiler()" style='width: 200px;' class='btn btn-warning'><i class='fa fa-edit'></i> EDITAR ALQUILER</button></p>
 <?php if($alq[0]->estado != '2'){ ?>
  <p><button onclick="anular_alquiler()" style='width: 200px;' class='btn btn-danger'><i class='fa fa-close'></i> ANULAR ALQUILER</button></p>
-  <p><button style='width: 200px;' class='btn btn-success'><i class='fa fa-cogs'></i> CAMBIAR HABITACION</button></p>
 <?php } ?>
  
 </div>

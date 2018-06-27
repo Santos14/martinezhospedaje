@@ -14,8 +14,12 @@ function init(){
 }
 
 function search_cliente(){
-	$('#clientesList').dataTable();
-	$("#modalListaClientes").modal("show");
+
+	$.get(url+"cliente/clientListModal", function(data) {
+		$("#showListClient").empty().html(data);
+		$('#clientes').dataTable();
+		$("#modalListaClientes").modal("show");
+	});
 }
 
 function seleccionaCliente(idcliente,nombre,apellido,nrodoc){

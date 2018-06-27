@@ -302,7 +302,7 @@ $dias = abs($dias); $dias = floor($dias);
                           $fechasalida = new DateTime($alquiler[0]->fecha_salida);
                           $diff = $ahora->diff($fechasalida);
 
-                          $dias = (strtotime(date_format($fechasalida,"Y-m-d"))-strtotime(date("Y-m-d")))/86400;
+                          $dias = (strtotime(date_format($fechasalida,"Y-m-d"))-strtotime(date_format($ahora,"Y-m-d")))/86400;
                           $dias = abs($dias); $dias = floor($dias); 
 
                       ?>

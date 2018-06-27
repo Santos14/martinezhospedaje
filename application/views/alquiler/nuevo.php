@@ -219,40 +219,8 @@
             <div class="modal-header">
                 <h4 class="modal-title" id="title_form">LISTA DE CLIENTES</h4>
             </div>
-            <div class="modal-body">
-                <table class="table" id="clientesList">
-                        <thead>
-                            <tr>
-                                <td>#</td>
-                                <td>Tipo Doc</td>
-                                <td>N° Doc</td>
-                                <td>Nombre</td>
-                                <td>Apellido</td>
-                                <td>Accion</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $cont=1; ?>
-                            <?php foreach ($clientes as $cli): ?>
-                            <tr>
-                                <td><?= $cont++ ?></td>
-                                <td>
-                                <?php 
-                                    if($cli->tipodocumento=='0'){
-                                        echo "DNI";
-                                    }else{
-                                        echo "Pasaporte";
-                                    }
-                                ?>      
-                                </td>
-                                <td><?= $cli->nrodocumento ?></td>
-                                <td><?= $cli->nombres ?></td>
-                                <td><?= $cli->apellidos ?></td>
-                                <td><button class="btn btn-success btn-xs" onclick="seleccionaCliente('<?= $cli->idcliente ?>','<?= $cli->nombres ?>','<?= $cli->apellidos ?>','<?= $cli->nrodocumento ?>')">Agregar</button></td>
-                            </tr>
-                            <?php endforeach ?>
-                        </tbody>
-                    </table>
+            <div class="modal-body" id="showListClient">
+               
                 
             </div>
             <div class="modal-footer">

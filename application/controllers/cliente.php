@@ -17,6 +17,12 @@ class Cliente extends CI_Controller {
 		$this->load->view("cliente/nuevo");	
 	}
 
+	public function clientListModal(){
+		$sql_cliente = "SELECT * FROM cliente WHERE estado <> '0'";
+		$data["clientes"] = $this->allmodel->querySql($sql_cliente)->result();
+		$this->load->view("cliente/listamodal",$data);	
+	}
+
 	public function clienteActual($habitacion){
 		$sql = "SELECT al.idalquiler, hb.nrohabitacion, cli.apellidos,cli.nombres
 		FROM habitacion hb INNER JOIN alquiler al ON (hb.idhabitacion = al.habitacion_idhabitacion)
