@@ -7,7 +7,9 @@ class Encargo extends CI_Controller {
 	}
 
 	public function nuevo(){
-		$this->load->view("encargo/nuevo");
+		$sql_almacen = "SELECT * FROM almacen WHERE estado = '1'";
+		$data["almacenes"] = $this->allmodel->querySql($sql_almacen)->result();
+		$this->load->view("encargo/nuevo",$data);
 	}
 	public function tableList(){
 		$sql = "SELECT en.*,al.nomalmacen,cli.tipodocumento,cli.nombres,cli.apellidos,cli.nrodocumento,cli.telefono
@@ -22,15 +24,18 @@ class Encargo extends CI_Controller {
 		$id = $this->input->post("id");
 		$this->db->trans_start();
 		$data = array(
+			"almacen_idalmacen" => $this->input->post("idalmacen"),
 			"descripcion" => $this->input->post("descripcion"),
-			"nomalmacen" => $this->input->post("nomalmacen"),
+			"fecha_ingreso" => $this->input->post("fecha")." ".$this->input->post("hora"),
+			"fecha_salida" => "1900-01-01 00:00:00",
+			"cliente_idcliente" => $this->input->post("idcliente"),
 			"estado" => '1'
 		);
 
 		if ($id == ""){
-			$status = $this->allmodel->create("almacen", $data);
+			$status = $this->allmodel->create("encargo", $data);
 		}else{
-			$status = $this->allmodel->update("almacen", $data, array('idalmacen'=> $id));
+			$status = $this->allmodel->update("encargo", $data, array('idencargo'=> $id));
 		}
 
 		$this->db->trans_complete();

@@ -28,7 +28,7 @@
                     </label>
                     <input type="hidden" name="idcliente" id="idcliente">
                     <div class="col-md-2 col-sm-6 col-xs-12">
-                        <input onkeypress="return solonumeros(event)" onblur="searchdni(this)" id="al_dni" name="al_dni" class="form-control" value="" placeholder="Nro Documento">
+                        <input onblur="searchdni(this)" id="al_dni" name="al_dni" class="form-control" value="" placeholder="Nro Documento">
                     </div>
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <input id="cliente" name="cliente" readonly class="form-control" value="" placeholder="Cliente">

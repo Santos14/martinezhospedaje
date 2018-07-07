@@ -9,6 +9,49 @@ function verinforme(){
 	}
 }
 
+function cronogramapagos(){
+	if($("#habitacion").val()!=''){
+		$.get(url+"reporte/cronogramapagos_imprimir/"+$("#habitacion").val(), function(data) {
+
+			$("#showtable").empty().html(data);
+			var base64Img = null;
+			var doc = new jsPDF();
+
+	        doc.text("Hospedaje Martinez",14, 15);
+	        doc.setFontSize(9);
+	        doc.text("Calle Julio C. Pinedo N° 152 - Telef.: (065) 352935", 14, 20);
+	        doc.setFontSize(7);
+	        doc.text("Yurmaguas - Alto Amazonas - Loreto", 14, 24);
+
+		       
+
+		    doc.setFontSize(14);
+		    doc.text("Cronograma de Pagos por Habitacion", 14, 37);
+		    doc.setFontSize(12);
+		    doc.text("Habitacion: "+$("#habitacion").val(), 14, 42);
+		    var elem = document.getElementById("table_reporte");
+		    var res = doc.autoTableHtmlToJson(elem);
+
+		    doc.autoTable(res.columns, res.data, {
+		    	
+		    	startY: 45,
+		    	styles: {cellPadding: 0.5, fontSize: 9},
+		    	columnStyles: {text: {columnWidth: 'auto'}}
+		    });
+
+		  
+		    doc.setProperties({
+	            title: 'Cronogramapagos',
+	            subject: 'A jspdf-autotable example pdf'
+	        });
+
+		    $("#iframe-reporte").attr("src",doc.output('datauristring'));
+		});
+	}else{
+		alerta("Sin Fecha","Ingrese Fecha","error");
+	}
+}
+
 function alojamiento(){
 	if($("#dia").val()!=''){
 		$.get(url+"reporte/alojamiento_imprimir/"+$("#dia").val(), function(data) {

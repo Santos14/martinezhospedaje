@@ -19,6 +19,65 @@ function form_add(){
 		$("#tableList").empty().html(data);
 	});
 }
+
+function searchdni(c){
+	if(c.value!=""){
+		$.get(url+"cliente/ajax_searchdni/"+c.value, function(data) {
+			if(data.length>0){
+				$("#idcliente").val(data[0].idcliente);
+				$("#cliente").val(data[0].apellidos+", "+data[0].nombres);
+			}				
+		},"json");
+	}
+}
+
+function seleccionaCliente(idcliente,nombre,apellido,nrodoc){							
+	$("#idcliente").val(idcliente);
+	$("#al_dni").val(nrodoc);
+	$("#cliente").val(apellido+", "+nombre);			
+	$("#modalListaClientes").modal("hide");
+}
+
+
+function search_cliente(){
+
+	$.get(url+"cliente/clientListModal", function(data) {
+		$("#showListClient").empty().html(data);
+		$('#clientes').dataTable();
+		$("#modalListaClientes").modal("show");
+	});
+}
+function save(){
+
+	labels = ['al_dni','cliente','idalmacen','descripcion','fecha','hora'];
+	fallas = false;
+
+	for (var i = 0; i < labels.length; i++) {
+		if($("[name='"+labels[i]+"']").val() == ""){
+			fallas = true;
+			alerta("Campos en Blanco","Se necesita llenar todos los Campos",'error');
+			break;
+		}
+	}
+	if(!fallas){
+		$("#btn_save_encargo").attr("disabled",true);
+		$.ajax({
+			url: url+controlador+'/ajax_save',
+			type: 'POST',
+			dataType: 'JSON',
+			data: $("#form").serialize(),
+			success: function(data){
+				$("#btn_save_encargo").removeAttr("disabled");
+				alerta("Guardado Exitoso",'Se guardo correctamente','success');
+				init();
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				alerta("Error de Guardado",errorThrown,'error');
+			}
+		});
+	}
+}
+
 function form_edit(id){
 	$.ajax({
 		url: url+controlador+'/ajax_edit',
@@ -33,39 +92,6 @@ function form_edit(id){
 			alerta("Error de Guardado",errorThrown,'error');
 		}
 	});
-}
-
-function save(){
-
-	labels = ['descripcion','nomalmacen'];
-	fallas = false;
-
-	for (var i = 0; i < labels.length; i++) {
-		if($("[name='"+labels[i]+"']").val() == ""){
-			fallas = true;
-			alerta("Campos en Blanco","Se necesita llenar todos los Campos",'error');
-			break;
-		}
-	}
-	if(!fallas){
-		$("#btn_save_almacen").attr("disabled",true);
-		$.ajax({
-			url: url+controlador+'/ajax_save',
-			type: 'POST',
-			dataType: 'JSON',
-			data: $("#form").serialize(),
-			success: function(data){
-				console.log(data);
-				$('#modalFormulario').modal('hide');
-				$("#btn_save_almacen").removeAttr("disabled");
-				alerta("Guardado Exitoso",'Se guardo correctamente','success');
-				init();
-			},
-			error: function(jqXHR, textStatus, errorThrown){
-				alerta("Error de Guardado",errorThrown,'error');
-			}
-		});
-	}
 }
 
 function showEliminar(id){

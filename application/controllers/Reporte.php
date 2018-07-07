@@ -16,6 +16,15 @@ class Reporte extends CI_Controller {
 		layoutSystem("reporte/historialpasajeros");
 	}
 
+	function cronopagos(){
+
+		$sql_habocupadas = "SELECT * FROM habitacion WHERE (disponibilidad='2' or disponibilidad='3' or disponibilidad='5' or disponibilidad='6' ) and estado <> '0' ORDER BY nrohabitacion asc";
+
+		$data["hab_ocupadas"] = $this->allmodel->querySql($sql_habocupadas)->result();
+
+		layoutSystem("reporte/cronogramapagos",$data);
+	}
+
 	function estadomes(){
 		$data["anios"] = $this->allmodel->querySql("SELECT DISTINCT(EXTRACT(YEAR from fecha_ingreso)) anios FROM alquiler")->result();
 		layoutSystem("reporte/estadomes",$data);
@@ -24,6 +33,29 @@ class Reporte extends CI_Controller {
 		$data["anios"] = $this->allmodel->querySql("SELECT DISTINCT(EXTRACT(YEAR from fecha_ingreso)) anios FROM alquiler")->result();
 		layoutSystem("reporte/estadisticamensual",$data);
 	}
+
+	function cronogramapagos_imprimir($nrohabitacion){
+		
+		$bAlq = "SELECT al.* 
+		FROM habitacion hb INNER JOIN alquiler al ON (hb.idhabitacion = al.habitacion_idhabitacion)
+		WHERE hb.estado='1' and al.estado='1' and hb.nrohabitacion='".$nrohabitacion."' LIMIT 1";
+
+		$alq = $this->allmodel->querySql($bAlq)->result(); 
+
+		$listaPagos = "SELECT mv.fecha, mv.monto 
+		FROM alquiler al INNER JOIN amortizacion am ON (al.idalquiler = am.alquiler_idalquiler)
+		INNER JOIN movimiento mv ON (mv.idmovimiento = am.movimiento_idmovimiento)
+		WHERE al.estado='1' and am.estado='1' and mv.estado='1' and al.idalquiler = ".$alq[0]->idalquiler."
+		ORDER BY mv.fecha asc";
+
+		$lPagos = $this->allmodel->querySql($listaPagos)->result(); 
+
+		$data["listPagos"] =$lPagos;
+
+
+		$this->load->view("reporte/listapagos_table",$data);
+	}
+
 
 	function estadomes_imprimir($mes,$anio){
 		

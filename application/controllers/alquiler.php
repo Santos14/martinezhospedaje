@@ -27,7 +27,7 @@ class Alquiler extends CI_Controller {
 	}
 
 	public function fecha_mensual($fecha){
-		$nuevo = date ('Y-m-d',strtotime('+30 days',strtotime(date($fecha))));
+		$nuevo = date ('Y-m-d',strtotime('+1 months',strtotime(date($fecha))));
 		echo json_encode($nuevo);
 	}
 

@@ -61,7 +61,7 @@
 	          	$dias = (strtotime(date("Y-m-d"))-strtotime(date_format($fi,"Y-m-d")))/86400;
 	         	$dias = abs($dias); $dias = floor($dias); 
 	         	if(
-	         		$diff->y == 0 && 
+	         		$dias == 0 && 
 	         		date("H")>=$hora_termino && 
 	         		date("i")>=$minuto_termino && 
 	         		date("s")>=$segundo_termino
