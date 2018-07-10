@@ -46,7 +46,7 @@ class Reporte extends CI_Controller {
 		FROM alquiler al INNER JOIN amortizacion am ON (al.idalquiler = am.alquiler_idalquiler)
 		INNER JOIN movimiento mv ON (mv.idmovimiento = am.movimiento_idmovimiento)
 		WHERE al.estado='1' and am.estado='1' and mv.estado='1' and al.idalquiler = ".$alq[0]->idalquiler."
-		ORDER BY mv.fecha asc";
+		ORDER BY mv.fecha desc";
 
 		$lPagos = $this->allmodel->querySql($listaPagos)->result(); 
 
