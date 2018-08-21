@@ -8,6 +8,8 @@
                 <input type="hidden" name="idhabitacion" id="idhabitacion" value="<?= $habitacion[0]->idhabitacion ?>">
                 <p class="text-muted">Llene todos los campos para proceder con el Alquiler</p>
               
+                 <legend>Datos de la Habitacion</legend>
+
                 <div class="form-group">
                     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="habitacion">
                         Nro. Habitacion
@@ -22,6 +24,7 @@
                         <input id="precioxdia" name="precioxdia" id="precioxdia" class="form-control" value="<?= $habitacion[0]->precio ?>">
                     </div>
                 </div>
+                  <legend>Datos del Huesped</legend>
                 <div class="form-group">
                     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="habitacion">
                         Cliente
@@ -63,10 +66,48 @@
                     
                 </div>
 
+                <legend>Datos de los Acompañantes</legend>
+
+
+                <div class="form-group">
+                    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="producto">
+                        Acompañante
+                    </label>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        <input type="text" id="nomacompaniante" name="nomacompaniante" class="form-control" placeholder="Nombres y Apellidos">
+                    </div>
+                    <label class="control-label col-md-1 col-sm-3 col-xs-12" for="monto">
+                        DNI
+                    </label>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        <input type="text" id="dni_acom" name="dni_acom" class="form-control" placeholder="DNI">
+                    </div>
+                    <div class="col-md-1 col-sm-6 col-xs-12">
+                        <button type="button" onclick="addacompaniante()" class='btn btn-info'>
+                            <i class="fa fa-plus"></i> Agregar
+                        </button>
+                    </div>
+                </div>
+
+
+                <table class='table table-striped table-bordered' style="width: 60%; margin: 0 auto;">
+                    <thead>
+                        <tr>
+                            <th class='text-center'>ID</th>
+                            <th class='text-center'>Acompañante</th>
+                            <th class='text-center'>DNI</th>
+                            <th class='text-center'>Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody id='listaacompaniante'>
+
+                    </tbody>
+                </table>
+
 
 
                 
-                 
+                <legend>Datos del Alquiler</legend>
 
                 <div class="form-group">
                     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="idtipoalquiler">
@@ -174,7 +215,9 @@
                         <input readonly type="time" id="hora_fin" name="hora_fin" class="form-control" value='<?= $horatermino.":00:00" ?>'>
                     </div>
                 </div>
-         
+                
+
+                <br><br>
          
                  <div class="text-center">
                     <button type="button" class="btn btn-default" onclick="window.location='<?= base_url('alquiler') ?>'">

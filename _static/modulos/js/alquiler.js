@@ -22,6 +22,45 @@ function search_cliente(){
 	});
 }
 
+
+
+filatableacomp = 1;
+function addacompaniante(){
+	if($("#nomacompaniante").val()!="" && $("#dni_acom").val()!=""){
+		
+		fila = "<tr class='acompaniante' id='f"+filatableacomp+"'>";
+		fila +="<td class='text-center'>"+filatableacomp+"</td>";
+        fila +="<td class='text-center'><input type='hidden' name='nombres_acomp[]' value='"+$("#nomacompaniante").val()+"'>"+$("#nomacompaniante").val()+"</td>";
+        fila +="<td class='text-center'><input type='hidden' name='dni_acomp[]' value='"+$("#dni_acom").val()+"'>"+$("#dni_acom").val()+"</td>";
+        fila +="<td class='text-center'><button onclick=\"removeproducto('"+filatableacomp+"')\" type='button' class='btn btn-danger'><i class='fa fa-trash-o'></i></button></td>";
+        fila +="</tr>";
+
+		$("#listaacompaniante").append(fila);
+		
+		$("#nomacompaniante").val("");
+		$("#dni_acom").val("");
+
+		filatableacomp++;
+		
+		
+	}else{
+		alerta("Campos Vacios","Llene los campos correspondientes","error");
+	}
+}
+
+function removeproducto(id){
+	
+	$("#f"+id).remove();
+}
+
+
+
+
+
+
+
+
+
 function seleccionaCliente(idcliente,nombre,apellido,nrodoc){
 	$.get(url+"alquiler/ajax_morosidad/"+idcliente+"/1", function(morosidad1) {
 		$.get(url+"alquiler/ajax_morosidad/"+idcliente+"/2", function(morosidad2) {

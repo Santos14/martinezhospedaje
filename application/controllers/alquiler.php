@@ -139,6 +139,8 @@ class Alquiler extends CI_Controller {
 		$data["procedencia"] = $this->allmodel->selectWhere('procedencia',array("idprocedencia"=>$alquiler[0]->procedencia_idprocedencia))->result();
 		$data["cliente"] = $this->allmodel->selectWhere('cliente',array("idcliente"=>$alquiler[0]->cliente_idcliente))->result();
 		$data["motivoviaje"] = $this->allmodel->selectWhere('motivoviaje',array("idmotivoviaje"=>$alquiler[0]->motivoviaje_idmotivoviaje))->result();
+		$data["acompaniantes"] = $this->allmodel->selectWhere('acompaniante',array("alquiler_idalquiler"=>$id))->result();
+
 
 		$this->load->view("alquiler/ver",$data);
 	}
@@ -490,6 +492,7 @@ class Alquiler extends CI_Controller {
 			);
 			$uph = $this->allmodel->update("habitacion", $estado, array('idhabitacion'=> $this->input->post("idhabitacion")));
 
+			
 
 			//PAGO INICIAL
 			if($this->input->post('pagoinicial') != 0){
@@ -512,6 +515,30 @@ class Alquiler extends CI_Controller {
 				$am = $this->allmodel->create("amortizacion", $amortizacion);	
 				
 			}
+
+
+			//AGREGANDO ACOMPAÑANTES
+
+			if($this->input->post("nombres_acomp")!=null){
+
+				$nom_acomp = $this->input->post("nombres_acomp");
+				$dni_acomp = $this->input->post("dni_acomp");
+
+				if(count($dni_acomp)>0){
+					for ($ind = 0; $ind < count($dni_acomp) ; $ind++) {
+						$detalle = array(
+							"nomcompleto" => $nom_acomp[$ind],
+							"nrodoc" => $dni_acomp[$ind],
+							"alquiler_idalquiler" => $al,
+							"estado" => '1'
+						);
+						$ac = $this->allmodel->create("acompaniante", $detalle);
+					}
+				}
+
+			}
+
+			
 
 			if($idreserva != ""){
 				$r = $this->allmodel->update("reserva", array("estado"=>"2"), array('idreserva'=>$idreserva));

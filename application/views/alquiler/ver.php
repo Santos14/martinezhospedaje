@@ -55,6 +55,22 @@ if($alquiler[0]->evaluacion==""){
 <?php endif;?>
 
 
+
+<?php if(count($acompaniantes)!=0){?>
+  <legend>Acompañantes</legend>
+<?php
+  $cont = 1;
+ foreach ($acompaniantes as $acomp): ?>
+
+  <p><strong><?= $cont++ ?> .-</strong> <?= $acomp->nomcompleto ?> - (DNI) <?= $acomp->nrodoc ?></p>
+  
+<?php endforeach; ?>
+
+<?php } ?>
+
+
+
+
 </div>
 <div class="modal-footer">
   <button onclick="volver_t('#modalver')" type="button" class="btn btn-danger">
