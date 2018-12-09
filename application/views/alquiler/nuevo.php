@@ -217,7 +217,41 @@
                 </div>
                 
 
-                <br><br>
+                 
+                 <legend>Recomendaciones de Servicios</legend>
+                 
+                 <div class="form-group">
+                    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="idcliente_r">
+                        Recomendado por:
+                    </label>
+                    <input type="hidden" name="idcliente_r" id="idcliente_r">
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        <input onblur="searchdni(this)" id="rec_dni" name="rec_dni" class="form-control" value="" placeholder="Nro Documento">
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <input id="cliente_r" name="cliente_r" readonly class="form-control" value="" placeholder="Cliente">
+                    </div>
+
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        <button onclick="search_cliente()" type="button" class='btn btn-info'>
+                            <i class="fa fa-search"></i>    
+                        </button>
+                    </div>
+                </div>
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
          
                  <div class="text-center">
                     <button type="button" class="btn btn-default" onclick="window.location='<?= base_url('alquiler') ?>'">

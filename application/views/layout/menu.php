@@ -91,6 +91,26 @@
                    
                 </ul>
             </li>
+            
+            <li>
+                <a href="<?php echo base_url('transportista');?>" class="waves-effect">
+                    <i class="fa fa-car" aria-hidden="true"></i> MOTOTAXISTA
+                </a>
+            </li>
+            
+            <li>
+                <a href="#" class="waves-effect">
+                    <i class="fa fa-database" aria-hidden="true"></i>  CONTA PUNTOS
+                </a>
+                <ul class="nav child_menu" >
+                    <li style='padding-left: 14%;'>
+                        <a style="width: 90%;" href="<?php echo base_url('puntocliente');?>">Clientes</a>
+                    </li>           
+                     <li style='padding-left: 14%;'>
+                        <a style="width: 90%;" href="<?php echo base_url('puntotransportista');?>">Mototaxistas</a>
+                    </li> 
+                </ul>
+            </li>
 
              <li>
                 <a href="#" class="waves-effect">
