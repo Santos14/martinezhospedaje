@@ -13,13 +13,27 @@ function init(){
 	});
 }
 
-function search_cliente(){
+function buscarDNIRepetido(){
+    var dni = $("#nrodocumento").val();
+    if(dni !=''){
+        $.get(url+"cliente/ajax_searchdni/"+dni, function(data) {
+            if(data.length>0){
+                alerta("EL DNI ya existe",'Se registro un cliente con este DNI','warning');
+                $("#btn_add_cliente").attr("disabled",true);
+            }else{
+                $("#btn_add_cliente").removeAttr("disabled");
+            }
+        },'json');
+    }
+    
+}
 
-	$.get(url+"cliente/clientListModal", function(data) {
-		$("#showListClient").empty().html(data);
-		$('#clientes').dataTable();
-		$("#modalListaClientes").modal("show");
-	});
+function search_cliente(){
+    $.get(url+"cliente/clientListModal", function(data) {
+            $("#showListClient").empty().html(data);
+            $('#clientes').dataTable();
+            $("#modalListaClientes").modal("show");
+    });
 }
 
 
@@ -54,17 +68,12 @@ function removeproducto(id){
 }
 
 
-
-
-
-
-
-
-
-function seleccionaCliente(idcliente,nombre,apellido,nrodoc){
+function seleccionaCliente(idcliente,nombre,apellido,nrodoc,tipodoc){
 	$.get(url+"alquiler/ajax_morosidad/"+idcliente+"/1", function(morosidad1) {
 		$.get(url+"alquiler/ajax_morosidad/"+idcliente+"/2", function(morosidad2) {
 			$.get(url+"alquiler/ultimo_alquiler/"+idcliente, function(ultimo_alquiler) {
+                                
+                          
 				if(morosidad2.length>0){
 					$("#btn_save_alquiler").attr("disabled",true);
 					clas = "btn btn-danger";
@@ -85,10 +94,10 @@ function seleccionaCliente(idcliente,nombre,apellido,nrodoc){
 					}else{
 						op = ultimo_alquiler[0].evaluacion;
 					}
-
-					obser = "<div class='alert alert-info'>";
-	          		obser +="<strong>Ultima Observacion: </strong>"+op;
-	        		obser +="</div>";
+                                        
+                                        obser = "<div class='alert alert-info'>";
+                                        obser +="<strong>Ultima Observacion: </strong>"+op;
+                                        obser +="</div>";
 
 					$("#observaciones_alquiler").html(obser);
 				}
@@ -100,20 +109,30 @@ function seleccionaCliente(idcliente,nombre,apellido,nrodoc){
 				
 
 				btn = "<button type='button' onclick=\"vermoroso('"+func+"','"+est+"')\" class='"+clas+"'>";
-                btn+= "<i class='"+icon+"'></i> "+text;
-                btn+= "</button>";
+                                btn+= "<i class='"+icon+"'></i> "+text;
+                                btn+= "</button>";
 
-                $("#estcli").html(btn);
-                if(morosidad2.length>0){
-                	
-                	alerta("Cliente Moroso","No se podra registrar Alquiler","error");
-                }
+                                $("#estcli").html(btn);
+                                if(morosidad2.length>0){
+
+                                        alerta("Cliente Moroso","No se podra registrar Alquiler","error");
+                                }
   
 				$("#estcli").show();
 
 				$("#modalListaClientes").modal("hide");
+                                
+                                //CARGAR DATOS DE ALQUILER ANTERIOR
+                                $("#idtipoalquiler").val(ultimo_alquiler[0].tipoalquiler_idtipoalquiler);
+                                $("#idmotivoviaje").val(ultimo_alquiler[0].motivoviaje_idmotivoviaje);
+                                if(tipodoc == '0'){
+                                    $("#idprocedencia").val(ultimo_alquiler[0].procedencia_idprocedencia);
+                                    $("#localidad").val(ultimo_alquiler[0].localidad);
+                                }
 
-				},"json");
+                                // FIN DE ALQUILER ANTERIOR
+
+			},"json");
 		},"json");
 	});
 }
@@ -388,8 +407,8 @@ function searchdni(c){
 			$.get(url+"alquiler/ajax_morosidad/"+data[0].idcliente+"/1", function(morosidad1) {
 				$.get(url+"alquiler/ajax_morosidad/"+data[0].idcliente+"/2", function(morosidad2) {
 					$.get(url+"alquiler/ultimo_alquiler/"+data[0].idcliente, function(ultimo_alquiler) {
+                                           
 						if(data.length>0){
-							console.log(morosidad2.length);
 							if(morosidad2.length>0){
 								$("#btn_save_alquiler").attr("disabled",true);
 								clas = "btn btn-danger";
@@ -421,7 +440,7 @@ function searchdni(c){
 							}
 
 							
-
+                                                    
 
 							$("#idcliente").val(data[0].idcliente);
 							$("#cliente").val(data[0].apellidos+", "+data[0].nombres);
@@ -429,17 +448,26 @@ function searchdni(c){
 							
 
 							btn = "<button type='button' onclick=\"vermoroso('"+func+"','"+est+"')\" class='"+clas+"'>";
-		                    btn+= "<i class='"+icon+"'></i> "+text;
-		                    btn+= "</button>";
+                                                        btn+= "<i class='"+icon+"'></i> "+text;
+                                                        btn+= "</button>";
 
-		                    $("#estcli").html(btn);
-		                    if(morosidad2.length>0){
-		                    	
-		                    	alerta("Cliente Moroso","No se podra registrar Alquiler","error");
-		                    }
+                                                        $("#estcli").html(btn);
+                                                        if(morosidad2.length>0){
+
+                                                            alerta("Cliente Moroso","No se podra registrar Alquiler","error");
+                                                        }
 		                   
 							$("#estcli").show();
 
+                                                        //CARGAR DATOS DE ALQUILER ANTERIOR
+                                                        $("#idtipoalquiler").val(ultimo_alquiler[0].tipoalquiler_idtipoalquiler);
+                                                        $("#idmotivoviaje").val(ultimo_alquiler[0].motivoviaje_idmotivoviaje);
+                                                        if(data[0].tipodocumento == 0){
+                                                            $("#idprocedencia").val(ultimo_alquiler[0].procedencia_idprocedencia);
+                                                            $("#localidad").val(ultimo_alquiler[0].localidad);
+                                                        }
+                                                        
+                                                        // FIN DE ALQUILER ANTERIOR
 
 						}
 					},"json");

@@ -130,7 +130,7 @@
                     </label>
                     <div class="col-md-8 col-sm-6 col-xs-12">
                    
-                        <select class='form-control form-control-line' name="idmotivoviaje">
+                        <select class='form-control form-control-line' id="idmotivoviaje" name="idmotivoviaje">
                             <option value="">Seleccione...</option>
                         <?php foreach ($motivo_viaje as $tipo):?>
                             <option value="<?= $tipo->idmotivoviaje ?>"><?= $tipo->descripcion ?></option>

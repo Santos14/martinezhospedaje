@@ -26,7 +26,7 @@
                 <td><?= $cli->nrodocumento ?></td>
                 <td><?= $cli->nombres ?></td>
                 <td><?= $cli->apellidos ?></td>
-                <td><button class="btn btn-success btn-xs" onclick="seleccionaCliente('<?= $cli->idcliente ?>','<?= $cli->nombres ?>','<?= $cli->apellidos ?>','<?= $cli->nrodocumento ?>')">Agregar</button></td>
+                <td><button class="btn btn-success btn-xs" onclick="seleccionaCliente('<?= $cli->idcliente ?>','<?= $cli->nombres ?>','<?= $cli->apellidos ?>','<?= $cli->nrodocumento ?>','<?= $cli->tipodocumento ?>')">Agregar</button></td>
             </tr>
             <?php endforeach ?>
         </tbody>

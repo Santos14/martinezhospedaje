@@ -97,6 +97,21 @@ function save(){
 	
 }
 
+function buscarDNIRepetido(){
+    var dni = $("#nrodocumento").val();
+    if(dni !=''){
+        $.get(url+controlador+"/ajax_searchdni/"+dni, function(data) {
+            if(data.length>0){
+                alerta("EL DNI ya existe",'Se registro un cliente con este DNI','warning');
+                $("#btn_save_cliente_cli").attr("disabled",true);
+            }else{
+                $("#btn_save_cliente_cli").removeAttr("disabled");
+            }
+        },'json');
+    }
+    
+}
+
 function showEliminar(id){
 	idglobal = id;
 	$("#modalEliminar").modal("show");

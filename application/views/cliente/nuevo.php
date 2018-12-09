@@ -1,22 +1,6 @@
 <form id="form" class="form-horizontal form-label-left form-material">
 <input type="hidden" name="id" id="id">
 <div class="form-group">
-    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="nombre">
-        Nombres
-    </label>
-    <div class="col-md-8 col-sm-6 col-xs-12">
-        <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese Nombre" required maxlength="100">
-    </div>
-</div>
-<div class="form-group">
-    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="apellido">
-        Apellidos
-    </label>
-    <div class="col-md-8 col-sm-6 col-xs-12">
-        <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Ingrese Apellido" required maxlength="100">
-    </div>
-</div>
-<div class="form-group">
     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="tipodocumento">
         Tipo Documento
     </label>
@@ -33,9 +17,26 @@
         Nro Documento
     </label>
     <div class="col-md-8 col-sm-6 col-xs-12">
-        <input type="text" id="nrodocumento" name="nrodocumento" class="form-control" placeholder="Ingrese Nro Documento">
+        <input onblur="buscarDNIRepetido()" type="text" id="nrodocumento" name="nrodocumento" class="form-control" placeholder="Ingrese Nro Documento">
     </div>
 </div>
+<div class="form-group">
+    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="nombre">
+        Nombres
+    </label>
+    <div class="col-md-8 col-sm-6 col-xs-12">
+        <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese Nombre" required maxlength="100">
+    </div>
+</div>
+<div class="form-group">
+    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="apellido">
+        Apellidos
+    </label>
+    <div class="col-md-8 col-sm-6 col-xs-12">
+        <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Ingrese Apellido" required maxlength="100">
+    </div>
+</div>
+
 <div class="form-group">
     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="nacionalidad">
         Nacionalidad
