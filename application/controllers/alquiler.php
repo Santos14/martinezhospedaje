@@ -165,7 +165,7 @@ class Alquiler extends CI_Controller {
 		) total
 		FROM alquiler a INNER JOIN venta_alquiler va on(a.idalquiler = va.alquiler_idalquiler)
 		INNER JOIN venta v ON(va.venta_idventa = v.idventa)
-		WHERE v.estado <> '3' and a.idalquiler =".$alquiler[0]->idalquiler)->result();
+		WHERE v.estado <> '0' and a.idalquiler =".$alquiler[0]->idalquiler)->result();
 
 		$data["pagado"] = $this->allmodel->querySql("SELECT sum(am.monto) monto
 		FROM alquiler al INNER JOIN amortizacion am ON (al.idalquiler = am.alquiler_idalquiler)

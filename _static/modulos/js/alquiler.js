@@ -90,12 +90,14 @@ function seleccionaCliente(idcliente,nombre,apellido,nrodoc,tipodoc){
 
 				if(ultimo_alquiler.length != 0){
 					if(ultimo_alquiler[0].evaluacion == ""){
-						op = "No se registraron Observaciones en el Ultimo Alquiler";
-					}else{
-						op = ultimo_alquiler[0].evaluacion;
-					}
-                                        
-                                        obser = "<div class='alert alert-info'>";
+                                                op = "No se registraron Observaciones en el Ultimo Alquiler";
+                                                clase = "alert alert-info";
+                                        }else{
+                                                clase = "alert alert-warning";
+                                                op = ultimo_alquiler[0].evaluacion;
+                                        }
+
+                                        obser = "<div class='"+clase+"'>";
                                         obser +="<strong>Ultima Observacion: </strong>"+op;
                                         obser +="</div>";
 
@@ -131,6 +133,12 @@ function seleccionaCliente(idcliente,nombre,apellido,nrodoc,tipodoc){
                                 }
 
                                 // FIN DE ALQUILER ANTERIOR
+                                
+                                 // REMOVER ATRIBUTOS STYLE
+                                $("#observaciones_alquiler").removeAttr("style");
+                               // $("#panelmorosidad").removeAttr("style");
+                                $("#estcli").removeAttr("style");
+
 
 			},"json");
 		},"json");
@@ -428,13 +436,15 @@ function searchdni(c){
 							if(ultimo_alquiler.length != 0){
 								if(ultimo_alquiler[0].evaluacion == ""){
 									op = "No se registraron Observaciones en el Ultimo Alquiler";
+                                                                        clase = "alert alert-info";
 								}else{
+                                                                        clase = "alert alert-warning";
 									op = ultimo_alquiler[0].evaluacion;
 								}
 
-								obser = "<div class='alert alert-info'>";
-				          		obser +="<strong>Ultima Observacion: </strong>"+op;
-				        		obser +="</div>";
+								obser = "<div class='"+clase+"'>";
+                                                                obser +="<strong>Ultima Observacion: </strong>"+op;
+                                                                obser +="</div>";
 
 								$("#observaciones_alquiler").html(obser);
 							}
@@ -468,6 +478,11 @@ function searchdni(c){
                                                         }
                                                         
                                                         // FIN DE ALQUILER ANTERIOR
+                                                        
+                                                        // REMOVER ATRIBUTOS STYLE
+                                                        $("#observaciones_alquiler").removeAttr("style");
+                                                        //$("#panelmorosidad").removeAttr("style");
+                                                        $("#estcli").removeAttr("style");
 
 						}
 					},"json");
@@ -642,17 +657,13 @@ function ver(s,id){
 }
 
 function alquilar_reservacion(id){
-	$.get(url+controlador+'/ver_reservacion/'+id, function(data_res) {
-		$.get(url+controlador+"/form_alquiler/"+id, function(data) {
-
-			$("#tableList").empty().html(data);
-			$("#idcliente").val(data_res[0].idcliente);
-			$("#al_dni").val(data_res[0].nrodocumento);
-			$("#idreserva").val(data_res[0].idreserva);
-			$("#cliente").val(data_res[0].apellidos+", "+data_res[0].nombres);
-
-		});
-	},"json");
+    $.get(url+controlador+'/ver_reservacion/'+id, function(data_res) {
+            $.get(url+controlador+"/form_alquiler/"+id, function(data) {
+                    $("#tableList").empty().html(data);
+                    $("#idcliente").val(data_res[0].idcliente);
+                    $("#al_dni").val(data_res[0].nrodocumento);
+            });
+    },"json");
 }
 
 function pagartodo(val){

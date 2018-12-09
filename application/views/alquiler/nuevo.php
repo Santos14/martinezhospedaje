@@ -39,7 +39,7 @@
 
                     
 
-                     <div class="col-md-2 col-sm-6 col-xs-12" id="estcli">
+                    <div class="col-md-2 col-sm-6 col-xs-12" id="estcli" style="display: none">
                         
                     </div>
 
@@ -57,12 +57,12 @@
                 </div>
 
 
-                <div id="observaciones_alquiler" style="width: 65%;margin-left: 25%;">
+                <div id="observaciones_alquiler" style="width: 65%;margin-left: 25%;display: none;">
                     
                 </div>
 
 
-                <div id="panelmorosidad">
+                <div id="panelmorosidad" style="display: none">
                     
                 </div>
 
@@ -201,7 +201,7 @@
                     </div>
                 </div>
 
-                 <div class="form-group" id='panelmensual'>
+                <div class="form-group" id='panelmensual' style="display:none;">
                     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="fecha_fin">
                         Fecha Termino
                     </label>

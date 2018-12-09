@@ -29,6 +29,7 @@ function form_edit(id){
 		if(textStatus=="success"){
 			$('[name="id"]').val(data[0].idproducto);
 			$('[name="nombre"]').val(data[0].nombre);
+                        $('[name="puntos"]').val(data[0].puntos);
 			$("#modalFormulario").modal("show");
 		}else{
 			alert("Error al Extraer Datos")
@@ -37,7 +38,7 @@ function form_edit(id){
 }
 
 function save(){
-	labels = ['nombre'];
+	labels = ['nombre','puntos'];
 	fallas = false;
 	for (var i = 0; i < labels.length; i++) {
 		if($("[name='"+labels[i]+"']").val() == ""){

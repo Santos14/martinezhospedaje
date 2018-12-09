@@ -58,8 +58,7 @@ $dias = abs($dias); $dias = floor($dias);
 
                       </div>
                       
-                      
-
+            
 
                     </div>
 
@@ -76,11 +75,7 @@ $dias = abs($dias); $dias = floor($dias);
                         
                              if($fechaingreso->format('H')<=$hora_fin && $fechaingreso->format('i') <=$minuto_fin && $fechaingreso->format('s') <= $segundo_fin){
                               $rango = true;
-                             }
-                           
-                             
-                            
-
+                             }        
                                   }
 
                           ?>
@@ -131,7 +126,6 @@ $dias = abs($dias); $dias = floor($dias);
                                   }
 
                                   
-
                                   ?>
                                   <?php  if($p==0){?>
                                   <?php $resto = 0; ?>

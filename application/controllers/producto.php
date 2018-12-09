@@ -17,6 +17,7 @@ class Producto extends CI_Controller {
 
 		$data = array(
 			"nombre" => $this->input->post("nombre"),
+                        "puntos" => $this->input->post("puntos"),
 			"estado" => '1'
 		);
 

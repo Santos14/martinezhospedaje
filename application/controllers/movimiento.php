@@ -44,12 +44,26 @@ class Movimiento extends CI_Controller {
 		switch ($id) {
 			case '3':
 
-				$sql1 = "SELECT *, (SELECT sum(precio) from detalle_venta dv WHERE dv.venta_idventa = vt.idventa GROUP BY dv.venta_idventa) total,(SELECT val.alquiler_idalquiler FROM venta_alquiler val WHERE val.venta_idventa = vt.idventa) FROM venta vt WHERE vt.estado = '1'";
-
-				$sql2 = "SELECT al.idalquiler,hb.nrohabitacion,cli.apellidos,cli.nombres,al.estado estadoalquiler FROM alquiler al INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente) INNER JOIN habitacion hb ON (hb.idhabitacion = al.habitacion_idhabitacion)";
+				$sql1 = "SELECT vt.*, 
+                                (SELECT sum(precio) 
+                                from detalle_venta dv 
+                                WHERE dv.venta_idventa = vt.idventa 
+                                GROUP BY dv.venta_idventa) total
+                                ,
+                                (SELECT val.alquiler_idalquiler 
+                                FROM venta_alquiler val 
+                                WHERE val.venta_idventa = vt.idventa),
+                                (SELECT cli.nombres || ' '  ||cli.apellidos || ' ( Cuarto N° ' || hb.nrohabitacion || ' )' 
+                                FROM venta_alquiler val INNER JOIN alquiler al ON (al.idalquiler = val.alquiler_idalquiler)
+                                INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion)
+                                INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
+                                WHERE val.venta_idventa = vt.idventa) cliente
+                                FROM venta vt INNER JOIN venta_alquiler valq ON (valq.venta_idventa = vt.idventa)
+                                INNER JOIN alquiler aql ON (aql.idalquiler = valq.alquiler_idalquiler)
+                                WHERE aql.estado = '1' and vt.estado='1'
+                                ORDER BY vt.fecha desc";
 
 				$data["ventas"] = $this->allmodel->querySql($sql1)->result();
-				$data["v_interno"] = $this->allmodel->querySql($sql2)->result();
 				$this->load->view("movimiento/ventas",$data);	
 
 				break;

@@ -60,19 +60,23 @@
                 <h4 class="modal-title" id="title_form">Formulario Productos</h4>
             </div>
             <div class="modal-body">
-               
-
-    <input type="hidden" name="id" id="id">
-    <div class="form-group">
-        <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="nombre">
-            Producto
-        </label>
-        <div class="col-md-8 col-sm-6 col-xs-12">
-            <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese Producto" required maxlength="100">
-        </div>
-    </div>
-    
-
+                <input type="hidden" name="id" id="id">
+                <div class="form-group">
+                    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="nombre">
+                        Producto
+                    </label>
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                        <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese Producto" required maxlength="100">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="puntos">
+                        Puntos
+                    </label>
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                        <input type="text" id="puntos" name="puntos" class="form-control" placeholder="Ingrese Puntos" required>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">

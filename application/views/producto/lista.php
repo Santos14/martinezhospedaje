@@ -9,6 +9,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Productos</th>
+                                    <th>Puntos</th>
                                     <th class='text-center'>Accion</th>
                                 </tr>
                             </thead>
@@ -19,6 +20,7 @@
 
                                     <td><?= $cont++ ?></td>
                                     <td><?= $val->nombre ?></td>
+                                    <td><?= $val->puntos ?></td>
                                     
                                     <td class='text-center'>
                                         <button onclick="form_edit('<?= $val->idproducto ?>')" type="button" class='btn btn-warning btn-sm'>

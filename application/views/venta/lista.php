@@ -21,22 +21,9 @@
                                     <td><?= $i+1 ?></td>
                                     <td><?= $ventas[$i]->fecha ?></td>
                                     <td><?= $ventas[$i]->total ?></td>
+                                    <td><?= $ventas[$i]->cliente ?></td>
 
-
-                                <?php if($ventas[$i]->alquiler_idalquiler!=""): ?>
-                                    <?php for($j = 0; $j <count($v_interno) ;$j++):?>
-                                        <?php if($v_interno[$j]->idalquiler==$ventas[$i]->alquiler_idalquiler): ?>
-                                            <?php if($v_interno[$j]->estadoalquiler=="1"): ?>
-                               
-                                    <td>Cuarto N° <?= $v_interno[$j]->nrohabitacion ?></td>
-                                            <?php else: ?>
-                                                <td>Salio de Cuarto</td>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
-                                    <?php endfor; ?>
-                                <?php else: ?> 
-                                   <td>Cliente Externo</td>
-                                <?php endif; ?>
+                       
 
                                 <td>
                                 <?php 
@@ -47,7 +34,7 @@
                                         case '2':
                                             echo "<button class='btn btn-success btn-xs'>Cancelado</button>";
                                             break;
-                                        case '3':
+                                        case '0':
                                             echo "<button class='btn btn-danger btn-xs'>Anulado</button>";
                                             break;
                                     }
