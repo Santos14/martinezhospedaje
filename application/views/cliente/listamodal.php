@@ -26,7 +26,14 @@
                 <td><?= $cli->nrodocumento ?></td>
                 <td><?= $cli->nombres ?></td>
                 <td><?= $cli->apellidos ?></td>
-                <td><button class="btn btn-success btn-xs" onclick="seleccionaCliente('<?= $cli->idcliente ?>','<?= $cli->nombres ?>','<?= $cli->apellidos ?>','<?= $cli->nrodocumento ?>','<?= $cli->tipodocumento ?>')">Agregar</button></td>
+                
+                <td>
+                    <?php if($option == '1'){ ?>
+                    <button class="btn btn-success btn-xs" onclick="seleccionaCliente('<?= $cli->idcliente ?>','<?= $cli->nombres ?>','<?= $cli->apellidos ?>','<?= $cli->nrodocumento ?>','<?= $cli->tipodocumento ?>')">Agregar</button>
+                    <?php }else{ ?>
+                      <button class="btn btn-success btn-xs" onclick="add_cliente_recomendador('<?= $cli->idcliente ?>','<?= $cli->nombres ?>','<?= $cli->apellidos ?>','<?= $cli->nrodocumento ?>')">Agregar</button>
+                    <?php } ?>
+                </td>
             </tr>
             <?php endforeach ?>
         </tbody>

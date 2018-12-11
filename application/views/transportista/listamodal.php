@@ -1,9 +1,8 @@
- <table class="table" id="clientes">
+ <table class="table" id="transportista">
         <thead>
             <tr>
                 <td>#</td>
-                <td>Tipo Doc</td>
-                <td>N° Doc</td>
+                <td>DNI</td>
                 <td>Nombre</td>
                 <td>Apellido</td>
                 <td>Accion</td>
@@ -14,19 +13,10 @@
             <?php foreach ($clientes as $cli): ?>
             <tr>
                 <td><?= $cont++ ?></td>
-                <td>
-                <?php 
-                    if($cli->tipodocumento=='0'){
-                        echo "DNI";
-                    }else{
-                        echo "Pasaporte";
-                    }
-                ?>      
-                </td>
-                <td><?= $cli->nrodocumento ?></td>
+                <td><?= $cli->dni ?></td>
                 <td><?= $cli->nombres ?></td>
                 <td><?= $cli->apellidos ?></td>
-                <td><button class="btn btn-success btn-xs" onclick="seleccionaCliente('<?= $cli->idcliente ?>','<?= $cli->nombres ?>','<?= $cli->apellidos ?>','<?= $cli->nrodocumento ?>','<?= $cli->tipodocumento ?>')">Agregar</button></td>
+                <td><button class="btn btn-success btn-xs" onclick="add_tranportista_recomendador('<?= $cli->idtransportista ?>','<?= $cli->nombres ?>','<?= $cli->apellidos ?>','<?= $cli->dni ?>')">Agregar</button></td>
             </tr>
             <?php endforeach ?>
         </tbody>

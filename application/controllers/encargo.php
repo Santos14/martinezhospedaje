@@ -82,4 +82,15 @@ class Encargo extends CI_Controller {
 		$status = $this->allmodel->update('encargo',$delete,array('idencargo' => $this->input->post("id")));
 		echo json_encode($status);
 	}
+        
+                
+        public function encargoCliente($nrodoc){
+            $sql="SELECT en.*,al.nomalmacen almacen
+                  FROM encargo en INNER JOIN almacen al ON (en.almacen_idalmacen = al.idalmacen)
+                  INNER JOIN cliente cli ON (en.cliente_idcliente = cli.idcliente)
+                  WHERE en.estado ='1' and cli.estado='1' and al.estado='1' and cli.nrodocumento ='".$nrodoc."'";
+            
+            echo json_encode($this->allmodel->querySql($sql)->result());
+        }
+
 }

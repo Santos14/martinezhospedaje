@@ -45,7 +45,7 @@ class Almacen extends CI_Controller {
 		echo json_encode($data->result());
 	}
 
-	public function ajax_delete(){
+        public function ajax_delete(){
 		$delete = array(
 			'estado' => 0
 		);

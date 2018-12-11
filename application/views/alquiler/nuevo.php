@@ -47,7 +47,7 @@
 
   
                     <div class="col-md-2 col-sm-6 col-xs-12">
-                        <button onclick="search_cliente()" type="button" class='btn btn-info'>
+                        <button onclick="search_cliente('1')" type="button" class='btn btn-info'>
                             <i class="fa fa-search"></i>    
                         </button>
                         <button onclick="form_cliente()" type="button" class='btn btn-info'>
@@ -217,27 +217,55 @@
                 </div>
                 
 
-                 
-                 <legend>Recomendaciones de Servicios</legend>
-                 
-                 <div class="form-group">
-                    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="idcliente_r">
-                        Recomendado por:
-                    </label>
-                    <input type="hidden" name="idcliente_r" id="idcliente_r">
-                    <div class="col-md-2 col-sm-6 col-xs-12">
-                        <input onblur="searchdni(this)" id="rec_dni" name="rec_dni" class="form-control" value="" placeholder="Nro Documento">
-                    </div>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <input id="cliente_r" name="cliente_r" readonly class="form-control" value="" placeholder="Cliente">
-                    </div>
+                <div id="panelrecomendacion">
+                    <legend>Recomendaciones de Servicios</legend>
 
-                    <div class="col-md-2 col-sm-6 col-xs-12">
-                        <button onclick="search_cliente()" type="button" class='btn btn-info'>
-                            <i class="fa fa-search"></i>    
-                        </button>
-                    </div>
-                </div>
+                    <div class="form-group">
+                       <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="c_idcliente">
+                           Recomendado por:
+                       </label>
+                       <input type="hidden" name="c_idcliente" id="c_idcliente">
+                       <div class="col-md-2 col-sm-6 col-xs-12">
+                           <input onblur="searchdni_cliente(this)" id="c_dni" name="c_dni" class="form-control" value="" placeholder="Nro Documento Cliente">
+                       </div>
+                       <div class="col-md-3 col-sm-6 col-xs-12">
+                           <input id="c_cliente" name="c_cliente" readonly class="form-control" value="" placeholder="Nombre Completo Cliente">
+                       </div>
+
+                       <div class="col-md-1 col-sm-6 col-xs-12">
+                           <button onclick="search_cliente('2')" type="button" class='btn btn-info' id="btn_cliente_recomendador">
+                               <i class="fa fa-search"></i>    
+                           </button>
+                       </div>
+                       <div class="col-md-1 col-sm-6 col-xs-12">
+                           <input onclick="anonimorecomendador(this)" type="checkbox" id="a_cliente" name="a_cliente"/>
+                           Anonimo
+                       </div>
+                   </div>
+
+                   <div class="form-group">
+                       <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="t_idtransportista">
+                           Transportista:
+                       </label>
+                       <input type="hidden" name="t_idtransportista" id="t_idtransportista">
+                       <div class="col-md-2 col-sm-6 col-xs-12">
+                           <input onblur="searchdni_transportista(this)" id="t_dni" name="t_dni" class="form-control" value="" placeholder="Nro Documento Transportista">
+                       </div>
+                       <div class="col-md-3 col-sm-6 col-xs-12">
+                           <input id="t_transportista" name="t_transportista" readonly class="form-control" value="" placeholder="Nombre Completo Transportista">
+                       </div>
+
+                       <div class="col-md-1 col-sm-6 col-xs-12">
+                           <button onclick="search_transportista()" type="button" class='btn btn-info' id="btn_transportista_recomendador">
+                               <i class="fa fa-search"></i>    
+                           </button>
+                       </div>
+                       <div class="col-md-1 col-sm-6 col-xs-12">
+                           <input onclick="anonimotrasportista(this)"  type="checkbox" id="a_transportista" name="a_transportista"/>
+                           Anonimo
+                       </div>
+                   </div>
+                 </div>
                  
                  
                  
@@ -297,6 +325,27 @@
                 <h4 class="modal-title" id="title_form">LISTA DE CLIENTES</h4>
             </div>
             <div class="modal-body" id="showListClient">
+               
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cerrar
+                </button>
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalListaTransportista" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="title_form">LISTA DE TRANSPORTISTAS</h4>
+            </div>
+            <div class="modal-body" id="showListTransportista">
                
                 
             </div>

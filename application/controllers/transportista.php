@@ -17,7 +17,7 @@ class Transportista extends CI_Controller {
 		$this->load->view("transportista/nuevo");	
 	}
 
-	public function clientListModal(){
+	public function transportistaListModal(){
 		$sql_cliente = "SELECT * FROM transportista WHERE estado <> '0'";
 		$data["clientes"] = $this->allmodel->querySql($sql_cliente)->result();
 		$this->load->view("transportista/listamodal",$data);	

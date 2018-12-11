@@ -28,13 +28,22 @@ function buscarDNIRepetido(){
     
 }
 
-function search_cliente(){
-    $.get(url+"cliente/clientListModal", function(data) {
+function search_cliente(op){
+    $.get(url+"cliente/clientListModal/"+op, function(data) {
             $("#showListClient").empty().html(data);
             $('#clientes').dataTable();
             $("#modalListaClientes").modal("show");
     });
 }
+
+function search_transportista(){
+    $.get(url+"transportista/transportistaListModal", function(data) {
+            $("#showListTransportista").empty().html(data);
+            $('#transportista').dataTable();
+            $("#modalListaTransportista").modal("show");
+    });
+}
+
 
 
 
@@ -294,7 +303,13 @@ function cambioestado(estadocuarto,id){
 }
 
 function save(){
+         
 	labels = ['al_dni','cliente','precioxdia','idtipoalquiler','idmotivoviaje','idprocedencia','kit','pagoinicial','localidad'];
+        c_rec = $("#a_cliente").is(':checked');
+        t_rec = $("#a_transportista").is(':checked');
+        
+        console.log(c_rec+" "+t_rec);
+        
 	fallas = false;
 	for (var i = 0; i < labels.length; i++) {
 		if($("[name='"+labels[i]+"']").val() == ""){
@@ -303,7 +318,19 @@ function save(){
 			break;
 		}
 	}
-
+        if(!c_rec){
+            if($("[name='c_dni']").val() == ""){
+                fallas = true;
+                alerta("Cliente que recomendo en Blanco","Elija el cliente que le Recomendo el Servicio",'error');
+            }
+        }
+        if(!t_rec){
+            if($("[name='t_dni']").val() == ""){
+                fallas = true;
+                alerta("Trasportista que recomendo en Blanco","Elija el transportista que le Recomendo el Servicio",'error');
+            }
+        }
+       
 	
 	if(!fallas){
 		
@@ -411,85 +438,88 @@ function vermoroso(e){
 
 function searchdni(c){
 	if(c.value!=""){
-		$.get(url+"cliente/ajax_searchdni/"+c.value, function(data) {
-			$.get(url+"alquiler/ajax_morosidad/"+data[0].idcliente+"/1", function(morosidad1) {
-				$.get(url+"alquiler/ajax_morosidad/"+data[0].idcliente+"/2", function(morosidad2) {
-					$.get(url+"alquiler/ultimo_alquiler/"+data[0].idcliente, function(ultimo_alquiler) {
-                                           
-						if(data.length>0){
-							if(morosidad2.length>0){
-								$("#btn_save_alquiler").attr("disabled",true);
-								clas = "btn btn-danger";
-								icon = "fa fa-close";
-								text = "MOROSO";
-								func = "1";
-							}else{
-								$("#btn_save_alquiler").removeAttr('disabled');
-								clas = "btn btn-success";
-								icon = "fa fa-check";
-								text = "EXCELENTE";
-								func = "2";
-							}
+	$.get(url+"cliente/ajax_searchdni/"+c.value, function(data) {
+	$.get(url+"alquiler/ajax_morosidad/"+data[0].idcliente+"/1", function(morosidad1) {
+	$.get(url+"alquiler/ajax_morosidad/"+data[0].idcliente+"/2", function(morosidad2) {
+	$.get(url+"alquiler/ultimo_alquiler/"+data[0].idcliente, function(ultimo_alquiler) {
+        $.get(url+"encargo/encargoCliente/"+data[0].nrodocumento, function(encargo) {
+           
+                                      
+        if(data.length>0){
+            
+            
+            if(morosidad2.length>0){
+                    $("#btn_save_alquiler").attr("disabled",true);
+                    clas = "btn btn-danger";
+                    icon = "fa fa-close";
+                    text = "MOROSO";
+                    func = "1";
+            }else{
+                    $("#btn_save_alquiler").removeAttr('disabled');
+                    clas = "btn btn-success";
+                    icon = "fa fa-check";
+                    text = "EXCELENTE";
+                    func = "2";
+            }
 
-							
 
-							if(ultimo_alquiler.length != 0){
-								if(ultimo_alquiler[0].evaluacion == ""){
-									op = "No se registraron Observaciones en el Ultimo Alquiler";
-                                                                        clase = "alert alert-info";
-								}else{
-                                                                        clase = "alert alert-warning";
-									op = ultimo_alquiler[0].evaluacion;
-								}
+            // EXTRAYENDO DATOS DE ULTIMO ALQUILER
+            
+            if(ultimo_alquiler.length != 0){
+                    if(ultimo_alquiler[0].evaluacion == ""){
+                            op = "No se registraron Observaciones en el Ultimo Alquiler";
+                            clase = "alert alert-info";
+                    }else{
+                            clase = "alert alert-warning";
+                            op = ultimo_alquiler[0].evaluacion;
+                    }
 
-								obser = "<div class='"+clase+"'>";
-                                                                obser +="<strong>Ultima Observacion: </strong>"+op;
-                                                                obser +="</div>";
+                    obser = "<div class='"+clase+"'>";
+                    obser +="<strong>Ultima Observacion: </strong>"+op;
+                    obser +="</div>";
 
-								$("#observaciones_alquiler").html(obser);
-							}
+                    $("#observaciones_alquiler").html(obser);
+            }
+            
+            // DATOS DE ENCARGO 
+            
+           
 
-							
-                                                    
+            // CARGAR DATOS DE CLIENTE EN EL FORMULARIO ALQUILER
+                
+            $("#idcliente").val(data[0].idcliente);
+            $("#cliente").val(data[0].apellidos+", "+data[0].nombres);
+            $("#panelmorosidad").empty().html(morosidad1);
 
-							$("#idcliente").val(data[0].idcliente);
-							$("#cliente").val(data[0].apellidos+", "+data[0].nombres);
-							$("#panelmorosidad").empty().html(morosidad1);
-							
+            // CREANDO Y ASIGNANDO CONFIGURACIONES EN CASO DE SER MOROSO
 
-							btn = "<button type='button' onclick=\"vermoroso('"+func+"','"+est+"')\" class='"+clas+"'>";
-                                                        btn+= "<i class='"+icon+"'></i> "+text;
-                                                        btn+= "</button>";
+            btn = "<button type='button' onclick=\"vermoroso('"+func+"','"+est+"')\" class='"+clas+"'>";
+            btn+= "<i class='"+icon+"'></i> "+text;
+            btn+= "</button>";
 
-                                                        $("#estcli").html(btn);
-                                                        if(morosidad2.length>0){
+            $("#estcli").html(btn);
+            
+            if(morosidad2.length>0){
+                alerta("Cliente Moroso","No se podra registrar Alquiler","error");
+            }
 
-                                                            alerta("Cliente Moroso","No se podra registrar Alquiler","error");
-                                                        }
-		                   
-							$("#estcli").show();
+            $("#estcli").show();
 
-                                                        //CARGAR DATOS DE ALQUILER ANTERIOR
-                                                        $("#idtipoalquiler").val(ultimo_alquiler[0].tipoalquiler_idtipoalquiler);
-                                                        $("#idmotivoviaje").val(ultimo_alquiler[0].motivoviaje_idmotivoviaje);
-                                                        if(data[0].tipodocumento == 0){
-                                                            $("#idprocedencia").val(ultimo_alquiler[0].procedencia_idprocedencia);
-                                                            $("#localidad").val(ultimo_alquiler[0].localidad);
-                                                        }
-                                                        
-                                                        // FIN DE ALQUILER ANTERIOR
-                                                        
-                                                        // REMOVER ATRIBUTOS STYLE
-                                                        $("#observaciones_alquiler").removeAttr("style");
-                                                        //$("#panelmorosidad").removeAttr("style");
-                                                        $("#estcli").removeAttr("style");
+            //CARGAR DATOS DE ALQUILER ANTERIOR
+            
+            $("#idtipoalquiler").val(ultimo_alquiler[0].tipoalquiler_idtipoalquiler);
+            $("#idmotivoviaje").val(ultimo_alquiler[0].motivoviaje_idmotivoviaje);
+            if(data[0].tipodocumento == 0){
+                $("#idprocedencia").val(ultimo_alquiler[0].procedencia_idprocedencia);
+                $("#localidad").val(ultimo_alquiler[0].localidad);
+            }
 
-						}
-					},"json");
-				},"json");
-			});
-		},"json");
-	}
+            // REMOVER ATRIBUTOS STYLE
+            $("#observaciones_alquiler").removeAttr("style");
+            //$("#panelmorosidad").removeAttr("style");
+            $("#estcli").removeAttr("style");
+
+        }},"json");},"json");},"json");});},"json");}
 	
 }
 
@@ -544,7 +574,7 @@ function alquilar(id){
 function cambiartipoalquiler(){
 	idtipoalquiler = $("#idtipoalquiler").val();
 
-	if(idtipoalquiler == '3'){
+	/*if(idtipoalquiler == '3'){
 		$.get(url+controlador+"/monto_mensual/"+$("#precioxdia").val(), function(data) {
 			$("#pagoinicial").val(data);
 			$("#panelmensual").show();
@@ -553,7 +583,17 @@ function cambiartipoalquiler(){
 	}else{
 		$("#pagoinicial").val("0");
 		$("#panelmensual").hide();
-	}
+	}*/
+        if(idtipoalquiler == '2'){
+            $("#panelrecomendacion").hide();
+            $("#a_cliente").attr('checked', true);
+            $("#a_transportista").attr('checked', true);
+            
+        }else{
+            $("#panelrecomendacion").show();
+            $("#a_cliente").attr('checked', false);
+            $("#a_transportista").attr('checked', false);
+        }
 }
 
 function cambiofecha(){
@@ -688,3 +728,59 @@ function pagartodo(val){
 	});	
 
 }
+
+// FUNCIONES DE RECOMENDACION (CLIENTE, MOTOTAXISTA)
+function anonimorecomendador(c){
+    if(c.checked){
+        $("#c_dni").attr("disabled",true);
+        $("#btn_cliente_recomendador").attr("disabled",true);
+        
+    }else{
+        $("#c_dni").removeAttr("disabled");
+        $("#btn_cliente_recomendador").removeAttr("disabled",true);
+    }
+}
+function anonimotrasportista(c){
+    if(c.checked){
+        $("#t_dni").attr("disabled",true);
+        $("#btn_transportista_recomendador").attr("disabled",true);
+        
+    }else{
+        $("#t_dni").removeAttr("disabled");
+        $("#btn_transportista_recomendador").removeAttr("disabled",true);
+    }
+}
+
+function searchdni_cliente(c){
+    if(c.value!=""){
+        $.get(url+"cliente/ajax_searchdni/"+c.value, function(data) {
+            
+            $("#c_idcliente").val(data[0].idcliente);
+            $("#c_cliente").val(data[0].apellidos+", "+data[0].nombres);
+        },'json');
+    }
+    
+}
+function add_cliente_recomendador(id,nombre,apellido,nrodoc){
+    $("#c_idcliente").val(id);
+    $("#c_dni").val(nrodoc);
+    $("#c_cliente").val(apellido+", "+nombre);
+    $("#modalListaClientes").modal("hide");
+}
+function searchdni_transportista(c){
+     if(c.value!=""){
+        $.get(url+"transportista/ajax_searchdni/"+c.value, function(data) {
+       
+            $("#t_idtransportista").val(data[0].idtransportista);
+            $("#t_transportista").val(data[0].apellidos+", "+data[0].nombres);
+        },'json');
+    }
+}
+
+function add_tranportista_recomendador(id,nombre,apellido,nrodoc){
+    $("#t_idtransportista").val(id);
+    $("#t_dni").val(nrodoc);
+    $("#t_transportista").val(apellido+", "+nombre);
+    $("#modalListaTransportista").modal("hide");
+}
+

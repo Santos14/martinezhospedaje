@@ -17,9 +17,10 @@ class Cliente extends CI_Controller {
 		$this->load->view("cliente/nuevo");	
 	}
 
-	public function clientListModal(){
+	public function clientListModal($option){
 		$sql_cliente = "SELECT * FROM cliente WHERE estado <> '0'";
 		$data["clientes"] = $this->allmodel->querySql($sql_cliente)->result();
+                $data["option"] = $option;
 		$this->load->view("cliente/listamodal",$data);	
 	}
 
