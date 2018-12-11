@@ -92,5 +92,15 @@ class Encargo extends CI_Controller {
             
             echo json_encode($this->allmodel->querySql($sql)->result());
         }
+        
+        public function createTableEncargoCliente($nrodoc){
+            $sql="SELECT en.*,al.nomalmacen almacen
+                  FROM encargo en INNER JOIN almacen al ON (en.almacen_idalmacen = al.idalmacen)
+                  INNER JOIN cliente cli ON (en.cliente_idcliente = cli.idcliente)
+                  WHERE en.estado ='1' and cli.estado='1' and al.estado='1' and cli.nrodocumento ='".$nrodoc."'";
+            
+            $data["encargo"] = $this->allmodel->querySql($sql)->result();
+            $this->load->view("encargo/listaEncargosCliente",$data);
+        }
 
 }

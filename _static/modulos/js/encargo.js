@@ -39,9 +39,9 @@ function seleccionaCliente(idcliente,nombre,apellido,nrodoc){
 }
 
 
-function search_cliente(){
+function search_cliente(op){
 
-	$.get(url+"cliente/clientListModal", function(data) {
+	$.get(url+"cliente/clientListModal/"+op, function(data) {
 		$("#showListClient").empty().html(data);
 		$('#clientes').dataTable();
 		$("#modalListaClientes").modal("show");

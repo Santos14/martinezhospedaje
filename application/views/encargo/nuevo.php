@@ -19,7 +19,7 @@
                     </div>
   
                     <div class="col-md-2 col-sm-6 col-xs-12">
-                        <button onclick="search_cliente()" type="button" class='btn btn-info'>
+                        <button onclick="search_cliente('1')" type="button" class='btn btn-info'>
                             <i class="fa fa-search"></i> Buscar   
                         </button>
                     </div>
