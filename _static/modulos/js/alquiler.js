@@ -857,3 +857,31 @@ function add_tranportista_recomendador(id,nombre,apellido,nrodoc){
     $("#modalListaTransportista").modal("hide");
 }
 
+// FUNCIONES DE METODO DE PAGO
+
+function cambiarMetodoPago(c){
+    console.log(c.value);
+    if(c.value == '1'){// METODO DINERO
+        $("#pagoefectivo").show();
+        $("#pagopuntos").hide();
+    }else if(c.value == '2'){ // METODO PUNTOS MARTINEZ
+        $("#pagoefectivo").hide();
+        $("#pagopuntos").show();
+    }
+    
+}
+
+function validapuntos(){
+    tp = $("#totalpuntos").val();
+    pp = $("#pagopuntos").val();
+ 
+    console.log(!isNaN(pp));
+    /*if(pp<)
+    if(pp>tp){
+        alerta("Puntos Excedidos","Usted no tiene la cantidad de puntos ingresados","danger");
+        $("#pagopuntos").focus();
+    }*/
+    
+    
+}
+

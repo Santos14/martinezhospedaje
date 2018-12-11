@@ -162,12 +162,10 @@
                     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="localidad">
                         Localidad
                     </label>
-                    <div class="col-md-8 col-sm-6 col-xs-12">
+                    <div class="col-md-4 col-sm-6 col-xs-12">
                         <input type="text" placeholder="Ingrese Localidad de Procedencia" id="localidad" name="localidad" class="form-control" maxlength="200" >
                     </div>
-                </div>
-                <div class="form-group">
-                    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="kit">
+                    <label  class="control-label col-md-1 col-sm-3 col-xs-12" for="kit">
                         KIT
                     </label>
                     <div class="col-md-3 col-sm-6 col-xs-12">
@@ -178,13 +176,8 @@
                             <option value="0">NO</option>
                         </select>
                     </div>
-                    <label  class="control-label col-md-2 col-sm-3 col-xs-12" for="pagoinicial">
-                        Pago Inicial(S/.)
-                    </label>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <input type="text" id="pagoinicial" name="pagoinicial" class="form-control" maxlength="100" value='0'>
-                    </div>
                 </div>
+                
     
                 <div class="form-group">
                     <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="fecha">
@@ -216,7 +209,55 @@
                     </div>
                 </div>
                 
+                <legend>Metodo de Pago</legend>
+                
+                <div class="form-group">
+                    
+                   <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="fpago">
+                        Forma de Pago
+                    </label>
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                   
+                        <select class='form-control form-control-line'onchange="cambiarMetodoPago(this)" name="fpago" id="fpago">
+                            <option value="">Seleccione...</option>
+                            <option value="1">Dinero</option>
+                            <option value="2">Puntos Martinez</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="pagoefectivo" style="display: none">
+                    <div class="form-group">
+                        <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="pagoinicial">
+                            Pago Inicial(S/.)
+                        </label>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <input type="text" id="pagoinicial" name="pagoinicial" class="form-control" maxlength="100" value='0'>
+                        </div>
+                    </div>
+                </div>
+                <div id="pagopuntos" style="display: none">
+                    <div class="form-group">
+                        <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="totalpuntos">
+                            Puntos Acumulados
+                        </label>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <input type="text" id="totalpuntos" readonly name="totalpuntos" class="form-control" maxlength="100" value='0'>
+                        </div>
+                        <label  class="control-label col-md-2 col-sm-3 col-xs-12" for="pagopuntos">
+                            Pago Inicial (Puntos)
+                        </label>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <input onblur="validapuntos()" type="text" id="pagopuntos" name="pagopuntos" class="form-control" maxlength="100" value='0'>
+                        </div>
+                    </div>
+                </div>
+                
+                
 
+                
+                
+                
+                
                 <div id="panelrecomendacion">
                     <legend>Recomendaciones de Servicios</legend>
 
