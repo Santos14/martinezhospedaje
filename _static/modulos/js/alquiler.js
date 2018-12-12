@@ -247,8 +247,7 @@ function ver_alquiler(){
 	});
 	
 }
-function anular_alquiler(){
-	
+function anular_alquiler(){	
 	if(confirm("¿Esta seguro de Anular este alquiler?")){
 		$.ajax({
 			url : url+controlador+"/anular_alquiler/",
@@ -341,7 +340,7 @@ function cambioestado(estadocuarto,id){
 
 function save(){
          
-	labels = ['al_dni','cliente','precioxdia','idtipoalquiler','idmotivoviaje','idprocedencia','kit','pagoinicial','localidad'];
+	labels = ['al_dni','cliente','precioxdia','idtipoalquiler','idmotivoviaje','idprocedencia','kit','localidad', 'fecha','hora','fpago'];
         c_rec = $("#a_cliente").is(':checked');
         t_rec = $("#a_transportista").is(':checked');
         
@@ -860,28 +859,75 @@ function add_tranportista_recomendador(id,nombre,apellido,nrodoc){
 // FUNCIONES DE METODO DE PAGO
 
 function cambiarMetodoPago(c){
-    console.log(c.value);
-    if(c.value == '1'){// METODO DINERO
-        $("#pagoefectivo").show();
-        $("#pagopuntos").hide();
-    }else if(c.value == '2'){ // METODO PUNTOS MARTINEZ
-        $("#pagoefectivo").hide();
-        $("#pagopuntos").show();
-    }
     
+    if(c.value == '1'){// METODO DINERO
+       $("#pagoefectivo").show();
+       $("#pagopuntos").hide();
+    }else if(c.value == '2'){ // METODO PUNTOS MARTINEZ
+       $("#pagoefectivo").hide();
+       $("#pagopuntos").show();
+    }else if(c.value == '0'){ // METODO SELECCIONE
+       $("#pagoefectivo").hide();
+       $("#pagopuntos").hide();
+    }
 }
 
 function validapuntos(){
     tp = $("#totalpuntos").val();
-    pp = $("#pagopuntos").val();
+    pp = $("#montopagopuntos").val();
  
-    console.log(!isNaN(pp));
-    /*if(pp<)
-    if(pp>tp){
-        alerta("Puntos Excedidos","Usted no tiene la cantidad de puntos ingresados","danger");
-        $("#pagopuntos").focus();
-    }*/
-    
-    
+    if(pp!=""){
+        if(!isNaN(pp)){// ES UN NUMERO
+            tnum = parseFloat(tp);
+            num = parseFloat(pp);
+            if(num<0){ // SI NUMERO ES MENOR A 0
+                alerta("Puntos ingresados Invalido","Ingrese un Numero correcto","error");
+                $("#montopagopuntos").focus();
+                $("#btn_save_alquiler").attr("disabled",true);
+            }else{ // SI NUMERO ES IGUAL O MAYOR A CERO
+                if(num>tnum){ // SI ESCRIBE UNA CANTIDA MAYOR A LA QUE TIENE
+                    alerta("Puntos Excedidos","Usted no tiene la cantidad de puntos ingresados","error");
+                    $("#montopagopuntos").focus();
+                    $("#btn_save_alquiler").attr("disabled",true);
+                }else{ // SI ESCRIBE MONTO IGUAL O MENOR A LA QUE TIENE
+                    $("#btn_save_alquiler").removeAttr("disabled");
+                }
+            }
+        }else{ // NO ES UN NUMERO
+            alerta("Puntos ingresados Invalido","Ingrese un Numero correcto","error");
+            $("#montopagopuntos").focus();
+            $("#btn_save_alquiler").attr("disabled",true);
+        }
+    }else{
+        alerta("Ingrese Puntos","Ingrese un Numero de puntos","error");
+        $("#montopagopuntos").focus();
+        $("#btn_save_alquiler").attr("disabled",true);
+    }
 }
+
+function validadinero(){
+    pp = $("#pagoinicial").val();
+
+    if(pp!=""){
+        if(!isNaN(pp)){// ES UN NUMERO
+            num = parseFloat(pp);
+            if(num<0){ // SI MONTO ES MENOR A 0
+                alerta("Monto ingresados Invalido","Ingrese un monto correcto","error");
+                $("#pagoinicial").focus();
+                $("#btn_save_alquiler").attr("disabled",true);
+            }else{ // SI MONTO ES IGUAL O MAYOR A CERO   
+                $("#btn_save_alquiler").removeAttr("disabled");
+            }
+        }else{ // NO ES UN NUMERO
+            alerta("Monto ingresados Invalido","Ingrese un monto correcto","error");
+            $("#pagoinicial").focus();
+            $("#btn_save_alquiler").attr("disabled",true);
+        }
+    }else{
+        alerta("Ingrese Monto","Ingrese un monto de pago","error");
+        $("#pagoinicial").focus();
+        $("#btn_save_alquiler").attr("disabled",true);
+    }
+}
+
 

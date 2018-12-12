@@ -223,51 +223,66 @@ class Alquiler extends CI_Controller {
     }
 
     public function anular_alquiler(){
-            $idalquiler = $this->input->post("id");
+        $idalquiler = $this->input->post("id");
 
-            $this->db->trans_start();
+        $this->db->trans_start();
 
-            $alquiler = $this->allmodel->selectWhere("alquiler",array('idalquiler'=>$idalquiler))->result();
+        // EXTRAIGO TODOS LOS DATOS DEL ALQUILER
+        $alquiler = $this->allmodel->selectWhere("alquiler",array('idalquiler'=>$idalquiler))->result();
+
+        // CUANDO ANULO UN ALQUILER SE DEVUELVE LA PLATA DE CAJA, Y CUANDO SE RESTAURA SE RESTAURA SIN PAGO
+        $sql_amorti = "SELECT * FROM amortizacion WHERE	estado='1' and alquiler_idalquiler = ".$idalquiler;
+        $amort = $this->allmodel->querySql($sql_amorti)->result();
+
+        // ELABORO LA DATA DE CAMBIO DE ESTADO 
+        $cambioEst = array(
+                "estado" => '0'
+        );
+
+        // VERIFICO QUE AYA HABIDO AMORTIZACIONES PARA PROCEDER A CAMBIAR DE ESTADO
+        if(count($amort)>0){
+                // CAMBIO DE ESTADO A TODAS LAS AMORTIZACIONES Y MOVIMIENTOS DE ESE ALQUILER
+                for ($i=0; $i < count($amort) ; $i++) { 	
+                        $upamor = $this->allmodel->update("amortizacion",$cambioEst,array("idamortizacion"=>$amort[$i]->idamortizacion));
+                        $upmov = $this->allmodel->update("movimiento",$cambioEst,array("idmovimiento"=>$amort[$i]->movimiento_idmovimiento));
+                }
+        }
+        
+        // ANULAR PUNTOS ALQUILER
+        $dataActivePuntos= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 6))->result();
+        $aperturaPuntos = number_format($dataActivePuntos[0]->numero,'0'); 
+
+        if($aperturaPuntos){ // SI ESTA ACTIVO EL MARKETING PUNTOS
+            $panulados = $this->allmodel->update("movimientopuntos",$cambioEst,array("idalquiler"=>$idalquiler));
+        }
+
+        // CAMBIO DE ESTADO AL ALQUILER (ESTADO => ANULADO)
+        $upal = $this->allmodel->update("alquiler",array("estado"=>'0'),array("idalquiler"=>$idalquiler));
 
 
-            // CUANDO ANULO UN ALQUILER SE DEVUELVE LA PLATA DE CAJA, Y CUANDO SE RESTAURA SE RESTAURA SIN PAGO
+        // CREACION DE LA DATA PARA ACTUALIZAR LA HABITACION A UN ESTADO DISPONIBLE
+        $update_hb = array(
+                "disponibilidad" => "1",
+                "cambiosabana" => "1900-01-01",
+                "estcambiosabana" => '0'
+        );
 
-            $sql_amorti = "SELECT * FROM amortizacion WHERE	estado='1' and alquiler_idalquiler = ".$idalquiler;
-            $amort = $this->allmodel->querySql($sql_amorti)->result();
+        // ACTALIZO LA HABITACION
+        $uphb = $this->allmodel->update("habitacion",$update_hb,array("idhabitacion"=>$alquiler[0]->habitacion_idhabitacion));
 
-            $cambioEst = array(
-                    "estado" => '0'
-            );
-            if(count($amort)>0){
-                    for ($i=0; $i < count($amort) ; $i++) { 	
-                            $upamor = $this->allmodel->update("amortizacion",$cambioEst,array("idamortizacion"=>$amort[$i]->idamortizacion));
-                            $upmov = $this->allmodel->update("movimiento",$cambioEst,array("idmovimiento"=>$amort[$i]->movimiento_idmovimiento));
-                    }
-            }
-            $upal = $this->allmodel->update("alquiler",array("estado"=>'0'),array("idalquiler"=>$idalquiler));
-
-
-            $update_hb = array(
-                    "disponibilidad" => "1",
-                    "cambiosabana" => "1900-01-01",
-                    "estcambiosabana" => '0'
-            );
-
-            $uphb = $this->allmodel->update("habitacion",$update_hb,array("idhabitacion"=>$alquiler[0]->habitacion_idhabitacion));
-
-
-
-            $this->db->trans_complete();
-            $trans_status = $this->db->trans_status();
-            if($trans_status== FALSE){
-                    $this->db->trans_rollback();
-                    $status = 0;			
-            }else{
-                    $status = 1;
-                    $this->db->trans_commit();			
-            }
-            echo json_encode($status);
+        $this->db->trans_complete();
+        $trans_status = $this->db->trans_status();
+        if($trans_status== FALSE){
+                $this->db->trans_rollback();
+                $status = 0;			
+        }else{
+                $status = 1;
+                $this->db->trans_commit();			
+        }
+        echo json_encode($status);
     }
+    
+    
     public function restaurar_alquiler(){
             $idalquiler = $this->input->post("id");
 
@@ -450,24 +465,28 @@ class Alquiler extends CI_Controller {
             $id = $this->input->post("id");
             $idreserva = $this->input->post("idreserva");
 
-            if($this->input->post('idtipoalquiler') == '2'){ //EVENTUAL
+            // CONFIGURACIONES SEGUN EL TIPO DE ALQUILER
+            $tipoalquiler = $this->input->post('idtipoalquiler');
+            if($tipoalquiler == '2'){ //EVENTUAL
                     $disp = '5';
                     $fecha_salida = "1900-01-01";
                     $nrodias = 0;
-            }else if($this->input->post('idtipoalquiler') == '3'){ // MENSUAL
+            }else if($tipoalquiler == '3'){ // MENSUAL
                     $disp = '6';
                     $fecha_salida = $this->input->post('fecha_fin')." ".$this->input->post('hora_fin');
                     $nrodias = 30;
-            }else{
+            }else{ // DIARIO
                     $disp = '2';
                     $fecha_salida = "1900-01-01";
                     $nrodias = 0;
             }
 
+            // CREANDO ARRAY CON LOS DATOS DEL ALQUILER PARA ¨PODER ENVIAR A BASE DE DATOS
+            
             $data = array(
                     "habitacion_idhabitacion" => $this->input->post("idhabitacion"),
                     "personal_idpersonal" => $this->session->userdata('idpersonal'),
-                    "tipoalquiler_idtipoalquiler" => $this->input->post('idtipoalquiler'),
+                    "tipoalquiler_idtipoalquiler" => $tipoalquiler,
                     "procedencia_idprocedencia" => $this->input->post('idprocedencia'),
                     "cliente_idcliente" => $this->input->post('idcliente'),
                     "motivoviaje_idmotivoviaje" => $this->input->post('idmotivoviaje'),
@@ -480,72 +499,180 @@ class Alquiler extends CI_Controller {
                     "localidad" => $this->input->post('localidad')
             );
 
+            // EMPEZANDO EL ENVIO A BASE DE DATOS
+             
             $this->db->trans_start();
-            if ($id == ""){
-                    $al = $this->allmodel->create("alquiler", $data);
-                    $politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 1))->result();
-                    $cambsa = "+".number_format($politica[0]->numero,'0')." day";
-                    $estado = array(
-                            "disponibilidad" => $disp,
-                            "cambiosabana" => date ('Y-m-d',strtotime ($cambsa,strtotime(date("Y-m-d")))),
-                            "estcambiosabana" => '0'
-                    );
-                    $uph = $this->allmodel->update("habitacion", $estado, array('idhabitacion'=> $this->input->post("idhabitacion")));
+            
+            if ($id == ""){ // NUEVO ALQUILER
+                
+                // CREANDO EL NUEVO ALQUILER
+                
+                $al = $this->allmodel->create("alquiler", $data);
+                
+                
+                //AGREGANDO ACOMPAÑANTES
+                if($this->input->post("nombres_acomp")!=null){
+                    $nom_acomp = $this->input->post("nombres_acomp");
+                    $dni_acomp = $this->input->post("dni_acomp");
 
-
-
-                    //PAGO INICIAL
-                    if($this->input->post('pagoinicial') != 0){
-                            $movimiento = array(
-                                    "concepto_idconcepto" => 1,
-                                    "fecha" => date("Y-m-d H:i:s"),
-                                    "estado" => '1',
-                                    "monto" => $this->input->post('pagoinicial')
-                            );
-                            $m = $this->allmodel->create("movimiento", $movimiento);
-
-                            $amortizacion = array(
-                                    "movimiento_idmovimiento" => $m,
+                    if(count($dni_acomp)>0){
+                        for ($ind = 0; $ind < count($dni_acomp) ; $ind++) {
+                            $detalle = array(
+                                    "nomcompleto" => $nom_acomp[$ind],
+                                    "nrodoc" => $dni_acomp[$ind],
                                     "alquiler_idalquiler" => $al,
-                                    "fecha" => date("Y-m-d H:i:s"),
-                                    "estado" => '1',
-                                    "monto" => $this->input->post('pagoinicial')
+                                    "estado" => '1'
                             );
-
-                            $am = $this->allmodel->create("amortizacion", $amortizacion);	
-
+                            $ac = $this->allmodel->create("acompaniante", $detalle);
+                        }
                     }
+                }
+                
+                
+             
+                // ACTUALIZANDO DATOS DE LA HABITACION ALQUILADA (TABLA: HABITACION)
+                
+                // - EXTRAYENDO DATOS DE DIAS DE CAMBIO DE SABANA
+                $politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 1))->result();
+                $cambsa = "+".number_format($politica[0]->numero,'0')." day";
+                // - ARMANDO DATOS A ACTUALIZAR DE LA HABITACION
+                $estado = array(
+                        "disponibilidad" => $disp,
+                        "cambiosabana" => date ('Y-m-d',strtotime ($cambsa,strtotime(date("Y-m-d")))),
+                        "estcambiosabana" => '0'
+                );
+                $uph = $this->allmodel->update("habitacion", $estado, array('idhabitacion'=> $this->input->post("idhabitacion")));
+                
+                //METODOS DE PAGO
+                $metPago = $this->input->post('fpago');
+                
+                if($metPago == '1'){ // METODO: DINERO
+                    
+                    // INSERTAMOS EL PAGO INICIAL A LA TABLA AMORTIZACION Y MOVIMIENTO
+                    $pagoInicial = $this->input->post('pagoinicial');
+                    
+                    if($pagoInicial != 0){
+                        
+                        // CREAMOS REGISTRO EN LA TABLA MOVIMIENTO
+                        $movimiento = array(
+                                "concepto_idconcepto" => 1,
+                                "fecha" => date("Y-m-d H:i:s"),
+                                "estado" => '1',
+                                "monto" => $this->input->post('pagoinicial')
+                        );
+                        $m = $this->allmodel->create("movimiento", $movimiento);
 
+                        // CREAMOS REGISTRO EN LA TABLA AMORTIZACION
+                        $amortizacion = array(
+                                "movimiento_idmovimiento" => $m,
+                                "alquiler_idalquiler" => $al,
+                                "fecha" => date("Y-m-d H:i:s"),
+                                "estado" => '1',
+                                "monto" => $this->input->post('pagoinicial')
+                        );
 
-                    //AGREGANDO ACOMPAÑANTES
+                        $am = $this->allmodel->create("amortizacion", $amortizacion);
+                        
+                        // GENERAMOS LOS PUNTOS CORRESPONDIENTES AL PAGO
+                        /*
+                         * NOTACION DE PUNTOS:
+                         *  tipomovimiento:
+                         *      - I: Ingreso
+                         *      - E: Egreso
+                         *  tipoactor:
+                         *      - C: Cliente Recomendador
+                         *      - M: Mototaxista Recomendador
+                         *  concepto:
+                         *      - E: Estancia
+                         *      - R: Recomendacion
+                         *      - C: Compra
+                         */
+                        
+                        // SI ES EVENTUAL NO HACER ESTE PROCESO
+                        
+                        if($tipoalquiler != 2){
+                            
+                            // VERIFICAMOS SI ESTA ACTIVO EL MARKETING DE PUNTOS
+                            
+                            $dataActivePuntos= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 6))->result();
+                            $aperturaPuntos = number_format($dataActivePuntos[0]->numero,'0'); 
 
-                    if($this->input->post("nombres_acomp")!=null){
+                            
+                            if($aperturaPuntos){ // SI ESTA ACTIVO EL MARKETING PUNTOS
+                                                                
+                                // SECCION SOLO PARA CLIENTES
+                                if($pagoInicial >= $data["precioxdia"]){
 
-                            $nom_acomp = $this->input->post("nombres_acomp");
-                            $dni_acomp = $this->input->post("dni_acomp");
+                                    // EXTRAYENDO BASE PARA GENERAR PUNTOS
 
-                            if(count($dni_acomp)>0){
-                                    for ($ind = 0; $ind < count($dni_acomp) ; $ind++) {
-                                            $detalle = array(
-                                                    "nomcompleto" => $nom_acomp[$ind],
-                                                    "nrodoc" => $dni_acomp[$ind],
-                                                    "alquiler_idalquiler" => $al,
-                                                    "estado" => '1'
-                                            );
-                                            $ac = $this->allmodel->create("acompaniante", $detalle);
-                                    }
+                                    $dataPConversion= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 5))->result();
+                                    $baseConversion = number_format($dataPConversion[0]->numero,'0');
+                                    
+                                    // CALCULAR TOTAL PUNTOS
+                                    $puntos_cli = round($pagoInicial/$baseConversion, 1);
+                                    
+                                    // CARGANDO DATOS PARA INSERTAR PUNTOS POR ESTANCIA
+                                    $data_puntos_a = array(
+                                        "fecha" => date("Y-m-d H:i:s"),
+                                        "tipomovimiento" => "I",
+                                        "puntos" => $puntos_cli,
+                                        "tipoactor" => "C",
+                                        "idactor" => $data["cliente_idcliente"],
+                                        "concepto" => "E",
+                                        "estado" => "1",
+                                        "idalquiler" => $al
+                                    );
+                                    
+                                    $cl = $this->allmodel->create("movimientopuntos", $data_puntos_a);
+                                }
+                                
+                                // SECCION SOLO PARA MOTOTAXISTAS RECOMENDADORES
+                                $idmototaxista_recomendador = $this->input->post('t_idtransportista');
+                                $puntos_moto = round($data["precioxdia"]/$baseConversion, 1);
+                                $data_puntos_b = array(
+                                    "fecha" => date("Y-m-d H:i:s"),
+                                    "tipomovimiento" => "I",
+                                    "puntos" => $puntos_moto,
+                                    "tipoactor" => "M",
+                                    "idactor" => $idmototaxista_recomendador,
+                                    "concepto" => "R",
+                                    "estado" => "1",
+                                    "idalquiler" => $al 
+                                );
+                                $mr = $this->allmodel->create("movimientopuntos", $data_puntos_b);
+                                
+                                // SECCION SOLO PARA CLIENTES RECOMENDADORES
+                                $idcliente_recomendador = $this->input->post('c_idcliente');
+                                $puntos_moto = round($data["precioxdia"]/$baseConversion, 1);
+                                $data_puntos_c = array(
+                                    "fecha" => date("Y-m-d H:i:s"),
+                                    "tipomovimiento" => "I",
+                                    "puntos" => $puntos_moto,
+                                    "tipoactor" => "C",
+                                    "idactor" => $idcliente_recomendador,
+                                    "concepto" => "R",
+                                    "estado" => "1",
+                                    "idalquiler" => $al
+                                );
+                                $cr = $this->allmodel->create("movimientopuntos", $data_puntos_c);   
                             }
-
+                           
+                        } 
                     }
+                }else if($metPago == '2'){ // METODO: PUNTOS MARTINEZ
+                    
+                }
+                
+                
+
+                // CAMBIANDO EL ESTADO DE LA RESERVA SI ES QUE HUBIERA
+                if($idreserva != ""){
+                        $r = $this->allmodel->update("reserva", array("estado"=>"2"), array('idreserva'=>$idreserva));
+                }
 
 
-
-                    if($idreserva != ""){
-                            $r = $this->allmodel->update("reserva", array("estado"=>"2"), array('idreserva'=>$idreserva));
-                    }
-
-
-            }else{
+            }else{ // ACTUALIZAR ALQUILER
+            
                     //$status = $this->allmodel->update("alquiler", $data, array('idalquiler'=> $id));
             }
             $this->db->trans_complete();
