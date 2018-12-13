@@ -118,7 +118,8 @@ class Movimiento extends CI_Controller {
 			"fecha" => $this->input->post("fecha")." ".$this->input->post("hora"),
 			"estado" => '1',
 			"descripcion" => $this->input->post("descripcion"),
-			"monto" => $this->input->post("monto")
+			"monto" => $this->input->post("monto"),
+                        "tipopago" => "D"
 		);
 
 		
@@ -146,7 +147,8 @@ class Movimiento extends CI_Controller {
 				"concepto_idconcepto" => 1,
 				"fecha" => date("Y-m-d H:i:s"),
 				"estado" => '1',
-				"monto" => $this->input->post("h_monto")
+				"monto" => $this->input->post("h_monto"),
+                                "tipopago" => "D"
 			);
 
 			$m = $this->allmodel->create("movimiento", $movimiento);
@@ -156,7 +158,8 @@ class Movimiento extends CI_Controller {
 				"alquiler_idalquiler" => $this->input->post("h_idalquiler"),
 				"fecha" => date("Y-m-d H:i:s"),
 				"monto" => $this->input->post("h_monto"),
-				"estado" => "1"
+				"estado" => "1",
+                                "tipopago" => "D"
 			);
 
 			$amort = $this->allmodel->create("amortizacion", $amortizacion);	
@@ -177,41 +180,39 @@ class Movimiento extends CI_Controller {
 	}
 
 	public function ajax_pagoventa(){
+            $this->db->trans_start();
 
-	
+                    $movimiento = array(
+                            "concepto_idconcepto" => 3,
+                            "fecha" => date("Y-m-d H:i:s"),
+                            "estado" => '1',
+                            "monto" => $this->input->post("v_monto"),
+                            "tipopago" => "D"
+                    );
 
-		$this->db->trans_start();
+                    $m = $this->allmodel->create("movimiento", $movimiento);
 
-			$movimiento = array(
-				"concepto_idconcepto" => 3,
-				"fecha" => date("Y-m-d H:i:s"),
-				"estado" => '1',
-				"monto" => $this->input->post("v_monto")
-			);
+                    $venta_movimiento = array(
+                            "venta_idventa" => $this->input->post("v_idventa"),
+                            "movimiento_idmovimiento" => $m
+                    );
 
-			$m = $this->allmodel->create("movimiento", $movimiento);
+                    $vm = $this->allmodel->create("ventamovimiento", $venta_movimiento);	
 
-			$venta_movimiento = array(
-				"venta_idventa" => $this->input->post("v_idventa"),
-				"movimiento_idmovimiento" => $m
-			);
-
-			$vm = $this->allmodel->create("ventamovimiento", $venta_movimiento);	
-
-			$uv = $this->allmodel->update("venta", array("estado" => '2'), array('idventa'=> $this->input->post("v_idventa")));
+                    $uv = $this->allmodel->update("venta", array("estado" => '2'), array('idventa'=> $this->input->post("v_idventa")));
 
 
-		$this->db->trans_complete();
-		$trans_status = $this->db->trans_status();
+            $this->db->trans_complete();
+            $trans_status = $this->db->trans_status();
 
-		if($trans_status== FALSE){
-			$this->db->trans_rollback();
-			$status = 0;			
-		}else{
-			$status = 1;
-			$this->db->trans_commit();			
-		}
-		echo json_encode($status);
+            if($trans_status== FALSE){
+                    $this->db->trans_rollback();
+                    $status = 0;			
+            }else{
+                    $status = 1;
+                    $this->db->trans_commit();			
+            }
+            echo json_encode($status);
 	}
 
 	public function ajax_compras(){
@@ -221,7 +222,8 @@ class Movimiento extends CI_Controller {
 		$movimiento = array(
 			"concepto_idconcepto" => $this->input->post("idconcepto"),
 			"fecha" => $this->input->post("fecha")." ".$this->input->post("hora"),
-			"estado" => '1'
+			"estado" => '1',
+                        "tipopago" => "D"
 		);
 
 		$m = $this->allmodel->create("movimiento", $movimiento);
@@ -275,7 +277,8 @@ class Movimiento extends CI_Controller {
 				"concepto_idconcepto" => 9,
 				"fecha" => date("Y-m-d H:i:s"),
 				"estado" => '1',
-				"monto" => $this->input->post("i_monto")
+				"monto" => $this->input->post("i_monto"),
+                                "tipopago" => "D"
 			);
 
 			$m = $this->allmodel->create("movimiento", $movimiento);
@@ -315,4 +318,158 @@ class Movimiento extends CI_Controller {
 		$status = $this->allmodel->update('movimiento',$delete,array('idmovimiento' => $this->input->post("id")));
 		echo json_encode($status);
 	}
+        
+        public function amortizar_deuda(){
+            $idalquiler = $this->input->post("idalquiler");
+            $monto = $this->input->post("monto");
+            $alojamiento = $this->input->post("alojamiento");
+            $compras = $this->input->post("compras");
+            $imprevistos = $this->input->post("imprevistos");
+
+            $this->db->trans_start();
+
+            $movimiento = array(
+                    "concepto_idconcepto" => 1,
+                    "fecha" => date("Y-m-d H:i:s"),
+                    "estado" => '1',
+                    "monto" => $monto,
+                    "tipopago" => "D"
+            );
+            $ma = $this->allmodel->create("movimiento", $movimiento);
+
+            $alojamiento = array(
+                    "movimiento_idmovimiento" => $ma,
+                    "alquiler_idalquiler" =>$idalquiler,
+                    "fecha" => date("Y-m-d H:i:s"),
+                    "monto" => $monto,
+                    "estado" => "1",
+                    "tipopago" => "D"
+            );
+            $a = $this->allmodel->create("amortizacion", $alojamiento);
+            //falta cambiar de estado a la habitacion
+
+
+
+            $this->db->trans_complete();
+            $trans_status = $this->db->trans_status();
+
+            if($trans_status== FALSE){
+                    $this->db->trans_rollback();
+                    $status = 0;			
+            }else{
+                    $status = 1;
+                    $this->db->trans_commit();			
+            }
+            echo json_encode($status);
+        }
+
+        public function allCash(){
+                $idalquiler = $this->input->post("idalquiler");
+
+                $this->db->trans_start();
+                if($this->input->post("alojamiento")!=0){
+                        $movimiento = array(
+                                "concepto_idconcepto" => 1,
+                                "fecha" => date("Y-m-d H:i:s"),
+                                "estado" => '1',
+                                "monto" => $this->input->post("alojamiento"),
+                                "tipopago" => "D"
+                        );
+                        $ma = $this->allmodel->create("movimiento", $movimiento);
+
+                        $alojamiento = array(
+                                "movimiento_idmovimiento" => $ma,
+                                "alquiler_idalquiler" =>$idalquiler,
+                                "fecha" => date("Y-m-d H:i:s"),
+                                "monto" =>$this->input->post("alojamiento"),
+                                "estado" => "1",
+                                "tipopago" => "D"
+                        );
+                        $a = $this->allmodel->create("amortizacion", $alojamiento);
+                        //falta cambiar de estado a la habitacion
+                }
+                if($this->input->post("compras")!=0){
+
+                        $sql_compras = "SELECT v.*,(
+                        SELECT sum(dv.precio)
+                        FROM venta ve INNER JOIN detalle_venta dv ON (ve.idventa = dv.venta_idventa)
+                        WHERE ve.estado='1' and ve.idventa = v.idventa
+                        GROUP BY ve.idventa
+                        ) total FROM alquiler a INNER JOIN venta_alquiler va on(a.idalquiler = va.alquiler_idalquiler) INNER JOIN venta v ON(va.venta_idventa = v.idventa) WHERE v.estado ='1' and a.idalquiler =".$idalquiler;
+
+                        $c = $this->allmodel->querySql($sql_compras)->result();
+
+                        for ($i = 0; $i < count($c); $i++) {
+                                $movimiento = array(
+                                        "concepto_idconcepto" => 3,
+                                        "fecha" => date("Y-m-d H:i:s"),
+                                        "estado" => '1',
+                                        "monto" => $c[$i]->total,
+                                        "tipopago" => "D"
+                                );
+                                $mv = $this->allmodel->create("movimiento", $movimiento);
+
+                                $ventamovimiento = array(
+                                        "venta_idventa" => $c[$i]->idventa,
+                                        "movimiento_idmovimiento" => $mv
+                                );
+
+                                $v_m = $this->allmodel->create("ventamovimiento", $ventamovimiento);
+
+                                $sql_updateVenta = "UPDATE venta SET estado='2' WHERE idventa IN (
+                                SELECT v.idventa
+                                FROM alquiler a INNER JOIN venta_alquiler va on(a.idalquiler = va.alquiler_idalquiler)
+                                INNER JOIN venta v ON(va.venta_idventa = v.idventa)
+                                WHERE v.estado ='1' and a.idalquiler =".$idalquiler.")";
+
+                                $upv = $this->allmodel->querySql($sql_updateVenta);
+                        }
+                }
+                if($this->input->post("imprevistos")!=0){
+                        $sql_imprevistos = "SELECT i.*
+                        FROM imprevisto i INNER JOIN tipoimprevisto ti ON (i.tipoimprevisto_idtipoimprevisto = ti.idtipoimprevisto) WHERE ti.estado = '1' and alquiler_idalquiler=".$idalquiler;
+
+                        $imp = $this->allmodel->querySql($sql_imprevistos)->result();
+
+                        for ($i = 0; $i < count($imp); $i++) {
+                                $movimiento = array(
+                                        "concepto_idconcepto" => 9,
+                                        "fecha" => date("Y-m-d H:i:s"),
+                                        "estado" => '1',
+                                        "monto" => $imp[$i]->monto,
+                                        "tipopago" => "D"
+                                );
+                                $mi = $this->allmodel->create("movimiento", $movimiento);
+
+                                $imprevisto_movimiento = array(
+                                        "imprevisto_idimprevisto" => $imp[$i]->idimprevisto,
+                                        "movimiento_idmovimiento" => $mi
+                                );
+
+                                $i_m = $this->allmodel->create("imprevisto_movimiento", $imprevisto_movimiento);
+
+                                $sql_updateImp = "UPDATE imprevisto SET estado='2' WHERE idimprevisto IN (
+                                SELECT i.idimprevisto
+                                FROM imprevisto i INNER JOIN tipoimprevisto ti ON (i.tipoimprevisto_idtipoimprevisto = ti.idtipoimprevisto)
+                                WHERE ti.estado = '1' and alquiler_idalquiler=".$idalquiler.")";
+
+                                $upimp = $this->allmodel->querySql($sql_updateImp);
+                        }
+                }
+
+                $this->db->trans_complete();
+                $trans_status = $this->db->trans_status();
+
+                if($trans_status== FALSE){
+                        $this->db->trans_rollback();
+                        $status = 0;			
+                }else{
+                        $status = 1;
+                        $this->db->trans_commit();			
+                }
+
+
+
+                echo json_encode($status);
+        }
 }

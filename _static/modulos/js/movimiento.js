@@ -45,99 +45,94 @@ function cambioConcepto(){
 }
 
 function allCash(id){
-	$("#btn_todo_movimiento").attr("disabled",true);
-	var datae = {
+    $("#btn_todo_movimiento").attr("disabled",true);
+    var datae = {
         "idalquiler" : id,
         "alojamiento" : $("#h"+id).val(),
         "compras" : $("#v"+id).val(),
         "imprevistos" : $("#i"+id).val()
     };
     $.ajax({
-		url: url+'alquiler/allCash',
-		type: 'POST',
-		dataType: 'JSON',
-		data: datae,
-		success: function(data){
-			alerta("Guardado Exitoso",'Se guardo correctamente','success');
-			$("#btn_todo_movimiento").removeAttr("disabled");
-			init();
-		},
-		error: function(jqXHR, textStatus, errorThrown){
-			alerta("Error de Guardado",errorThrown,'error');
-		}
-	});
-
+        url: url+'movimiento/allCash',
+        type: 'POST',
+        dataType: 'JSON',
+        data: datae,
+        success: function(data){
+                alerta("Guardado Exitoso",'Se guardo correctamente','success');
+                $("#btn_todo_movimiento").removeAttr("disabled");
+                init();
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+                alerta("Error de Guardado",errorThrown,'error');
+        }
+    });
 }
 
 function amortizar(id,total,acc){
 
-	op = false;
-	if(id!=""){
-		$("#h_idalquiler").val(id);
-	}
+    op = false;
+    if(id!=""){
+        $("#h_idalquiler").val(id);
+    }
 
-	if(acc=='2'){
-		if(total==""){
-			$("#montoamortizacion").val("");
-			$("#modalAmortizacion").modal("show");
-		}else{
-			if($("#montoamortizacion").val()!=""){
-				if(!isNaN($("#montoamortizacion").val())){
-					if(parseFloat($("#h"+$("#h_idalquiler").val()).val()) != 0){
-						if(parseFloat($("#montoamortizacion").val())>0 && parseFloat($("#montoamortizacion").val())<=parseFloat($("#h"+$("#h_idalquiler").val()).val())){
-							op = true;
-							$("#h_monto").val($("#montoamortizacion").val());	
-							$("#modalAmortizacion").modal("hide");
-						}else{
-							console.log("fuera de Rango");
-							alerta("Fuera de Rango","El monto tiene que ser mayor a 0 y menor a "+$("#h"+$("#h_idalquiler").val()).val(),"error");
-						}
-					}else{
-						if($("#montoamortizacion").val()>0){
-							op = true;
-							$("#h_monto").val($("#montoamortizacion").val());	
-							$("#modalAmortizacion").modal("hide");
-						}
-					}
-				}else{
-					console.log("No es Numero");
-					alerta("No es Numero","El valor Ingresado no es numero","error");
-				}
-			}else{
-				console.log("Es Igual a espacio");
-					alerta("Campo Vacio","Ingrese un valor al campo","error");
-			}
-			
-		}
-	}
+    if(acc=='2'){
+        if(total==""){
+            $("#montoamortizacion").val("");
+            $("#modalAmortizacion").modal("show");
+        }else{
+            if($("#montoamortizacion").val()!=""){
+                if(!isNaN($("#montoamortizacion").val())){
+                    if(parseFloat($("#h"+$("#h_idalquiler").val()).val()) != 0){
+                        if(parseFloat($("#montoamortizacion").val())>0 && parseFloat($("#montoamortizacion").val())<=parseFloat($("#h"+$("#h_idalquiler").val()).val())){
+                            op = true;
+                            $("#h_monto").val($("#montoamortizacion").val());	
+                            $("#modalAmortizacion").modal("hide");
+                        }else{
+                            alerta("Fuera de Rango","El monto tiene que ser mayor a 0 y menor a "+$("#h"+$("#h_idalquiler").val()).val(),"error");
+                        }
+                    }else{
+                        if($("#montoamortizacion").val()>0){
+                            op = true;
+                            $("#h_monto").val($("#montoamortizacion").val());	
+                            $("#modalAmortizacion").modal("hide");
+                        }
+                    }
+                }else{
 
-	if(op){
-		var datae = {
-	        "idalquiler" : $("#h_idalquiler").val(),
-	        "monto" : $("#h_monto").val(),
-	        "alojamiento" : $("#h"+$("#h_idalquiler").val()).val(),
-	        "compras" : $("#v"+$("#h_idalquiler").val()).val(),
-	        "imprevistos" : $("#i"+$("#h_idalquiler").val()).val()
-	    };
+                    alerta("No es Numero","El valor Ingresado no es numero","error");
+                }
+            }else{
+                alerta("Campo Vacio","Ingrese un valor al campo","error");
+            }
 
-	    console.log(datae);
+        }
+    }
+
+    if(op){
+        var datae = {
+            "idalquiler" : $("#h_idalquiler").val(),
+            "monto" : $("#h_monto").val(),
+            "alojamiento" : $("#h"+$("#h_idalquiler").val()).val(),
+            "compras" : $("#v"+$("#h_idalquiler").val()).val(),
+            "imprevistos" : $("#i"+$("#h_idalquiler").val()).val()
+        };
 	   
-		$("#btn_amortiza_movimiento").attr("disabled",true);
-		$.ajax({
-			url: url+'alquiler/amortizar_deuda',
-			type: 'POST',
-			dataType: 'JSON',
-			data: datae,
-			success: function(data){
-				alerta("Guardado Exitoso",'Se guardo correctamente','success');
-				$("#btn_amortiza_movimiento").removeAttr("disabled");
-				init();
-			},
-			error: function(jqXHR, textStatus, errorThrown){
-				alerta("Error de Guardado",errorThrown,'error');
-			}
-		});
-	}
+        $("#btn_amortiza_movimiento").attr("disabled",true);
+        $.ajax({
+                url: url+'movimiento/amortizar_deuda',
+                type: 'POST',
+                dataType: 'JSON',
+                data: datae,
+                success: function(data){
+                        alerta("Guardado Exitoso",'Se guardo correctamente','success');
+                        $("#btn_amortiza_movimiento").removeAttr("disabled");
+                        init();
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                        alerta("Error de Guardado",errorThrown,'error');
+                }
+        });
+    }
 }
 function venta(id,total,accion){
 	$("#v_idventa").val(id);

@@ -7,10 +7,10 @@ var idglobal;
 var table;
 
 function init(){
-	$.get(url+controlador+"/tableList", function(data) {
-		$("#tableList").empty().html(data);
-		$('#datatable').dataTable();
-	});
+    $.get(url+controlador+"/tableList", function(data) {
+            $("#tableList").empty().html(data);
+            $('#datatable').dataTable();
+    });
 }
 
 function buscarDNIRepetido(){
@@ -48,20 +48,31 @@ function search_transportista(){
 
 
 filatableacomp = 1;
-function addacompaniante(){
-	if($("#nomacompaniante").val()!="" && $("#dni_acom").val()!=""){
+function addacompaniante(nombre,nrodoc){
+        if(nombre=="" && nrodoc==""){
+            nombre = $("#nomacompaniante").val();
+            nrodoc = $("#dni_acom").val();
+        }
+        
+	if(nombre!="" && nrodoc!=""){
 		
             fila = "<tr class='acompaniante' id='f"+filatableacomp+"'>";
             fila +="<td class='text-center'>"+filatableacomp+"</td>";
-            fila +="<td class='text-center'><input type='hidden' name='nombres_acomp[]' value='"+$("#nomacompaniante").val()+"'>"+$("#nomacompaniante").val()+"</td>";
-            fila +="<td class='text-center'><input type='hidden' name='dni_acomp[]' value='"+$("#dni_acom").val()+"'>"+$("#dni_acom").val()+"</td>";
+            fila +="<td class='text-center'><input type='hidden' name='nombres_acomp[]' value='"+nombre+"'>"+nombre+"</td>";
+            fila +="<td class='text-center'><input type='hidden' name='dni_acomp[]' value='"+nrodoc+"'>"+nrodoc+"</td>";
             fila +="<td class='text-center'><button onclick=\"removeproducto('"+filatableacomp+"')\" type='button' class='btn btn-danger'><i class='fa fa-trash-o'></i></button></td>";
             fila +="</tr>";
 
             $("#listaacompaniante").append(fila);
-
-            $("#nomacompaniante").val("");
-            $("#dni_acom").val("");
+            
+            if(nombre=="" && nrodoc==""){
+                $("#nomacompaniante").val("");
+                $("#dni_acom").val("");
+            }else{
+                $("#modallistaacompaniante").modal("hide");
+            }
+            
+            
 
             filatableacomp++;
 		
@@ -82,7 +93,9 @@ function seleccionaCliente(idcliente,nombre,apellido,nrodoc,tipodoc){
 	$.get(url+"alquiler/ajax_morosidad/"+idcliente+"/2", function(morosidad2) {
 	$.get(url+"alquiler/ultimo_alquiler/"+idcliente, function(ultimo_alquiler) {
         $.get(url+"encargo/encargoCliente/"+nrodoc, function(data_encargo) {
+        $.get(url+"alquiler/totalpuntos/C/"+idcliente, function(data_puntos) {
             
+        
             
             // ASIGNACIN DE DATOS DEL CLIENTE
             
@@ -153,8 +166,17 @@ function seleccionaCliente(idcliente,nombre,apellido,nrodoc,tipodoc){
             }
 
             $("#estcli").show();
-
+            
             $("#modalListaClientes").modal("hide");
+            
+            // CREAR BOTON DE MODAL DE ACOMPAÑIANTE
+            
+            btn_acomp  = "";
+            btn_acomp += "<button type='button' class='btn btn-success' onclick=\"mostrarMAcomp('"+nrodoc+"')\">";
+            btn_acomp +="<i class='fa fa-users' aria-hidden='true'></i>";
+            btn_acomp +="</button>";
+            
+            $("#btn_acompaniante").html(btn_acomp);
 
             //CARGAR DATOS DE ALQUILER ANTERIOR
             $("#idtipoalquiler").val(ultimo_alquiler[0].tipoalquiler_idtipoalquiler);
@@ -176,6 +198,9 @@ function seleccionaCliente(idcliente,nombre,apellido,nrodoc,tipodoc){
                 $("#idprocedencia").val(ultimo_alquiler[0].procedencia_idprocedencia);
                 $("#localidad").val(ultimo_alquiler[0].localidad);
             }
+            
+            // CARGAR TOTAL PUNTOS (VERIFICAR A TRAVES DE Modal)
+            $("#totalpuntos").val(data_puntos);
 
             // FIN DE ALQUILER ANTERIOR
 
@@ -184,7 +209,7 @@ function seleccionaCliente(idcliente,nombre,apellido,nrodoc,tipodoc){
            // $("#panelmorosidad").removeAttr("style");
             $("#estcli").removeAttr("style");
 
-
+        },"json");
 	},"json");
         },"json");
         },"json");
@@ -338,54 +363,70 @@ function cambioestado(estadocuarto,id){
 	
 }
 
-function save(){
+function save(isMarketingPuntos){
          
-	labels = ['al_dni','cliente','precioxdia','idtipoalquiler','idmotivoviaje','idprocedencia','kit','localidad', 'fecha','hora','fpago'];
-        c_rec = $("#a_cliente").is(':checked');
-        t_rec = $("#a_transportista").is(':checked');
-        
-        console.log(c_rec+" "+t_rec);
-        
-	fallas = false;
-	for (var i = 0; i < labels.length; i++) {
-		if($("[name='"+labels[i]+"']").val() == ""){
-			fallas = true;
-			alerta("Campos en Blanco","Se necesita llenar todos los Campos",'error');
-			break;
-		}
-	}
-        if(!c_rec){
-            if($("[name='c_dni']").val() == ""){
-                fallas = true;
-                alerta("Cliente que recomendo en Blanco","Elija el cliente que le Recomendo el Servicio",'error');
+    labels = ['al_dni','cliente','precioxdia','idtipoalquiler','idmotivoviaje','idprocedencia','kit','localidad', 'fecha','hora'];
+    
+    fallas = false;
+    cont = 0;
+    for (var i = 0; i < labels.length; i++) {
+            if($("[name='"+labels[i]+"']").val() == ""){
+                    fallas = true;
+                    alerta("Campos en Blanco","Se necesita llenar todos los Campos",'error');
+                    break;
             }
-        }
-        if(!t_rec){
-            if($("[name='t_dni']").val() == ""){
-                fallas = true;
-                alerta("Trasportista que recomendo en Blanco","Elija el transportista que le Recomendo el Servicio",'error');
+    }
+    if(!fallas){
+        if($("#fpago").val()== '0'){
+            alerta("Metodo de Pago Vacio","Elija el un Metodo de Pago",'error');
+        }else{
+            // ACTIVAR VALIDACIONES DE MARKETING PUNTOS
+            if(isMarketingPuntos){
+                c_rec = $("#a_cliente").is(':checked');
+                t_rec = $("#a_transportista").is(':checked');
+                if(!c_rec){
+                    if($("[name='c_dni']").val() == ""){
+                        alerta("Cliente que recomendo en Blanco","Elija el cliente que le Recomendo el Servicio",'error');
+                    }else{
+                        cont++;
+                    }
+                }else{
+                    cont++;
+                }
+                if(cont == 1){
+                    if(!t_rec){
+                        if($("[name='t_dni']").val() == ""){
+                            alerta("Trasportista que recomendo en Blanco","Elija el transportista que le Recomendo el Servicio",'error');
+                        }else{
+                            cont++;
+                        }
+                    }else{
+                        cont++;
+                    } 
+                } 
+            }else{
+                cont = 2;
+            } 
+        } 
+    }
+
+    if(cont == 2){
+        $("#btn_save_alquiler").attr("disabled",true);
+        $.ajax({
+            url: url+controlador+'/ajax_save',
+            type: 'POST',
+            dataType: 'JSON',
+            data: $("#form_al").serialize(),
+            success: function(data){
+                    alerta("Guardado Exitoso",'Se guardo correctamente','success');
+                    $("#btn_save_alquiler").removeAttr("disabled");
+                    init();
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                    alerta("Error de Guardado",errorThrown,'error');
             }
-        }
-       
-	
-	if(!fallas){
-		
-		$("#btn_save_alquiler").attr("disabled",true);
-		$.ajax({
-			url: url+controlador+'/ajax_save',
-			type: 'POST',
-			dataType: 'JSON',
-			data: $("#form_al").serialize(),
-			success: function(data){
-				alerta("Guardado Exitoso",'Se guardo correctamente','success');
-				$("#btn_save_alquiler").removeAttr("disabled");
-				init();
-			},
-			error: function(jqXHR, textStatus, errorThrown){
-				alerta("Error de Guardado",errorThrown,'error');
-			}
-		});
-	}
+        });
+    }
 }
 
 function save_edit(){
@@ -479,7 +520,9 @@ function searchdni(c){
 	$.get(url+"alquiler/ajax_morosidad/"+data[0].idcliente+"/2", function(morosidad2) {
 	$.get(url+"alquiler/ultimo_alquiler/"+data[0].idcliente, function(ultimo_alquiler) {
         $.get(url+"encargo/encargoCliente/"+data[0].nrodocumento, function(data_encargo) {
-           
+        $.get(url+"alquiler/totalpuntos/C/"+data[0].idcliente, function(data_puntos) {
+            
+        
                                       
         if(data.length>0){
             
@@ -546,6 +589,7 @@ function searchdni(c){
                 $("#estcli").append(encargo);
             }
             
+             
             // ALERTA DE CLIENTE MOROSO
             
             if(morosidad2.length>0){
@@ -553,6 +597,16 @@ function searchdni(c){
             }
 
             $("#estcli").show();
+            
+            // CREAR BOTON DE MODAL DE ACOMPAÑIANTE
+            
+            btn_acomp  = "";
+            btn_acomp += "<button type='button' class='btn btn-success' onclick=\"mostrarMAcomp('"+data[0].nrodocumento+"')\">";
+            btn_acomp +="<i class='fa fa-users' aria-hidden='true'></i>";
+            btn_acomp +="</button>";
+            
+            $("#btn_acompaniante").html(btn_acomp);
+            
 
             //CARGAR DATOS DE ALQUILER ANTERIOR
             
@@ -575,14 +629,30 @@ function searchdni(c){
                 $("#idprocedencia").val(ultimo_alquiler[0].procedencia_idprocedencia);
                 $("#localidad").val(ultimo_alquiler[0].localidad);
             }
+            
+            // CARGAR TOTAL PUNTOS (VERIFICAR A TRAVES DE Modal)
+            $("#totalpuntos").val(data_puntos);
+            
 
             // REMOVER ATRIBUTOS STYLE
             $("#observaciones_alquiler").removeAttr("style");
             //$("#panelmorosidad").removeAttr("style");
             $("#estcli").removeAttr("style");
 
-        }},"json");},"json");},"json");});},"json");}
+        }},"json");},"json");},"json");},"json");});},"json");}
 	
+}
+
+function mostrarMAcomp(dni){
+    // EXTRAER LOS ACOMPANIANTES SE LOS CLIENTES
+    $.get(url+"cliente/acompanianteCliente/"+dni, function(view) {
+        // AGREGAR VISTA AL MODAL
+        $("#showAcompaniantes").empty().html(view);
+        // DATATABLE
+        $("#tableListacompaniante").dataTable();
+        // MOSTAR EL MODAL
+        $("#modallistaacompaniante").modal("show");
+    });
 }
 
 function mostrarEncargos(dni){
@@ -833,12 +903,19 @@ function searchdni_cliente(c){
     }
     
 }
+
 function add_cliente_recomendador(id,nombre,apellido,nrodoc){
-    $("#c_idcliente").val(id);
-    $("#c_dni").val(nrodoc);
-    $("#c_cliente").val(apellido+", "+nombre);
-    $("#modalListaClientes").modal("hide");
+    idclientealquiler = $("#idcliente").val();
+    if(idclientealquiler == id){
+        alerta("Este Huesped esta Realizando el alquiler","Busque Otro Cliente que recomiende","error");
+    }else{
+        $("#c_idcliente").val(id);
+        $("#c_dni").val(nrodoc);
+        $("#c_cliente").val(apellido+", "+nombre);
+        $("#modalListaClientes").modal("hide");
+    }
 }
+
 function searchdni_transportista(c){
      if(c.value!=""){
         $.get(url+"transportista/ajax_searchdni/"+c.value, function(data) {

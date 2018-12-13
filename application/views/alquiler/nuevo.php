@@ -82,11 +82,12 @@
                     <div class="col-md-2 col-sm-6 col-xs-12">
                         <input type="text" id="dni_acom" name="dni_acom" class="form-control" placeholder="DNI">
                     </div>
-                    <div class="col-md-1 col-sm-6 col-xs-12">
-                        <button type="button" onclick="addacompaniante()" class='btn btn-info'>
+                    <div class="col-md-1 col-sm-6 col-xs-12 text-center" id='config_acompaniante'>
+                        <button type="button" onclick="addacompaniante('','')" class='btn btn-info'>
                             <i class="fa fa-plus"></i> Agregar
-                        </button>
+                        </button>               
                     </div>
+                    <div class="col-md-1 col-sm-6 col-xs-12" id="btn_acompaniante"></div>
                 </div>
 
 
@@ -221,7 +222,9 @@
                         <select class='form-control form-control-line'onchange="cambiarMetodoPago(this)" name="fpago" id="fpago">
                             <option value="0">Seleccione...</option>
                             <option value="1">Dinero</option>
+                            <?php if($isMarketingPuntos){ ?>
                             <option value="2">Puntos Martinez</option>
+                            <?php } ?>
                         </select>
                     </div>
                 </div>
@@ -256,7 +259,7 @@
 
                 
                 
-                
+                <?php if($isMarketingPuntos){ ?>
                 
                 <div id="panelrecomendacion">
                     <legend>Recomendaciones de Servicios</legend>
@@ -308,25 +311,14 @@
                    </div>
                  </div>
                  
+                <?php } ?>
                  
                  
-                 
-                 
-                 
-                 
-                 
-                 
-                 
-                 
-                 
-                 
-                 
-         
                  <div class="text-center">
                     <button type="button" class="btn btn-default" onclick="window.location='<?= base_url('alquiler') ?>'">
                         Cancelar
                     </button>
-                    <button type="button" class="btn btn-success" onclick="save()" id='btn_save_alquiler'>
+                    <button type="button" class="btn btn-success" onclick="save('<?php echo $isMarketingPuntos ?>')" id='btn_save_alquiler'>
                         Guardar
                     </button>
                 </div>
@@ -408,6 +400,27 @@
                 <h4 class="modal-title" id="title_form">LISTA DE ENCARGOS</h4>
             </div>
             <div class="modal-body" id="showEncargos">
+               
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cerrar
+                </button>
+               
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL ACOMPANIANTE -->
+<div id="modallistaacompaniante" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="title_form">LISTA DE ACOMPANIANTE</h4>
+            </div>
+            <div class="modal-body" id="showAcompaniantes">
                
                 
             </div>

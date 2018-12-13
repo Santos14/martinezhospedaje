@@ -98,4 +98,17 @@ class Cliente extends CI_Controller {
 		$status = $this->allmodel->update('cliente',$delete,array('idcliente' => $this->input->post("id")));
 		echo json_encode($status);
 	}
+        
+        
+        // ACOMPAÑIANTES POR CLIENTE
+        
+        public function acompanianteCliente($dni){
+            $sqldni = "SELECT DISTINCT(ac.nrodoc),ac.nomcompleto
+                       FROM cliente cli INNER JOIN alquiler al ON (cli.idcliente = al.cliente_idcliente)
+                       INNER JOIN acompaniante ac ON (al.idalquiler = ac.alquiler_idalquiler)
+                       WHERE cli.estado='1' and al.estado<>'0' and ac.estado='1' and cli.nrodocumento ='".$dni."'";
+            
+            $data["acompaniante"] = $this->allmodel->querySql($sqldni)->result();
+            $this->load->view("cliente/listaacompaniante",$data);
+        }
 }
