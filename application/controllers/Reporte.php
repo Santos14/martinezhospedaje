@@ -17,9 +17,7 @@ class Reporte extends CI_Controller {
 	}
 
 	function cronopagos(){
-
 		$sql_habocupadas = "SELECT * FROM habitacion WHERE (disponibilidad='2' or disponibilidad='3' or disponibilidad='5' or disponibilidad='6' ) and estado <> '0' ORDER BY nrohabitacion asc";
-
 		$data["hab_ocupadas"] = $this->allmodel->querySql($sql_habocupadas)->result();
 
 		layoutSystem("reporte/cronogramapagos",$data);

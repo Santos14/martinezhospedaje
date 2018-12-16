@@ -13,21 +13,18 @@ class Movimiento extends CI_Controller {
 		$sql = "SELECT tmo.idtipomovimiento,cp.idconcepto,mv.idmovimiento,tmo.descripcion tipomovimiento,cp.descripcion concepto, mv.fecha,mv.monto
 			FROM movimiento mv INNER JOIN concepto cp ON (mv.concepto_idconcepto = cp.idconcepto)
 			INNER JOIN tipomovimiento tmo ON (tmo.idtipomovimiento = cp.tipomovimiento_idtipomovimiento)
-			WHERE mv.estado = '1' and (EXTRACT(MONTH FROM mv.fecha) = '".$mes."' and EXTRACT(YEAR FROM mv.fecha) = '".$anio."') ORDER BY mv.idmovimiento desc";
+			WHERE mv.tipopago='D' and mv.estado = '1' and (EXTRACT(MONTH FROM mv.fecha) = '".$mes."' and EXTRACT(YEAR FROM mv.fecha) = '".$anio."') ORDER BY mv.idmovimiento desc";
 		$sql_ingreso = "SELECT sum(mo.monto) monto
 		FROM movimiento mo INNER JOIN concepto cp ON (mo.concepto_idconcepto = cp.idconcepto)
 		INNER JOIN tipomovimiento tm ON (cp.tipomovimiento_idtipomovimiento = tm.idtipomovimiento)
-		WHERE mo.estado='1' and cp.estado = '1' and tm.estado = '1' and tm.idtipomovimiento=1 and (EXTRACT(MONTH FROM mo.fecha) = '".$mes."' and EXTRACT(YEAR FROM mo.fecha) = '".$anio."')";
+		WHERE mo.tipopago='D' and mo.estado='1' and cp.estado = '1' and tm.estado = '1' and tm.idtipomovimiento=1 and (EXTRACT(MONTH FROM mo.fecha) = '".$mes."' and EXTRACT(YEAR FROM mo.fecha) = '".$anio."')";
 		$sql_egreso = "SELECT sum(mo.monto) monto
 		FROM movimiento mo INNER JOIN concepto cp ON (mo.concepto_idconcepto = cp.idconcepto)
 		INNER JOIN tipomovimiento tm ON (cp.tipomovimiento_idtipomovimiento = tm.idtipomovimiento)
-		WHERE mo.estado='1' and cp.estado = '1' and tm.estado = '1' and tm.idtipomovimiento=2 and (EXTRACT(MONTH FROM mo.fecha) = '".$mes."' and EXTRACT(YEAR FROM mo.fecha) = '".$anio."')";
-
+		WHERE mo.tipopago='D' and mo.estado='1' and cp.estado = '1' and tm.estado = '1' and tm.idtipomovimiento=2 and (EXTRACT(MONTH FROM mo.fecha) = '".$mes."' and EXTRACT(YEAR FROM mo.fecha) = '".$anio."')";
 		$data["data"] = $this->allmodel->querySql($sql);
 		$data["ingreso"] = $this->allmodel->querySql($sql_ingreso)->result();
 		$data["egreso"] = $this->allmodel->querySql($sql_egreso)->result();
-
-
 		$this->load->view("movimiento/lista",$data);
 	}
 
@@ -43,66 +40,54 @@ class Movimiento extends CI_Controller {
 	public function listaconcepto($id){
 		switch ($id) {
 			case '3':
+                            $sql1 = "SELECT vt.*, 
+                            (SELECT sum(precio) 
+                            from detalle_venta dv 
+                            WHERE dv.venta_idventa = vt.idventa 
+                            GROUP BY dv.venta_idventa) total
+                            ,
+                            (SELECT val.alquiler_idalquiler 
+                            FROM venta_alquiler val 
+                            WHERE val.venta_idventa = vt.idventa),
+                            (SELECT cli.nombres || ' '  ||cli.apellidos || ' ( Cuarto N° ' || hb.nrohabitacion || ' )' 
+                            FROM venta_alquiler val INNER JOIN alquiler al ON (al.idalquiler = val.alquiler_idalquiler)
+                            INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion)
+                            INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
+                            WHERE val.venta_idventa = vt.idventa) cliente
+                            FROM venta vt INNER JOIN venta_alquiler valq ON (valq.venta_idventa = vt.idventa)
+                            INNER JOIN alquiler aql ON (aql.idalquiler = valq.alquiler_idalquiler)
+                            WHERE aql.estado = '1' and vt.estado='1'
+                            ORDER BY vt.fecha desc";
 
-				$sql1 = "SELECT vt.*, 
-                                (SELECT sum(precio) 
-                                from detalle_venta dv 
-                                WHERE dv.venta_idventa = vt.idventa 
-                                GROUP BY dv.venta_idventa) total
-                                ,
-                                (SELECT val.alquiler_idalquiler 
-                                FROM venta_alquiler val 
-                                WHERE val.venta_idventa = vt.idventa),
-                                (SELECT cli.nombres || ' '  ||cli.apellidos || ' ( Cuarto N° ' || hb.nrohabitacion || ' )' 
-                                FROM venta_alquiler val INNER JOIN alquiler al ON (al.idalquiler = val.alquiler_idalquiler)
-                                INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion)
-                                INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
-                                WHERE val.venta_idventa = vt.idventa) cliente
-                                FROM venta vt INNER JOIN venta_alquiler valq ON (valq.venta_idventa = vt.idventa)
-                                INNER JOIN alquiler aql ON (aql.idalquiler = valq.alquiler_idalquiler)
-                                WHERE aql.estado = '1' and vt.estado='1'
-                                ORDER BY vt.fecha desc";
-
-				$data["ventas"] = $this->allmodel->querySql($sql1)->result();
-				$this->load->view("movimiento/ventas",$data);	
-
-				break;
+                            $data["ventas"] = $this->allmodel->querySql($sql1)->result();
+                            $this->load->view("movimiento/ventas",$data);	
+                            break;
 			case '4':
+                            $sql_producto = "SELECT * FROM producto WHERE estado='1'";				
+                            $data["productos"] = $this->allmodel->querySql($sql_producto)->result();
 
-				$sql_producto = "SELECT * FROM producto WHERE estado='1'";				
-				$data["productos"] = $this->allmodel->querySql($sql_producto)->result();
+                            $this->load->view("movimiento/compras",$data);	
 
-				$this->load->view("movimiento/compras",$data);	
-
-				break;
+                            break;
 
 			case '1':
-
-				$data["data_alquiler"] = pasajerosactuales();
-
-				$this->load->view("movimiento/habitacion",$data);
-
-				break;
-
-
-
-
-			case '9':
-				$sql = "SELECT ip.idimprevisto,ip.fecha,hb.nrohabitacion,cli.apellidos,cli.nombres,ti.descripcion tipoimprevisto,ip.monto,ip.estado
-				FROM imprevisto ip INNER JOIN alquiler al ON (al.idalquiler = ip.alquiler_idalquiler)
-				INNER JOIN tipoimprevisto ti ON (ti.idtipoimprevisto = ip.tipoimprevisto_idtipoimprevisto)
-				INNER JOIN habitacion hb ON (hb.idhabitacion = al.habitacion_idhabitacion)
-				INNER JOIN cliente cli ON (cli.idcliente = al.cliente_idcliente)
-				WHERE ip.estado='1' and ti.estado = '1' and al.estado='1' and 
-					hb.disponibilidad='2'";
-				$data["data"] = $this->allmodel->querySql($sql);
-				$this->load->view("movimiento/imprevistos",$data);
-				break;
-
+                            $data["data_alquiler"] = pasajerosactuales();
+                            $this->load->view("movimiento/habitacion",$data);
+                            break;
+                        case '9':
+                            $sql = "SELECT ip.idimprevisto,ip.fecha,hb.nrohabitacion,cli.apellidos,cli.nombres,ti.descripcion tipoimprevisto,ip.monto,ip.estado
+                            FROM imprevisto ip INNER JOIN alquiler al ON (al.idalquiler = ip.alquiler_idalquiler)
+                            INNER JOIN tipoimprevisto ti ON (ti.idtipoimprevisto = ip.tipoimprevisto_idtipoimprevisto)
+                            INNER JOIN habitacion hb ON (hb.idhabitacion = al.habitacion_idhabitacion)
+                            INNER JOIN cliente cli ON (cli.idcliente = al.cliente_idcliente)
+                            WHERE ip.estado='1' and ti.estado = '1' and al.estado='1' and 
+                                    hb.disponibilidad='2'";
+                            $data["data"] = $this->allmodel->querySql($sql);
+                            $this->load->view("movimiento/imprevistos",$data);
+                            break;
 			default:
-				$this->load->view("movimiento/general");
-				break;
-
+                            $this->load->view("movimiento/general");
+                            break;
 		}
 		
 	}

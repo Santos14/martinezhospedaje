@@ -788,8 +788,7 @@ function detalle(id){
 		$('#estancia').dataTable();
 		$('#compras').dataTable();
 		$('#imprevistos').dataTable();
-		deudageneral = parseFloat($("#deudaxhabitacion").val())+parseFloat($("#deudacompras").val())+parseFloat($("#deudaimprevisto").val());
-		$("#deutotal").val(deudageneral.toFixed(2));
+                $('#amortizaciones').dataTable();
 		$("#modalDetalle").modal("show");
 
 	});
