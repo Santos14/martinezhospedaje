@@ -14,6 +14,7 @@ class Habitacion extends CI_Controller {
 		$data["data"] = $this->allmodel->querySql($sql);
 		$this->load->view("habitacion/lista",$data);
 	}
+        
 
 	public function verhistorial($id){
 
@@ -188,5 +189,13 @@ class Habitacion extends CI_Controller {
 		);
 		$status = $this->allmodel->update('habitacion',$delete,array('idhabitacion' => $this->input->post("id")));
 		echo json_encode($status);
+	}
+        
+        // HABITACIONES DESOCUPADAS
+        
+        public function habitacionesDesocupadas(){
+            $data["data"] = servicioHabitacion();
+    
+            $this->load->view("habitacion/listaHabDesocupadas",$data);
 	}
 }

@@ -49,6 +49,8 @@ function search_transportista(){
 
 filatableacomp = 1;
 function addacompaniante(nombre,nrodoc){
+        isBlanco = nombre=="" && nrodoc=="";
+    
         if(nombre=="" && nrodoc==""){
             nombre = $("#nomacompaniante").val();
             nrodoc = $("#dni_acom").val();
@@ -65,7 +67,7 @@ function addacompaniante(nombre,nrodoc){
 
             $("#listaacompaniante").append(fila);
             
-            if(nombre=="" && nrodoc==""){
+            if(isBlanco){
                 $("#nomacompaniante").val("");
                 $("#dni_acom").val("");
             }else{
@@ -439,8 +441,6 @@ function save_edit(){
 			break;
 		}
 	}
-
-	
 	if(!fallas){
 		
 		$("#btn_save_alquiler_edit").attr("disabled",true);
@@ -459,6 +459,42 @@ function save_edit(){
 			}
 		});
 	}
+}
+
+function cambiahabitacion(){
+    // EXTRAER LAS HABITACIONES A ESCOGER
+    $.get(url+"habitacion/habitacionesDesocupadas/", function(view) {
+        // AGREGAR VISTA AL MODAL
+        $("#showHabDesocupadas").empty().html(view);
+        // DATATABLE
+        $("#habdesocupadas").dataTable();
+        // MOSTAR EL MODAL
+        $("#modalHabDesocupadas").modal("show");
+    });
+}
+
+function changeHabitacion(id,nrohabitacion,precio){
+    $("#idhabitacion").val(id);
+    $("#habitacion").val(nrohabitacion);
+    $("#precio").val(precio);
+    $("#precioxdia").val(precio);
+    $("#modalHabDesocupadas").modal("hide");
+    
+    $("#isChangeHabitacion").val("true");
+    $("#cambiarHabitacion").hide();
+    $("#cancelarHabitacion").show();
+  
+}
+
+function cancelahabitacion(){
+    $("#isChangeHabitacion").val("false");
+    $("#cambiarHabitacion").show();
+    $("#cancelarHabitacion").hide();
+    
+    $("#idhabitacion").val($("#idhabitacion_original").val());
+    $("#habitacion").val($("#habitacion_original").val());
+    $("#precio").val($("#precio_original").val());
+    $("#precioxdia").val($("#precioxdia_original").val());
 }
 
 function showEliminar(id){
@@ -913,6 +949,13 @@ function add_cliente_recomendador(id,nombre,apellido,nrodoc){
         $("#c_cliente").val(apellido+", "+nombre);
         $("#modalListaClientes").modal("hide");
     }
+}
+
+function add_cliente_edit(id,nombre,apellido,nrodoc){
+    $("#idcliente").val(id);
+    $("#al_dni").val(nrodoc);
+    $("#cliente").val(apellido+", "+nombre);
+    $("#modalListaClientes").modal("hide");
 }
 
 function searchdni_transportista(c){

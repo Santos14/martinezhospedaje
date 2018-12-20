@@ -30,8 +30,10 @@
                 <td>
                     <?php if($option == '1'){ ?>
                     <button class="btn btn-success btn-xs" onclick="seleccionaCliente('<?= $cli->idcliente ?>','<?= $cli->nombres ?>','<?= $cli->apellidos ?>','<?= $cli->nrodocumento ?>','<?= $cli->tipodocumento ?>')">Agregar</button>
-                    <?php }else{ ?>
+                    <?php }else if($option == '2'){ ?>
                       <button class="btn btn-success btn-xs" onclick="add_cliente_recomendador('<?= $cli->idcliente ?>','<?= $cli->nombres ?>','<?= $cli->apellidos ?>','<?= $cli->nrodocumento ?>')">Agregar</button>
+                    <?php }else{ ?>
+                    <button class="btn btn-success btn-xs" onclick="add_cliente_edit('<?= $cli->idcliente ?>','<?= $cli->nombres ?>','<?= $cli->apellidos ?>','<?= $cli->nrodocumento ?>')">Agregar</button>  
                     <?php } ?>
                 </td>
             </tr>

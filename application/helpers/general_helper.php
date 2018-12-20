@@ -239,7 +239,7 @@
             $CI =& get_instance();
             
             // EXTRAER ALQUILER POR HABITACION:
-            $sql1 = "SELECT alq.*,ta.descripcion tipoalquiler,mv.descripcion motivoviaje,hb.nrohabitacion,hb.precio,hb.cambiosabana,cli.nrodocumento,cli.nombres,cli.apellidos,cli.telefono,pr.lugar,(SELECT sum(am.monto) monto
+            $sql1 = "SELECT alq.*,ta.descripcion tipoalquiler,mv.descripcion motivoviaje,hb.nrohabitacion,hb.precio,hb.cambiosabana,cli.nrodocumento,cli.nombres,cli.apellidos,cli.telefono,pr.lugar,pr.tipoprocedencia,(SELECT sum(am.monto) monto
                             FROM amortizacion am INNER JOIN alquiler al ON (al.idalquiler = am.alquiler_idalquiler)
                             WHERE am.estado = '1' and al.idalquiler = alq.idalquiler
                             GROUP BY al.idalquiler
@@ -534,6 +534,130 @@
             }
             
 	    return $data_alquiler;
+	}
+        
+        
+        function servicioHabitacion(){
+            $CI =& get_instance();
+            
+            // EXTRAEMOS HABITACIONES Y SERVICIOS POR HABITACION
+            $sql_habitacion = "SELECT h.*,th.descripcion tipohabitacion,
+            (SELECT idalquiler FROM alquiler a WHERE h.idhabitacion = a.habitacion_idhabitacion and a.estado='1') idalquiler  
+            FROM habitacion h INNER JOIN tipohabitacion th ON(h.tipohabitacion_idtipohabitacion = th.idtipohabitacion)
+            WHERE h.estado<>'0' and th.estado<>'0'
+            ORDER BY h.nrohabitacion asc";
+            $sql_servicios = "SELECT ds.*,s.descripcion servicio 
+            FROM servicio s INNER JOIN detalle_servicio ds ON(s.idservicio = ds.servicio_idservicio) 
+            INNER JOIN habitacion h ON (h.idhabitacion = ds.habitacion_idhabitacion)
+            WHERE  h.estado <> '0' and s.estado<>'0'";
+
+            $habitaciones = $CI->allmodel->querySql($sql_habitacion)->result();
+            $servicios = $CI->allmodel->querySql($sql_servicios)->result();
+            
+            // ARREGLO DE VARIABLES
+            
+            $lista_habitaciones = array();
+            $cont = 0;
+            
+            // RECORRIENDO LAS HABITACIONES
+            
+            foreach ($habitaciones as $habitacion){
+                //ARMAR LINEA DE SERVICIOS
+                $serv = array();
+                
+                // EXTRAYENDO SERVICIOS DE LA HABITACION
+                foreach ($servicios as $servicio){
+                    if($habitacion->idhabitacion == $servicio->habitacion_idhabitacion){
+                        $serv[] = $servicio->servicio;
+                    }
+                }
+                // GENERANDO UNA CADENA DE SERVICIOS
+                if(count($serv) > 0){
+                    $s = "";
+                    for ($i = 0; $i < count($serv) ; $i++) {
+                        $s.=$serv[$i];
+                        if($i+1 >= count($serv)){
+                            $s.="";
+                        }else{
+                            $s.=", ";
+                        }
+                    }
+                }else{
+                    $s = "Simple";
+                }
+                
+                switch ( $habitacion->disponibilidad ) {
+                    case '1':
+                        $classd= "btn btn-success btn-xs";
+                        $d = "LIBRE";
+                        break;
+                    case '2':
+                        $classd= "btn btn-danger btn-xs";
+                        $d ="OCUPADO";
+                        break;
+                    case '3':
+                        $classd= "btn btn-warning btn-xs";
+                        $d ="RESERVADO";
+                        break;
+                    case '4':
+                        $classd= "btn btn-info btn-xs";
+                        $d ="INACTIVO";
+                        break;
+                     case '5':
+                        $classd= "btn btn-primary btn-xs";
+                        $d ="EVENTUAL";
+                        break;
+                    case '6':
+                        $classd= "btn btn-danger btn-xs";
+                        $d ="MENSUAL";
+                        break;
+                }
+                
+                //ARMAR ESTADO
+
+                $e = $habitacion->estado;
+                if( $habitacion->disponibilidad == '2' || $habitacion->disponibilidad == '6' || $habitacion->disponibilidad == '5'){
+                    if($habitacion->cambiosabana!='1900-01-01'){
+                         if($habitacion->cambiosabana <= date("Y-m-d") && $habitacion->estcambiosabana=='0'){
+                            $e = '3';
+                        }
+                    }
+                }
+
+                switch ($e) {
+                    case '1':
+                        $estadocuarto = '1';
+                        $classe= "btn btn-default btn-xs";
+                        $e ="Limpio";
+                        break;
+                    case '2':
+                        $estadocuarto = '2';
+                        $classe= "btn btn-danger btn-xs";
+                        $e ="Sucio";
+                        break;
+                     case '3':
+                        $estadocuarto = '3';
+                        $classe= "btn btn-info btn-xs";
+                        $e ="Cambio Sabana";
+                        break;
+                }
+                
+                $lista_habitaciones[$cont]["idhabitacion"]= $habitacion->idhabitacion;
+                $lista_habitaciones[$cont]["nrohabitacion"]= $habitacion->nrohabitacion;
+                $lista_habitaciones[$cont]["tipohabitacion"]= $habitacion->tipohabitacion;
+                $lista_habitaciones[$cont]["precio"]= $habitacion->precio;
+                $lista_habitaciones[$cont]["disponibilidad"]= $d;
+                $lista_habitaciones[$cont]["servicios"]= $s;
+                $lista_habitaciones[$cont]["classd"]= $classd;
+                
+                $cont++;
+                
+                
+            }
+
+           return $lista_habitaciones;
+
+            
 	}
         
         

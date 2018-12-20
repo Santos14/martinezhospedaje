@@ -54,9 +54,6 @@
 </div>
 
 
-
-
-
 <div id="modalFormulario" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xs">
         <form id="form_res" class="form-horizontal form-label-left form-material">

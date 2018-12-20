@@ -89,48 +89,20 @@ class Alquiler extends CI_Controller {
     }
 
     public function edit_alquiler($idalquiler){
-
-            $politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
-
-            $sql_alquiler = "SELECT 
-            alq.*,
-            hb.nrohabitacion,
-            hb.precio,
-            tpa.descripcion tipoalquiler,
-            pr.lugar procedencia,
-            pr.tipoprocedencia,
-            cli.tipodocumento,
-            cli.nrodocumento,
-            cli.nombres,
-            cli.apellidos,
-            mv.descripcion motivoviaje
-            FROM alquiler alq INNER JOIN habitacion hb ON (alq.habitacion_idhabitacion = hb.idhabitacion)
-            INNER JOIN tipoalquiler tpa ON (alq.tipoalquiler_idtipoalquiler = tpa.idtipoalquiler)
-            INNER JOIN procedencia pr ON (pr.idprocedencia = alq.procedencia_idprocedencia)
-            INNER JOIN cliente cli ON (cli.idcliente = alq.cliente_idcliente)
-            INNER JOIN motivoviaje mv ON (mv.idmotivoviaje = alq.motivoviaje_idmotivoviaje)
-            WHERE alq.idalquiler = ".$idalquiler;
-
-            $alq = $this->allmodel->querySql($sql_alquiler)->result();
-            $data["alquiler"] = $alq;
-
-            $sql_tipoalquiler = "SELECT * FROM tipoalquiler WHERE estado <> '0' and idtipoalquiler <> 3 ORDER BY idtipoalquiler asc";
-            $sql_cliente = "SELECT * FROM cliente WHERE estado <> '0'";
-
-            $pr_actual = $this->allmodel->selectWhere("procedencia",array('idprocedencia' =>$alq[0]->procedencia_idprocedencia ))->result();
-
-            $sql_tipoprocencia = "SELECT * FROM procedencia WHERE estado <> '0' and tipoprocedencia='".$pr_actual[0]->tipoprocedencia."' ORDER BY lugar asc";
-
+          
+            // GENERAMOS CONSULTAS DE LLENADO DE DATOS
+            $sql_tipoalquiler = "SELECT * FROM tipoalquiler WHERE estado = '1'";
+            $sql_procencia = "SELECT * FROM procedencia WHERE estado = '1' ";
             $sql_motivoviaje = "SELECT * FROM motivoviaje WHERE estado = '1'";
 
-
-            $data["alquiler"] = $this->allmodel->querySql($sql_alquiler)->result();
-            $data["clientes"] = $this->allmodel->querySql($sql_cliente)->result();
-            $data["tipo_alquileres"] = $this->allmodel->querySql($sql_tipoalquiler)->result();
-            $data["tipo_procedencia"] = $this->allmodel->querySql($sql_tipoprocencia)->result();
+            // CARGAMOS LA DATA A LA VISTA
+            $data["data"] = pasajerosactuales_detalle($idalquiler);
+            $data["tipo_alquiler"] = $this->allmodel->querySql($sql_tipoalquiler)->result();
             $data["motivo_viaje"] = $this->allmodel->querySql($sql_motivoviaje)->result();
-            $data["horatermino"] = number_format($politica[0]->numero,'0');
+            $data["procedencia"] = $this->allmodel->querySql($sql_procencia)->result();
+            
             $this->load->view("alquiler/editar",$data);	
+            
     }
 
     public function ver_alquiler($id){
@@ -529,7 +501,7 @@ class Alquiler extends CI_Controller {
                     $pagoInicial = $this->input->post('pagoinicial');
                     
                     // INSERTAMOS EL PAGO INICIAL A LA TABLA AMORTIZACION Y MOVIMIENTO
-                    if($pagoInicial >= 0){
+                    if($pagoInicial > 0){
                         
                         // CREAMOS REGISTRO EN LA TABLA MOVIMIENTO
                         $movimiento = array(
@@ -1024,8 +996,13 @@ class Alquiler extends CI_Controller {
         echo json_encode($total);
     }
 
-    function pasajerosdetalle($idhabitacion){
-        $data_alquiler = pasajerosactuales_detalle($idhabitacion);
+    function pasajerosdetalle($idalquiler){
+        $data_alquiler = pasajerosactuales_detalle($idalquiler);
+        echo "<pre>";
+        print_r($data_alquiler);
+    }
+    function serviciohabitacion(){
+        $data_alquiler = servicioHabitacion();
         echo "<pre>";
         print_r($data_alquiler);
     }

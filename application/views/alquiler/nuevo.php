@@ -349,7 +349,7 @@
         </div>
     </div>
 </div>
-
+<!-- MODAL CLIENTE REUTILIZABLE (NUEVO.php) -->
 <div id="modalListaClientes" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         
