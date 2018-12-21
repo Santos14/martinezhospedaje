@@ -12,8 +12,8 @@
                 <input type="hidden" name="precio_original" id="precio_original" value="<?= $data["alquiler"][0]->precio ?>">
                 <input type="hidden" name="precioxdia_original" id="precioxdia_original" value="<?= $data["alquiler"][0]->precioxdia ?>">
                 
-                
-                0<input type="hidden" name="idhabitacion" id="idhabitacion" value="<?= $data["alquiler"][0]->habitacion_idhabitacion ?>">
+          
+                <input type="hidden" name="idhabitacion" id="idhabitacion" value="<?= $data["alquiler"][0]->habitacion_idhabitacion ?>">
                 <p class="text-muted">Cambie los datos Necesarios</p>
               
               <legend>Datos de la Habitacion</legend>

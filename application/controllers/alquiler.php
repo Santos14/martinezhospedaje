@@ -362,14 +362,21 @@ class Alquiler extends CI_Controller {
                             $disp = '6';
                     }
             }
+            
+            // VERIFICAMOS CAMBIO DE CUARTO
+            $isChangeHabitacion = $this->input->post('isChangeHabitacion');
 
+            // ARMAMOS LA DATA DE ACTUALIZAR ALQUILER
             $data = array(
+                    "habitacion_idhabitacion" => $this->input->post('idhabitacion'),
+                    "cliente_idcliente" => $this->input->post('idcliente'),
                     "tipoalquiler_idtipoalquiler" => $this->input->post('idtipoalquiler'),
                     "procedencia_idprocedencia" => $this->input->post('idprocedencia'),
                     "motivoviaje_idmotivoviaje" => $this->input->post('idmotivoviaje'),
                     "fecha_ingreso" => $this->input->post('fecha')." ".$this->input->post('hora'),
                     "fecha_salida" => $this->input->post('fecha_fin')." ".$this->input->post('hora_fin'),
                     "nrodias" => $this->input->post('nrodias'),
+                    "precioxdia" => $this->input->post('precioxdia'),
                     "kit" => $this->input->post('kit'),
                     "localidad" => $this->input->post('localidad'),
                     "evaluacion" => $this->input->post('evaluacion')
@@ -381,11 +388,37 @@ class Alquiler extends CI_Controller {
                     $al = $this->allmodel->update("alquiler", $data , array("idalquiler" => $id));
 
                     if($alq_v[0]->estado != '2'){
-                            $estado = array(
+                            
+                            $politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 1))->result();
+                            $cambsa = "+".number_format($politica[0]->numero,'0')." day";
+
+                            
+                            if($isChangeHabitacion == "true"){
+                                $estado = array(
+                                    "disponibilidad" => '1',
+                                    "cambiosabana" => '1900-01-01',
+                                    "estcambiosabana" => '0'
+                                );
+                                $uph_ant = $this->allmodel->update("habitacion", $estado, array('idhabitacion'=> $this->input->post("idhabitacion_original")));
+                                
+                                $estado = array(
+                                    "disponibilidad" => $disp,
+                                    "cambiosabana" => date ('Y-m-d',strtotime($cambsa,strtotime(date("Y-m-d")))),
+                                    "estcambiosabana" => '0'
+                                );
+                                $uph_act = $this->allmodel->update("habitacion", $estado, array('idhabitacion'=> $this->input->post("idhabitacion")));
+                                
+                            }else{
+                                $estado = array(
                                     "disponibilidad" => $disp
-                            );
-                            $uph = $this->allmodel->update("habitacion", $estado, array('idhabitacion'=> $this->input->post("idhabitacion")));
+                                );
+                                $uph = $this->allmodel->update("habitacion", $estado, array('idhabitacion'=> $this->input->post("idhabitacion")));
+                            }
                     }
+                    
+                    // SI CAMBIO DE CUARTO ESTA ACTIVO
+                    
+                    
 
             }else{
                     //$status = $this->allmodel->update("alquiler", $data, array('idalquiler'=> $id));
