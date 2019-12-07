@@ -173,6 +173,9 @@
                 </a>
                 <ul class="nav child_menu" >
                     <li style='padding-left: 14%;'>
+                        <a style="width: 90%;" href="<?php echo base_url('reporte/dia');?>">Reporte Dia</a>
+                    </li>
+                    <li style='padding-left: 14%;'>
                         <a style="width: 90%;" href="<?php echo base_url('reporte/cronopagos');?>">Cronograma de Pagos</a>
                     </li> 
                     <li style='padding-left: 14%;'>

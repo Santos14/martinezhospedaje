@@ -6,6 +6,10 @@ class Reporte extends CI_Controller {
 	function alojamiento(){
 		layoutSystem("reporte/alojamiento");
 	}
+	function dia(){
+		layoutSystem("reporte/dia");
+	}
+
 	function estadodia(){
 		layoutSystem("reporte/estadodia");
 	}
@@ -22,7 +26,7 @@ class Reporte extends CI_Controller {
 
 		layoutSystem("reporte/cronogramapagos",$data);
 	}
-
+	
 	function estadomes(){
 		$data["anios"] = $this->allmodel->querySql("SELECT DISTINCT(EXTRACT(YEAR from fecha_ingreso)) anios FROM alquiler")->result();
 		layoutSystem("reporte/estadomes",$data);
@@ -314,6 +318,28 @@ class Reporte extends CI_Controller {
 		$this->load->view("reporte/movimientosdia_table",$data);
 	}
 
+	function estadodia_ver($fecha,$hi,$hf){
+
+		$politica= $this->allmodel->selectWhere("politicas",array("idpoliticas" => 3))->result();
+
+		$ingresos = "SELECT mo.fecha,po.descripcion,mo.descripcion desmovimiento,mo.monto
+		FROM movimiento mo INNER JOIN concepto po ON (po.idconcepto = mo.concepto_idconcepto)
+		INNER JOIN tipomovimiento tm ON (tm.idtipomovimiento = po.tipomovimiento_idtipomovimiento)
+		WHERE date(mo.fecha) = '".$fecha."' and (to_char(mo.fecha, 'HH24:MI:SS') between '".$hi."' and '".$hf."') and tm.idtipomovimiento = 1 and mo.estado='1' ORDER BY mo.fecha asc ";
+
+		$egresos = "SELECT mo.fecha,po.descripcion,mo.descripcion desmovimiento,mo.monto
+		FROM movimiento mo INNER JOIN concepto po ON (po.idconcepto = mo.concepto_idconcepto)
+		INNER JOIN tipomovimiento tm ON (tm.idtipomovimiento = po.tipomovimiento_idtipomovimiento)
+		WHERE date(mo.fecha) = '".$fecha."' and (to_char(mo.fecha, 'HH24:MI:SS') between '".$hi."' and '".$hf."') and tm.idtipomovimiento = 2 and mo.estado='1'  ORDER BY mo.fecha asc";
+
+		$dingresos = $this->allmodel->querySql($ingresos)->result(); 
+		$degresos = $this->allmodel->querySql($egresos)->result(); 
+
+		$data["ingreso"] = $dingresos;
+		$data["egreso"] = $degresos;
+
+		$this->load->view("reporte/dia_table",$data);
+	}
 
 	function adelantosueldo_imprimir($fecha_inicio,$fecha_fin){
 		

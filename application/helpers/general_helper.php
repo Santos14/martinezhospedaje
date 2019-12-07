@@ -249,7 +249,7 @@
                             INNER JOIN procedencia pr ON (pr.idprocedencia = alq.procedencia_idprocedencia)
                             INNER JOIN tipoalquiler ta ON (ta.idtipoalquiler = alq.tipoalquiler_idtipoalquiler)
                             INNER JOIN motivoviaje mv ON (mv.idmotivoviaje = alq.motivoviaje_idmotivoviaje)
-                            WHERE alq.estado='1' and alq.idalquiler=".$idalquiler;
+                            WHERE alq.estado<>'0' and alq.idalquiler=".$idalquiler;
 
             $alquiler = $CI->allmodel->querySql($sql1)->result();
 

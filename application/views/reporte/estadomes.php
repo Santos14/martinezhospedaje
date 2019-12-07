@@ -40,7 +40,7 @@
                                 <option value="6">JUN</option>
                                 <option value="7">JUL</option>
                                 <option value="8">AGO</option>
-                                <option value="8">SET</option>
+                                <option value="9">SET</option>
                                 <option value="10">OCT</option>
                                 <option value="11">NOV</option>
                                 <option value="12">DIC</option>
