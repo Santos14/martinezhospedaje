@@ -311,7 +311,9 @@ class Alquiler extends CI_Controller {
 
     public function listaalquiler(){
             $f = date("Y-m-d");
-            $r = explode("-",$f);
+            $f_ant = date("Y-m-d",strtotime($f."- 1 month"));
+
+            $r = explode("-",$f_ant);
 
             $sql_alq = "SELECT al.*,cli.nrodocumento,cli.nombres,cli.apellidos,hb.nrohabitacion,
             (
@@ -322,7 +324,7 @@ class Alquiler extends CI_Controller {
             ) montopagado
             FROM alquiler al INNER JOIN habitacion hb ON (al.habitacion_idhabitacion = hb.idhabitacion)
             INNER JOIN cliente cli ON (al.cliente_idcliente = cli.idcliente)
-            WHERE (al.fecha_salida > '".$r[0]."-".($r[1]-1)."-01' OR al.estado='1')
+            WHERE (al.fecha_salida > '".$r[0]."-".$r[1]."-01' OR al.estado='1')
             ORDER BY al.fecha_ingreso desc";
 
             $data["alquileres"] = $this->allmodel->querySql($sql_alq)->result();

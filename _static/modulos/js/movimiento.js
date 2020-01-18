@@ -82,20 +82,14 @@ function amortizar(id,total,acc){
         }else{
             if($("#montoamortizacion").val()!=""){
                 if(!isNaN($("#montoamortizacion").val())){
-                    if(parseFloat($("#h"+$("#h_idalquiler").val()).val()) != 0){
-                        if(parseFloat($("#montoamortizacion").val())>0 && parseFloat($("#montoamortizacion").val())<=parseFloat($("#h"+$("#h_idalquiler").val()).val())){
+
+                    if(parseFloat($("#montoamortizacion").val()) > 0){
+                    	
+                        
                             op = true;
                             $("#h_monto").val($("#montoamortizacion").val());	
                             $("#modalAmortizacion").modal("hide");
-                        }else{
-                            alerta("Fuera de Rango","El monto tiene que ser mayor a 0 y menor a "+$("#h"+$("#h_idalquiler").val()).val(),"error");
-                        }
-                    }else{
-                        if($("#montoamortizacion").val()>0){
-                            op = true;
-                            $("#h_monto").val($("#montoamortizacion").val());	
-                            $("#modalAmortizacion").modal("hide");
-                        }
+                        
                     }
                 }else{
 

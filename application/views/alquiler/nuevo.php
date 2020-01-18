@@ -210,25 +210,25 @@
                     </div>
                 </div>
                 
-                <legend>Metodo de Pago</legend>
+                <legend >Metodo de Pago</legend>
                 
-                <div class="form-group">
+                <div style="display: none" class="form-group">
                     
                    <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="fpago">
                         Forma de Pago
                     </label>
-                    <div class="col-md-8 col-sm-6 col-xs-12">
+                    <div  class="col-md-8 col-sm-6 col-xs-12">
                    
                         <select class='form-control form-control-line'onchange="cambiarMetodoPago(this)" name="fpago" id="fpago">
                             <option value="0">Seleccione...</option>
-                            <option value="1">Dinero</option>
+                            <option value="1" selected="">Dinero</option>
                             <?php if($isMarketingPuntos){ ?>
                             <option value="2">Puntos Martinez</option>
                             <?php } ?>
                         </select>
                     </div>
                 </div>
-                <div id="pagoefectivo" style="display: none">
+                <div id="pagoefectivo">
                     <div class="form-group">
                         <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="pagoinicial">
                             Pago Inicial(S/.)

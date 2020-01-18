@@ -13,6 +13,7 @@ function init(){
     });
 }
 
+
 function buscarDNIRepetido(){
     var dni = $("#nrodocumento").val();
     if(dni !=''){
@@ -243,14 +244,13 @@ function view_alquileres(){
 		$("#tableList").empty().html(data);
 		$("#listaalquiler").dataTable();
 	});
-
-
 }
 
 
 function editar_alquiler(id){
 	
 }
+
 function volver_t(r){
 	$(r).modal("hide");
 	$("#modalopcion").modal("show");
